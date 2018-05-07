@@ -55,7 +55,10 @@
       #toolbar {
         background-color: white;
         border: 1px solid #f0f0f0;
+        width: 100%;
+        box-sizing: border-box;
         position: sticky;
+        top: 0px;
       }
     </style>
     <iron-iconset-svg size="24" name="boo-wysiwyg-e">
@@ -73,7 +76,7 @@
       </svg></defs>
     </iron-iconset-svg>
     <div id="toolbar"><slot></slot></div>
-    <div id="editor" contenteditable=[[readonly]]></div>
+    <div id="editor" contenteditable></div>
 
   </template>
 
@@ -90,12 +93,7 @@
       static get is() { return 'boo-wysiwyg-e'; }
       static get properties() {
         return {
-          toolbarPos: {
-            type: String,
-            value: "top"
-          },
           noAutoGrow: Boolean,
-          scrollTarget: Object,
           placeholder: {
             type: String,
             observer: "_placeholderChanged",
@@ -106,59 +104,20 @@
             value: "",
             notify: true
           },
-          readonly: {
-            type: Boolean,
-            observer: '_readOnlyChanged',
-            value: false,
-          }
         };
       }
 
       connectedCallback() {
         super.connectedCallback();
-        if (!this.scrollTarget) {
-          this.scrollTarget = window;
-        }
-        window.addEventListener("resize", function() {
-          this.resize();
-        }.bind(this));
         this.$.editor.innerHTML = this.value;
         this.$.editor.addEventListener("input", function() {
           this.value = this.$.editor.innerHTML;
-          this.resize();
+          this.dispatchEvent(new CustomEvent("input"));
         }.bind(this));
       }
 
       focus() {
         this.$.editor.focus();
-      }
-
-      resize() {
-        let editorRect = this.$.editor.getBoundingClientRect();
-        let toolbarRect = this.$.toolbar.getBoundingClientRect();
-        let rect = this.getBoundingClientRect();
-        this.$.toolbar.style.maxWidth = rect.width + 'px';
-        let height = 0;
-        switch (this.toolbarPos) {
-          case "top":
-            height = editorRect.height + toolbarRect.height;
-            this.$.toolbar.style.top = 0 + 'px';
-            break;
-          case "bottom":
-            height = editorRect.height + toolbarRect.height;
-            this.$.toolbar.style.top = editorRect.height + 'px';
-            break;
-        }
-        this.style.height = height + 'px';
-        this.dispatchEvent(new CustomEvent("resize"));
-      }
-
-      _readOnlyChanged(readonly) {
-        if (readonly) {
-          this.$.editor.contentEditable = false;
-        } else {
-          this.$.editor.contentEditable = true;
-        }
       }
 
       _placeholderChanged(placeholder) {
