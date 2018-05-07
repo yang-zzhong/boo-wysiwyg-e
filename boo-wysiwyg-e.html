@@ -47,6 +47,11 @@
       #editor:focus {
         outline: none;
       }
+      #editor[contenteditable=true]:empty:before {
+        content: attr(placeholder);
+        display: block;
+        opacity: .6;
+      }
       #toolbar {
         background-color: white;
         border: 1px solid #f0f0f0;
@@ -68,7 +73,7 @@
       </svg></defs>
     </iron-iconset-svg>
     <div id="toolbar"><slot></slot></div>
-    <div id="editor" contenteditable=[[readonly]] placeholder="nihao"></div>
+    <div id="editor" contenteditable=[[readonly]]></div>
 
   </template>
 
@@ -91,10 +96,14 @@
           },
           noAutoGrow: Boolean,
           scrollTarget: Object,
-          placeholder: String,
+          placeholder: {
+            type: String,
+            observer: "_placeholderChanged",
+            value: ""
+          },
           value: {
             type: String,
-            value: "<b>hello world</b>",
+            value: "",
             notify: true
           },
           readonly: {
@@ -150,6 +159,10 @@
         } else {
           this.$.editor.contentEditable = true;
         }
+      }
+
+      _placeholderChanged(placeholder) {
+        this.$.editor.setAttribute('placeholder', placeholder);
       }
     }
 
