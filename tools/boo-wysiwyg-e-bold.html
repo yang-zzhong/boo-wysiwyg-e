@@ -1,0 +1,21 @@
+<link rel="import" href="../../polymer/polymer-element.html">
+<link rel="import" href="../boo-wysiwyg-e.html">
+
+<dom-module id="boo-wysiwyg-e-bold">
+  <template>
+    <paper-icon-button 
+      title="加粗"
+      icon="boo-wysiwyg-e:format-bold" 
+      on-click="bold"></paper-icon-button>
+  </template>
+  <script>
+    class BooWysiwygEBold extends BooWysiwygETool {
+      static get is() { return "boo-wysiwyg-e-bold"; }
+      bold() {
+        this.editor.focus();
+        document.execCommand("bold");
+      }
+    }
+    window.customElements.define(BooWysiwygEBold.is, BooWysiwygEBold);
+  </script>
+</dom-module>

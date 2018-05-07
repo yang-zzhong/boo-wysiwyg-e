@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>boo-wysiwyg-e demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
+    <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
+    <link rel="import" href="../boo-wysiwyg-e.html">
+    <link rel="import" href="../tools/boo-wysiwyg-e-bold.html">
+    <link rel="import" href="../tools/boo-wysiwyg-e-title.html">
+    <link rel="import" href="../tools/boo-wysiwyg-e-align.html">
+    <link rel="import" href="../tools/boo-wysiwyg-e-text-color.html">
+    <link rel="import" href="../tools/boo-wysiwyg-e-code.html">
+    <link rel="import" href="../tools/boo-wysiwyg-e-ordered-list.html">
+    <link rel="import" href="../tools/boo-wysiwyg-e-unordered-list.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+      </style>
+    </custom-style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic boo-wysiwyg-e demo</h3>
+      <demo-snippet>
+        <template>
+          <boo-wysiwyg-e>
+            <app-toolbar>
+              <boo-wysiwyg-e-bold></boo-wysiwyg-e-bold>
+              <boo-wysiwyg-e-title></boo-wysiwyg-e-title>
+              <boo-wysiwyg-e-align></boo-wysiwyg-e-align>
+              <boo-wysiwyg-e-text-color></boo-wysiwyg-e-text-color>
+              <boo-wysiwyg-e-code></boo-wysiwyg-e-code>
+              <boo-wysiwyg-e-ordered-list></boo-wysiwyg-e-ordered-list>
+              <boo-wysiwyg-e-unordered-list></boo-wysiwyg-e-unordered-list>
+            </app-toolbar>
+          </boo-wysiwyg-e>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>

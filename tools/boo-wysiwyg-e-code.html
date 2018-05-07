@@ -1,0 +1,24 @@
+<link rel="import" href="../../polymer/polymer-element.html">
+<link rel="import" href="../boo-wysiwyg-e.html">
+
+<dom-module id="boo-wysiwyg-e-code">
+  <template>
+    <paper-icon-button 
+      title="插入代码" 
+      icon="boo-wysiwyg-e:code" 
+      on-click="code"></paper-icon-button>
+  </template>
+
+  <script>
+    class BooWysiwygECode extends BooWysiwygETool {
+
+      static get is() { return "boo-wysiwyg-e-code"; }
+
+      code() {
+        this.editor.focus();
+        document.execCommand("formatblock", false, '<pre>');
+      }
+    }
+    window.customElements.define(BooWysiwygECode.is, BooWysiwygECode);
+  </script>
+</dom-module>

@@ -1,0 +1,50 @@
+<link rel="import" href="../../polymer/polymer-element.html">
+<link rel="import" href="../../l2t-paper-color/l2t-paper-color-dialog.html">
+<link rel="import" href="../boo-wysiwyg-e.html">
+
+<dom-module id="boo-wysiwyg-e-text-color">
+  <template>
+
+    <paper-icon-button
+      style="color: [[color]]"
+      title="文字颜色"
+      icon="boo-wysiwyg-e:format-color-text"
+      on-click="_openDialog"></paper-icon-button>
+
+  </template>
+  <script>
+    class BooWysiwygETextColor extends BooWysiwygETool {
+      static get is() { return "boo-wysiwyg-e-text-color"; }
+
+      static get properties() {
+        return {
+          colorDialog: Object,
+          value: {
+            type: String,
+            value: "#e0e0e0"
+          }
+        };
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this.colorDialog = document.createElement('l2t-paper-color-dialog');
+        document.body.appendChild(this.colorDialog);
+        this.colorDialog.addEventListener("paper-color-dialog-closed", (e) => this.changeColor(e), false);
+      }
+
+      changeColor(e) {
+        if(e.detail) {
+          this.value = this.colorDialog.color;
+          this.editor.focus();
+          document.execCommand("forecolor", false, this.value);
+        }
+      }
+
+      _openDialog() {
+        this.colorDialog.open();
+      }
+    }
+    window.customElements.define(BooWysiwygETextColor.is, BooWysiwygETextColor);
+  </script>
+</dom-module>
