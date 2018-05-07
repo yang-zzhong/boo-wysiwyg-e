@@ -1,15 +1,44 @@
 <link rel="import" href="../../polymer/polymer-element.html">
-<link rel="import" href="../../l2t-paper-color/l2t-paper-color-dialog.html">
+<link rel="import" href="../../l2t-paper-color/l2t-paper-color-picker.html">
+<link rel="import" href="../../l2t-paper-color/l2t-paper-color-advanced.html">
+<link rel="import" href="../../paper-tabs/paper-tabs.html">
+<link rel="import" href="../../paper-tabs/paper-tab.html">
+<link rel="import" href="../../iron-pages/iron-pages.html">
+<link rel="import" href="../../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../boo-wysiwyg-e.html">
 
 <dom-module id="boo-wysiwyg-e-text-color">
   <template>
+    <style>
+      l2t-paper-color-picker {
+        overflow: auto;
+        height: 200px;
+        max-width: 400px;
+      }
+      paper-tabs {
+        --paper-tabs-selection-bar-color: blue;
+        --paper-tab-ink: blue;
+      }
+    </style>
+    <paper-menu-button ignore-select> 
 
-    <paper-icon-button
-      style="color: [[color]]"
-      title="文字颜色"
-      icon="boo-wysiwyg-e:format-color-text"
-      on-click="_openDialog"></paper-icon-button>
+      <paper-icon-button
+        slot="dropdown-trigger"
+        style="color: [[color]]"
+        title="文字颜色"
+        icon="boo-wysiwyg-e:format-color-text"></paper-icon-button>
+
+      <div slot="dropdown-content">
+        <paper-tabs on-click="preventClose" selected={{_selected}}>
+          <paper-tab>常用</paper-tab>
+          <paper-tab>高级</paper-tab>
+        </paper-tabs>
+        <iron-pages selected=[[_selected]]>
+          <l2t-paper-color-picker color="{{value}}"></l2t-paper-color-picker>
+          <l2t-paper-color-advanced color="{{value}}"></l2t-paper-color-advanced>
+        </iron-pages>
+      </div>
+  </paper-menu-button>
 
   </template>
   <script>
@@ -19,8 +48,13 @@
       static get properties() {
         return {
           colorDialog: Object,
+          _selected: {
+            type: Number,
+            value: 0
+          },
           value: {
             type: String,
+            observer: "changeColor",
             value: "#e0e0e0"
           }
         };
@@ -33,16 +67,19 @@
         this.colorDialog.addEventListener("paper-color-dialog-closed", (e) => this.changeColor(e), false);
       }
 
-      changeColor(e) {
-        if(e.detail) {
-          this.value = this.colorDialog.color;
+      changeColor(color) {
+        if (this.editor) {
           this.editor.focus();
-          document.execCommand("forecolor", false, this.value);
+          document.execCommand("forecolor", false, color);
         }
       }
 
       _openDialog() {
         this.colorDialog.open();
+      }
+
+      preventClose(e) {
+        e.stopPropagation();
       }
     }
     window.customElements.define(BooWysiwygETextColor.is, BooWysiwygETextColor);
