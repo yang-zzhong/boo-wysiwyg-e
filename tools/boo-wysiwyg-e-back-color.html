@@ -17,10 +17,11 @@
         };
       }
 
-      changeColor(color) {
+      select() {
         if (this.editor) {
           this.editor.focus();
-          document.execCommand("backcolor", false, color);
+          document.execCommand("forecolor", false, this.value);
+          this.$.dropdown.close();
         }
       }
     }

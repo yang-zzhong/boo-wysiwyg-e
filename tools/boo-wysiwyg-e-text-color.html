@@ -1,26 +1,25 @@
 <link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../paper-slider/paper-slider.html">
 <link rel="import" href="../boo-wysiwyg-e.html">
 
 <dom-module id="boo-wysiwyg-e-text-color">
   <template>
     <style>
-      l2t-paper-color-picker {
-        overflow: auto;
-        height: 200px;
-        max-width: 400px;
+      div.used {
+        @apply --layout-horizontal;
+        @apply --layout-justify;
+        padding-top: 8px;
       }
-      paper-tabs {
-        --paper-tabs-selection-bar-color: blue;
-        --paper-tab-ink: blue;
+      [slot=dropdown-content] {
+        padding: 10px 15px 10px 10px;
       }
       .colorMixer {
         @apply --layout-horizontal;
         @apply --layout-justify;
         @apply --layout-end;
-        padding: 10px 15px 10px 10px;
       }
       .preview {
         width: 100px;
@@ -47,7 +46,7 @@
         --paper-slider-pin-color: var(--l2t-paper-color-advanced-blue, var(--paper-blue-700));
       }
     </style>
-    <paper-menu-button ignore-select> 
+    <paper-menu-button id="dropdown" ignore-select> 
 
       <paper-icon-button
         slot="dropdown-trigger"
@@ -65,6 +64,14 @@
             <paper-slider min="0" pin max="255" class="blue"
               immediate-value="{{_blue}}" value="[[_blue]]"></paper-slider>
           </div>
+        </div>
+        <div class="used">
+          <div>
+            <template is="dom-repeat" items=[[values]]>
+              <span style="background-color:[[item]]"></span>
+            </template>
+          </div>
+          <paper-button on-click="select">选择</paper-button>
         </div>
       </div>
   </paper-menu-button>
@@ -98,8 +105,11 @@
           },
           value: {
             type: String,
-            observer: "changeColor",
             notify: true,
+          },
+          values: {
+            type: Array,
+            value: []
           }
         };
       }
@@ -117,19 +127,12 @@
         this.value = "#"+r+g+b;
       }
 
-      changeColor(color) {
+      select() {
         if (this.editor) {
           this.editor.focus();
-          document.execCommand("forecolor", false, color);
+          document.execCommand("forecolor", false, this.value);
+          this.$.dropdown.close();
         }
-      }
-
-      _openDialog() {
-        this.colorDialog.open();
-      }
-
-      preventClose(e) {
-        e.stopPropagation();
       }
     }
     window.customElements.define(BooWysiwygETextColor.is, BooWysiwygETextColor);

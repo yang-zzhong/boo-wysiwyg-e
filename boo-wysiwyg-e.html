@@ -112,6 +112,7 @@
             value: "",
             notify: true
           },
+          _selection: Object,
         };
       }
 
@@ -122,10 +123,26 @@
           this.value = this.$.editor.innerHTML;
           this.dispatchEvent(new CustomEvent("input"));
         }.bind(this));
+        document.addEventListener("selectionchange", function(e) {
+          let selection = this.shadowRoot.getSelection();
+          if (selection.rangeCount > 0) {
+            this._range = selection.getRangeAt(0);
+          }
+        }.bind(this));
+      }
+
+      restoreSelection() {
+        if (!this._range) {
+          return;
+        } 
+        let selection = this.shadowRoot.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(this._range);
       }
 
       focus() {
         this.$.editor.focus();
+        this.restoreSelection();
       }
 
       curBlock() {
