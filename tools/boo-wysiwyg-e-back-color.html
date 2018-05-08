@@ -1,0 +1,30 @@
+<link rel="import" href="./boo-wysiwyg-e-text-color.html">
+
+<dom-module id="boo-wysiwyg-e-back-color">
+  <script>
+    class BooWysiwygEBackColor extends BooWysiwygETextColor {
+      static get is() { return "boo-wysiwyg-e-back-color"; }
+      static get properties() {
+        return {
+          title: {
+            type: String,
+            value: "背景颜色",
+          },
+          icon: {
+            type: String,
+            value: "boo-wysiwyg-e:format-color-fill"
+          }
+        };
+      }
+
+      changeColor(color) {
+        if (this.editor) {
+          this.editor.focus();
+          document.execCommand("backcolor", false, color);
+        }
+      }
+    }
+
+    window.customElements.define(BooWysiwygEBackColor.is, BooWysiwygEBackColor);
+  </script>
+</dom-module>

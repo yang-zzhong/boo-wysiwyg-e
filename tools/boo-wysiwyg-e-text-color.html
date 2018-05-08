@@ -1,10 +1,7 @@
 <link rel="import" href="../../polymer/polymer-element.html">
-<link rel="import" href="../../l2t-paper-color/l2t-paper-color-picker.html">
-<link rel="import" href="../../l2t-paper-color/l2t-paper-color-advanced.html">
-<link rel="import" href="../../paper-tabs/paper-tabs.html">
-<link rel="import" href="../../paper-tabs/paper-tab.html">
-<link rel="import" href="../../iron-pages/iron-pages.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../paper-slider/paper-slider.html">
 <link rel="import" href="../boo-wysiwyg-e.html">
 
 <dom-module id="boo-wysiwyg-e-text-color">
@@ -19,24 +16,56 @@
         --paper-tabs-selection-bar-color: blue;
         --paper-tab-ink: blue;
       }
+      .colorMixer {
+        @apply --layout-horizontal;
+        @apply --layout-justify;
+        @apply --layout-end;
+        padding: 10px 15px 10px 10px;
+      }
+      .preview {
+        width: 100px;
+        height: 100px;
+        background-color: black;
+      }
+      .controller {
+        padding-top: 20px;
+        margin: 0px -10px -10px 0px;
+      }
+      .red {
+        --paper-slider-active-color: var(--l2t-paper-color-advanced-red, var(--paper-red-700));
+        --paper-slider-knob-color: var(--l2t-paper-color-advanced-red, var(--paper-red-700));
+        --paper-slider-pin-color: var(--l2t-paper-color-advanced-red, var(--paper-red-700));
+      }
+      .green {
+        --paper-slider-active-color: var(--l2t-paper-color-advanced-green, var(--paper-green-700));
+        --paper-slider-knob-color: var(--l2t-paper-color-advanced-green, var(--paper-green-700));
+        --paper-slider-pin-color: var(--l2t-paper-color-advanced-green, var(--paper-green-700));
+      }
+      .blue {
+        --paper-slider-active-color: var(--l2t-paper-color-advanced-blue, var(--paper-blue-700));
+        --paper-slider-knob-color: var(--l2t-paper-color-advanced-blue, var(--paper-blue-700));
+        --paper-slider-pin-color: var(--l2t-paper-color-advanced-blue, var(--paper-blue-700));
+      }
     </style>
     <paper-menu-button ignore-select> 
 
       <paper-icon-button
         slot="dropdown-trigger"
-        style="color: [[color]]"
-        title="文字颜色"
-        icon="boo-wysiwyg-e:format-color-text"></paper-icon-button>
+        title="[[title]]"
+        icon="[[icon]]"></paper-icon-button>
 
       <div slot="dropdown-content">
-        <paper-tabs on-click="preventClose" selected={{_selected}}>
-          <paper-tab>常用</paper-tab>
-          <paper-tab>高级</paper-tab>
-        </paper-tabs>
-        <iron-pages selected=[[_selected]]>
-          <l2t-paper-color-picker color="{{value}}"></l2t-paper-color-picker>
-          <l2t-paper-color-advanced color="{{value}}"></l2t-paper-color-advanced>
-        </iron-pages>
+        <div class="colorMixer">
+          <div class="preview" style="background:[[value]];"></div>
+          <div class="controller">
+            <paper-slider min="0" pin max="255" class="red"
+              immediate-value="{{_red}}" value="[[_red]]"></paper-slider>
+            <paper-slider min="0" pin max="255" class="green"
+              immediate-value="{{_green}}" value="[[_green]]"></paper-slider>
+            <paper-slider min="0" pin max="255" class="blue"
+              immediate-value="{{_blue}}" value="[[_blue]]"></paper-slider>
+          </div>
+        </div>
       </div>
   </paper-menu-button>
 
@@ -47,24 +76,45 @@
 
       static get properties() {
         return {
-          colorDialog: Object,
-          _selected: {
+          _red: {
             type: Number,
-            value: 0
+            observer: "_colorChanged",
+          },
+          _green: {
+            type: Number,
+            observer: "_colorChanged",
+          },
+          _blue: {
+            type: Number,
+            observer: "_colorChanged",
+          },
+          title: {
+            type: String,
+            value: "文字颜色"
+          },
+          icon: {
+            type: String,
+            value: "boo-wysiwyg-e:format-color-text"
           },
           value: {
             type: String,
             observer: "changeColor",
-            value: "#e0e0e0"
+            notify: true,
           }
         };
       }
 
-      connectedCallback() {
-        super.connectedCallback();
-        this.colorDialog = document.createElement('l2t-paper-color-dialog');
-        document.body.appendChild(this.colorDialog);
-        this.colorDialog.addEventListener("paper-color-dialog-closed", (e) => this.changeColor(e), false);
+      _colorChanged() {
+        if(this._red === '' || this._green === '' || this._blue === '') {
+          return
+        }
+        var r = this._red.toString(16);
+        r=r.length<2?"0"+r:r;
+        var g = this._green.toString(16);
+        g=g.length<2?"0"+g:g;
+        var b = this._blue.toString(16);
+        b=b.length<2?"0"+b:b;
+        this.value = "#"+r+g+b;
       }
 
       changeColor(color) {
