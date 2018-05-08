@@ -17,6 +17,7 @@
       code() {
         this.editor.focus();
         document.execCommand("formatblock", false, '<pre>');
+        document.execCommand("formatblock", false, '<code>');
       }
     }
     window.customElements.define(BooWysiwygECode.is, BooWysiwygECode);
