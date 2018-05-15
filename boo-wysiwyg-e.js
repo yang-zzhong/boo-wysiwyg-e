@@ -1,33 +1,47 @@
-<link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../iron-iconset-svg/iron-iconset-svg.html">
+import { PolymerElement } from '@polymer/polymer/polymer-element.js';
+import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
+import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+const $_documentContainer = document.createElement('template');
+$_documentContainer.setAttribute('style', 'display: none;');
 
-<dom-module id="boo-wysiwyg-e-tool">
-  <script>
-    class BooWysiwygETool extends Polymer.Element {
-      static get properties() {
-        return {
-          editor: Object
-        };
-      }
-      connectedCallback() {
-        super.connectedCallback();
-        let node = this;
-        while(node = node.parentNode) {
-          if (node.tagName == 'BOO-WYSIWYG-E') {
-            this.editor = node;
-            break;
-          }
-        }
-        if (!this.editor) {
-          throw "editor not found";
-        }
+$_documentContainer.innerHTML = `<dom-module id="boo-wysiwyg-e-tool">
+  
+</dom-module>`;
+
+document.head.appendChild($_documentContainer.content);
+
+export class BooWysiwygETool extends PolymerElement {
+  static get properties() {
+    return {
+      editor: Object
+    };
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    let node = this;
+    while(node = node.parentNode) {
+      if (node.tagName == 'BOO-WYSIWYG-E') {
+        this.editor = node;
+        break;
       }
     }
-  </script>
-</dom-module>
+    if (!this.editor) {
+      throw "editor not found";
+    }
+  }
+}
 
-<dom-module id="boo-wysiwyg-e">
-  <template>
+/**
+ * `boo-wysiwyg-e`
+ * 
+ *
+ * @customElement
+ * @polymer
+ * @demo demo/index.html
+ */
+class BooWysiwygE extends PolymerElement {
+  static get template() {
+    return html`
     <style>
       :host {
         display: block;
@@ -81,83 +95,71 @@
         <g id="code"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"></path></g>
         <g id="format-list-bulleted"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12.17c-.74 0-1.33.6-1.33 1.33s.6 1.33 1.33 1.33 1.33-.6 1.33-1.33-.59-1.33-1.33-1.33zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"></path></g>
         <g id="format-list-numbered"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"></path></g>
-      </svg></defs>
+      </defs></svg>
     </iron-iconset-svg>
     <div id="toolbar"><slot></slot></div>
     <div id="editor" contenteditable></div>
+`;
+  }
 
-  </template>
+  static get is() { return 'boo-wysiwyg-e'; }
+  static get properties() {
+    return {
+      noAutoGrow: Boolean,
+      placeholder: {
+        type: String,
+        observer: "_placeholderChanged",
+        value: ""
+      },
+      value: {
+        type: String,
+        value: "",
+        notify: true
+      },
+      _selection: Object,
+    };
+  }
 
-  <script>
-    /**
-     * `boo-wysiwyg-e`
-     * 
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class BooWysiwygE extends Polymer.Element {
-      static get is() { return 'boo-wysiwyg-e'; }
-      static get properties() {
-        return {
-          noAutoGrow: Boolean,
-          placeholder: {
-            type: String,
-            observer: "_placeholderChanged",
-            value: ""
-          },
-          value: {
-            type: String,
-            value: "",
-            notify: true
-          },
-          _selection: Object,
-        };
+  connectedCallback() {
+    super.connectedCallback();
+    this.$.editor.innerHTML = this.value;
+    this.$.editor.addEventListener("input", function() {
+      this.value = this.$.editor.innerHTML;
+      this.dispatchEvent(new CustomEvent("input"));
+    }.bind(this));
+    document.addEventListener("selectionchange", function(e) {
+      let selection = this.shadowRoot.getSelection();
+      if (selection.rangeCount > 0) {
+        this._range = selection.getRangeAt(0);
       }
+    }.bind(this));
+  }
 
-      connectedCallback() {
-        super.connectedCallback();
-        this.$.editor.innerHTML = this.value;
-        this.$.editor.addEventListener("input", function() {
-          this.value = this.$.editor.innerHTML;
-          this.dispatchEvent(new CustomEvent("input"));
-        }.bind(this));
-        document.addEventListener("selectionchange", function(e) {
-          let selection = this.shadowRoot.getSelection();
-          if (selection.rangeCount > 0) {
-            this._range = selection.getRangeAt(0);
-          }
-        }.bind(this));
-      }
+  restoreSelection() {
+    if (!this._range) {
+      return;
+    } 
+    let selection = this.shadowRoot.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(this._range);
+  }
 
-      restoreSelection() {
-        if (!this._range) {
-          return;
-        } 
-        let selection = this.shadowRoot.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(this._range);
-      }
+  focus() {
+    this.$.editor.focus();
+    this.restoreSelection();
+  }
 
-      focus() {
-        this.$.editor.focus();
-        this.restoreSelection();
-      }
+  curBlock() {
+  
+  }
 
-      curBlock() {
-      
-      }
+  curElem() {
+  
+  }
 
-      curElem() {
-      
-      }
+  _placeholderChanged(placeholder) {
+    this.$.editor.setAttribute('placeholder', placeholder);
+  }
+}
 
-      _placeholderChanged(placeholder) {
-        this.$.editor.setAttribute('placeholder', placeholder);
-      }
-    }
-
-    window.customElements.define(BooWysiwygE.is, BooWysiwygE);
-  </script>
-</dom-module>
+window.customElements.define(BooWysiwygE.is, BooWysiwygE);

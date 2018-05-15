@@ -6,30 +6,47 @@
 
     <title>boo-wysiwyg-e demo</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
-    <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
-    <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
-    <link rel="import" href="../boo-wysiwyg-e.html">
-    <link rel="import" href="../tools/boo-wysiwyg-e-bold.html">
-    <link rel="import" href="../tools/boo-wysiwyg-e-title.html">
-    <link rel="import" href="../tools/boo-wysiwyg-e-align.html">
-    <link rel="import" href="../tools/boo-wysiwyg-e-text-color.html">
-    <link rel="import" href="../tools/boo-wysiwyg-e-back-color.html">
-    <link rel="import" href="../tools/boo-wysiwyg-e-code.html">
-    <link rel="import" href="../tools/boo-wysiwyg-e-ordered-list.html">
-    <link rel="import" href="../tools/boo-wysiwyg-e-unordered-list.html">
+    <script type="module" src="../node_modules/@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+    <script type="module" src="../node_modules/@polymer/iron-demo-helpers/demo-snippet.js"></script>
+    <script type="module" src="../node_modules/@polymer/app-layout/app-toolbar/app-toolbar.js"></script>
+    <script type="module" src="../node_modules/@polymer/paper-icon-button/paper-icon-button.js"></script>
+    <script type="module" src="../node_modules/@polymer/iron-iconset-svg/iron-iconset-svg.js"></script>
+    <script type="module" src="../boo-wysiwyg-e.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-bold.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-title.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-align.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-text-color.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-back-color.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-code.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-ordered-list.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-unordered-list.js"></script>
 
-    <custom-style>
+    <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
       </style>
-    </custom-style>
+    </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
   </head>
   <body>
-    <div class="vertical-section-container centered">
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
       <h3>Basic boo-wysiwyg-e demo</h3>
       <demo-snippet>
         <template>
@@ -47,6 +64,9 @@
           </boo-wysiwyg-e>
         </template>
       </demo-snippet>
-    </div>
+    </div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
   </body>
 </html>
