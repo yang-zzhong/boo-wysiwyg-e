@@ -161,32 +161,30 @@ class BooWysiwygE extends PolymerElement {
   }
 
   selectWord() {
-    let range = this.findWord(true);
-    this._range.setStart(this._range.commonAncestorContainer, range[0]);
-    this._range.setEnd(this._range.commonAncestorContainer, range[1]);
+    let range = this.findWordInContainer(true);
+    this._range = range;
     this.restoreSelection();
   }
 
   forwardWord() {
     let range = this.findWord(true);
-    this._range.setStart(this._range.commonAncestorContainer, range[0]);
-    this._range.setEnd(this._range.commonAncestorContainer, range[1]);
+    this._range = range;
     this._range.collapse(false);
     this.restoreSelection();
   }
 
   backwardWord() {
     let range = this.findWord(false);
-    this._range.setStart(this._range.commonAncestorContainer, range[0]);
-    this._range.setEnd(this._range.commonAncestorContainer, range[1]);
+    this._range = range;
     this._range.collapse(true);
     this.restoreSelection();
   }
 
-  findWord(forward) {
-    let node = this._range.commonAncestorContainer;
+  findWordInContainer(forward) {
+    let range = this._range.cloneRange();
+    let node = this._range.startContainer;
     let start = forward ? this._range.startOffset : Math.max(this._range.startOffset - 1, 0);
-    while (node.data[start] == " " && start > 0 && start < node.data.length) {
+    while(node.data[forward ? start : start - 1] == " ") {
       forward ? start++ : start--;
     }
     let end = start;
@@ -202,7 +200,110 @@ class BooWysiwygE extends PolymerElement {
       }
       end++;
     }
-    return [start, end];
+    range.setStart(node, start);
+    range.setEnd(node, end);
+    return range;
+  }
+
+  findWord(forward) {
+    let textNodes = this.findTextNode();
+    let node = this._range.startContainer;
+    let range = this._range.cloneRange();
+    let start = forward ? this._range.startOffset : Math.max(this._range.startOffset - 1, 0);
+    let startIndex = textNodes.indexOf(node);
+    if (forward) {
+      while(startIndex < textNodes.length) {
+        node = textNodes[startIndex];
+        let found = false;
+        while (start < node.data.length) {
+          if (node.data[start] != " ") {
+            found = true;
+            break;
+          }
+          start++;
+        }
+        if (found) {
+          break;
+        }
+        startIndex++;
+      }
+    } else {
+      while(startIndex >= 0) {
+        node = textNodes[startIndex];
+        let found = false;
+        while (start > 0) {
+          if (node.data[start] != " ") {
+            found = true;
+            break;
+          }
+          start--;
+        }
+        if (found) {
+          break;
+        }
+        startIndex--;
+      }
+    }
+    let end = start;
+    let endIndex = startIndex;
+    while(startIndex >= 0) {
+      node = textNodes[startIndex];
+      let found = false;
+      while(start > 0) {
+        if (node.data[start - 1] == " ") {
+          found = true;
+          break;
+        }
+        start--;
+      }
+      if (found) {
+        break;
+      }
+      if (startIndex > 0) {
+        start = textNodes[startIndex].length - 1;
+      }
+      startIndex--;
+    }
+    range.setStart(node, start);
+    while(endIndex < textNodes.length) {
+      node = textNodes[endIndex];
+      let found = false;
+      while(end < node.data.length) {
+        if (node.data[end] == " ") {
+          found = true;
+          break;
+        }
+        end++;
+      }
+      if (found) {
+        break;
+      }
+      if (endIndex < textNodes.length - 1) {
+        end = 0;
+      }
+      endIndex++;
+    }
+    range.setEnd(node, end);
+    return range;
+  }
+
+  findTextNode(node) {
+    let textNodes = [];
+    if (!node) {
+      node = this.$.editor;
+    }
+    for (let i = 0; i < node.childNodes.length; i++) {  
+      var c = node.childNodes[i];
+      switch(c.nodeType) {  
+        case 1:  
+          textNodes = textNodes.concat(this.findTextNode(c));
+          break;
+        case 3:  
+          textNodes.push(c);
+          break;  
+      }  
+    }
+    return textNodes;
   }
 
   _placeholderChanged(placeholder) {
@@ -210,57 +311,34 @@ class BooWysiwygE extends PolymerElement {
   }
 
   _defaultKeyListener(e) {
-    console.log(e);
     switch (e.key) {
       case "Tab":
-        this._handleTab(e);
+        this.exec("inserttext", "    ");
+        e.preventDefault();
         break;
       case "Delete":
-        this._handleDelete(e);
-        break;
       case "Backspace":
-        this._handleBackspace(e);
+        if (!e.ctrlKey) {
+          return;
+        }
+        this.deleteWord();
+        e.preventDefault();
         break;
       case "ArrowRight":
-        this._handleMoveForward(e);
+        if (!e.ctrlKey) {
+          return;
+        }
+        this.forwardWord();
+        e.preventDefault();
         break;
       case "ArrowLeft":
-        this._handleMoveBackward(e);
+        if (!e.ctrlKey) {
+          return;
+        }
+        this.backwardWord();
+        e.preventDefault();
         break;
     }
-  }
-
-  _handleTab(e) {
-    this.exec("inserttext", "    ");
-    e.preventDefault();
-  }
-
-  _handleDelete(e) {
-    if (!e.ctrlKey) {
-      return;
-    }
-    this.deleteWord();
-    e.preventDefault();
-  }
-
-  _handleBackspace(e) {
-    this._handleDelete(e);
-  }
-
-  _handleMoveForward(e) {
-    if (!e.ctrlKey) {
-      return;
-    }
-    this.forwardWord();
-    e.preventDefault();
-  }
-
-  _handleMoveBackward(e) {
-    if (!e.ctrlKey) {
-      return;
-    }
-    this.backwardWord();
-    e.preventDefault();
   }
 }
 

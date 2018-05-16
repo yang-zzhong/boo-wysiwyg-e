@@ -13,8 +13,8 @@ class BooWysiwygECode extends BooWysiwygETool {
   static get is() { return "boo-wysiwyg-e-code"; }
 
   code() {
-    this.editor.execCommand("formatblock", "<pre>");
-    this.editor.execCommand("formatblock", "<code>");
+    this.editor.exec("formatblock", "<pre>");
+    this.editor.exec("formatblock", "<code>");
   }
 }
 window.customElements.define(BooWysiwygECode.is, BooWysiwygECode);
