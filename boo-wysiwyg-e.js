@@ -182,7 +182,10 @@ class BooWysiwygE extends PolymerElement {
 
   findWordInContainer(forward) {
     let range = this._range.cloneRange();
-    let node = this._range.startContainer;
+    let node = this._selectedRangeStartTextNode();
+    if (!node) {
+      return range;
+    }
     let start = forward ? this._range.startOffset : Math.max(this._range.startOffset - 1, 0);
     while(node.data[forward ? start : start - 1] == " ") {
       forward ? start++ : start--;
@@ -205,52 +208,42 @@ class BooWysiwygE extends PolymerElement {
     return range;
   }
 
-  findWord(forward) {
-    let textNodes = this.findTextNode();
+  _selectedRangeStartTextNode() {
     let node = this._range.startContainer;
-    let range = this._range.cloneRange();
+    if (node.nodeType == 3) {
+      return node;
+    }
+    return this.findTextNode(node)[0];
+  }
+
+  _rightSearchStart(textNodes, node, forward, sep) {
     let start = forward ? this._range.startOffset : Math.max(this._range.startOffset - 1, 0);
     let startIndex = textNodes.indexOf(node);
-    if (forward) {
-      while(startIndex < textNodes.length) {
-        node = textNodes[startIndex];
-        let found = false;
-        while (start < node.data.length) {
-          if (node.data[start] != " ") {
-            found = true;
-            break;
-          }
-          start++;
-        }
-        if (found) {
+    while(startIndex < textNodes.length && startIndex > -1) {
+      node = textNodes[startIndex];
+      let found = false;
+      while (start < node.data.length && start >= 0) {
+        if (node.data[start] != sep) {
+          found = true;
           break;
         }
-        startIndex++;
+        forward ? start++ : start--;
       }
-    } else {
-      while(startIndex >= 0) {
-        node = textNodes[startIndex];
-        let found = false;
-        while (start > 0) {
-          if (node.data[start] != " ") {
-            found = true;
-            break;
-          }
-          start--;
-        }
-        if (found) {
-          break;
-        }
-        startIndex--;
+      if (found) {
+        break;
       }
+      forward ? startIndex++ : startIndex--;
     }
-    let end = start;
-    let endIndex = startIndex;
-    while(startIndex >= 0) {
+    return [startIndex, start];
+  }
+
+  _searchBackward(textNodes, startIndex, start, sep) {
+    let node = null;
+    while(startIndex >= 0 && startIndex < textNodes.length) {
       node = textNodes[startIndex];
       let found = false;
       while(start > 0) {
-        if (node.data[start - 1] == " ") {
+        if (node.data[start - 1] == sep) {
           found = true;
           break;
         }
@@ -264,12 +257,16 @@ class BooWysiwygE extends PolymerElement {
       }
       startIndex--;
     }
-    range.setStart(node, start);
-    while(endIndex < textNodes.length) {
+    return [node, start];
+  }
+
+  _searchForward(textNodes, endIndex, end, sep) {
+    let node = null;
+    while(endIndex < textNodes.length && endIndex > -1) {
       node = textNodes[endIndex];
       let found = false;
       while(end < node.data.length) {
-        if (node.data[end] == " ") {
+        if (node.data[end] == sep) {
           found = true;
           break;
         }
@@ -283,7 +280,30 @@ class BooWysiwygE extends PolymerElement {
       }
       endIndex++;
     }
-    range.setEnd(node, end);
+
+    return [node, end];
+  }
+
+  findWord(forward) {
+    return this.findBetween(forward, " ");
+  }
+
+  findBetween(forward, sep) {
+    let textNodes = this.findTextNode();
+    let node = this._selectedRangeStartTextNode();
+    let range = this._range.cloneRange();
+    if (!node) {
+      return range;
+    }
+    let pos = this._rightSearchStart(textNodes, node, forward, sep);
+    let nodeStart = this._searchBackward(textNodes, pos[0], pos[1], sep);
+    if (nodeStart[0]) {
+      range.setStart(nodeStart[0], nodeStart[1]);
+    }
+    let nodeEnd = this._searchForward(textNodes, pos[0], pos[1], sep);
+    if (nodeEnd[0]) {
+      range.setEnd(nodeEnd[0], nodeEnd[1]);
+    }
     return range;
   }
 
