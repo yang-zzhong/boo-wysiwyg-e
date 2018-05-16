@@ -12,8 +12,7 @@ class BooWysiwygEBold extends BooWysiwygETool {
 
   static get is() { return "boo-wysiwyg-e-bold"; }
   bold() {
-    this.editor.focus();
-    document.execCommand("bold");
+    this.editor.exec("bold");
   }
 }
 window.customElements.define(BooWysiwygEBold.is, BooWysiwygEBold);

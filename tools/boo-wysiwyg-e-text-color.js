@@ -123,8 +123,7 @@ export class BooWysiwygETextColor extends BooWysiwygETool {
 
   select() {
     if (this.editor) {
-      this.editor.focus();
-      document.execCommand("forecolor", false, this.value);
+      this.editor.exec("forecolor", this.value);
       this.$.dropdown.close();
     }
   }

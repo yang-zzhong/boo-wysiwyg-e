@@ -15,8 +15,7 @@ class BooWysiwygEUnorderedList extends BooWysiwygETool {
   static get is() { return "boo-wysiwyg-e-unordered-list"; }
 
   orderedList() {
-    this.editor.focus();
-    document.execCommand("insertUnorderedList", false);
+    this.editor.exec("insertUnorderedList");
   }
 }
 window.customElements.define(BooWysiwygEUnorderedList.is, BooWysiwygEUnorderedList);

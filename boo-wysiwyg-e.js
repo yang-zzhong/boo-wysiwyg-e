@@ -1,12 +1,12 @@
 import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+
+
 const $_documentContainer = document.createElement('template');
 $_documentContainer.setAttribute('style', 'display: none;');
 
-$_documentContainer.innerHTML = `<dom-module id="boo-wysiwyg-e-tool">
-  
-</dom-module>`;
+$_documentContainer.innerHTML = `<dom-module id="boo-wysiwyg-e-tool"></dom-module>`;
 
 document.head.appendChild($_documentContainer.content);
 
@@ -127,6 +127,7 @@ class BooWysiwygE extends PolymerElement {
       this.value = this.$.editor.innerHTML;
       this.dispatchEvent(new CustomEvent("input"));
     }.bind(this));
+    this.$.editor.addEventListener("keydown", this._defaultKeyListener.bind(this));
     document.addEventListener("selectionchange", function(e) {
       let selection = this.shadowRoot.getSelection();
       if (selection.rangeCount > 0) {
@@ -149,16 +150,117 @@ class BooWysiwygE extends PolymerElement {
     this.restoreSelection();
   }
 
-  curBlock() {
-  
+  exec(command, param) {
+    this.focus();
+    document.execCommand(command, false, param);
   }
 
-  curElem() {
-  
+  deleteWord() {
+    this.selectWord();
+    this.exec("delete");
+  }
+
+  selectWord() {
+    let range = this.findWord(true);
+    this._range.setStart(this._range.commonAncestorContainer, range[0]);
+    this._range.setEnd(this._range.commonAncestorContainer, range[1]);
+    this.restoreSelection();
+  }
+
+  forwardWord() {
+    let range = this.findWord(true);
+    this._range.setStart(this._range.commonAncestorContainer, range[0]);
+    this._range.setEnd(this._range.commonAncestorContainer, range[1]);
+    this._range.collapse(false);
+    this.restoreSelection();
+  }
+
+  backwardWord() {
+    let range = this.findWord(false);
+    this._range.setStart(this._range.commonAncestorContainer, range[0]);
+    this._range.setEnd(this._range.commonAncestorContainer, range[1]);
+    this._range.collapse(true);
+    this.restoreSelection();
+  }
+
+  findWord(forward) {
+    let node = this._range.commonAncestorContainer;
+    let start = forward ? this._range.startOffset : Math.max(this._range.startOffset - 1, 0);
+    while (node.data[start] == " " && start > 0 && start < node.data.length) {
+      forward ? start++ : start--;
+    }
+    let end = start;
+    while(start > 0) {
+      if (node.data[start - 1] == " ") {
+        break;
+      }
+      start--;
+    }
+    while(end < node.data.length) {
+      if (node.data[end] == " ") {
+        break;
+      }
+      end++;
+    }
+    return [start, end];
   }
 
   _placeholderChanged(placeholder) {
     this.$.editor.setAttribute('placeholder', placeholder);
+  }
+
+  _defaultKeyListener(e) {
+    console.log(e);
+    switch (e.key) {
+      case "Tab":
+        this._handleTab(e);
+        break;
+      case "Delete":
+        this._handleDelete(e);
+        break;
+      case "Backspace":
+        this._handleBackspace(e);
+        break;
+      case "ArrowRight":
+        this._handleMoveForward(e);
+        break;
+      case "ArrowLeft":
+        this._handleMoveBackward(e);
+        break;
+    }
+  }
+
+  _handleTab(e) {
+    this.exec("inserttext", "    ");
+    e.preventDefault();
+  }
+
+  _handleDelete(e) {
+    if (!e.ctrlKey) {
+      return;
+    }
+    this.deleteWord();
+    e.preventDefault();
+  }
+
+  _handleBackspace(e) {
+    this._handleDelete(e);
+  }
+
+  _handleMoveForward(e) {
+    if (!e.ctrlKey) {
+      return;
+    }
+    this.forwardWord();
+    e.preventDefault();
+  }
+
+  _handleMoveBackward(e) {
+    if (!e.ctrlKey) {
+      return;
+    }
+    this.backwardWord();
+    e.preventDefault();
   }
 }
 

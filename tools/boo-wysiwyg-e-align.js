@@ -46,7 +46,6 @@ class BooWysiwygEAlign extends BooWysiwygETool {
   static get is() { return "boo-wysiwyg-e-align"; }
 
   select(e) {
-    this.editor.focus();
     let node = e.target;
     let value = '';
     do {
@@ -55,7 +54,7 @@ class BooWysiwygEAlign extends BooWysiwygETool {
         break;
       }
     } while(node = node.parentNode);
-    document.execCommand(value, false);
+    this.editor.exec(value, false);
   }
 }
 window.customElements.define(BooWysiwygEAlign.is, BooWysiwygEAlign);

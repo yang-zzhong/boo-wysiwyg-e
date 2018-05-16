@@ -14,8 +14,7 @@ class BooWysiwygEOrderedList extends BooWysiwygETool {
   static get is() { return "boo-wysiwyg-e-ordered-list"; }
 
   orderedList() {
-    this.editor.focus();
-    document.execCommand("insertOrderedList", false);
+    this.editor.exec("insertOrderedList");
   }
 }
 window.customElements.define(BooWysiwygEOrderedList.is, BooWysiwygEOrderedList);

@@ -33,9 +33,7 @@ class BooWysiwygETitle extends BooWysiwygETool {
   static get is() { return "boo-wysiwyg-e-title"; }
 
   select(e) {
-    this.editor.focus();
-    let value = e.target.textContent;
-    document.execCommand("formatBlock", false, value);
+    this.editor.exec("formatBlock", e.target.textContent);
   }
 }
 window.customElements.define(BooWysiwygETitle.is, BooWysiwygETitle);
