@@ -58,13 +58,6 @@ class BooWysiwygE extends PolymerElement {
         border-right: 1px solid #f0f0f0;
         @apply --boo-wysiwyg-e-editor;
       }
-      #editor code {
-        background-color: #f0f0f0;
-        padding: 8px;
-        border-radius: 3px;
-        box-shadow: 1px 1px 1px rgba(0, 0, 0, .15);
-      }
-
       #editor:focus {
         outline: none;
       }
@@ -148,6 +141,7 @@ class BooWysiwygE extends PolymerElement {
   focus() {
     this.$.editor.focus();
     this.restoreSelection();
+    this.dispatchEvent(new CustomEvent("focus"));
   }
 
   exec(command, param) {
@@ -155,13 +149,20 @@ class BooWysiwygE extends PolymerElement {
     document.execCommand(command, false, param);
   }
 
+  commandState(command) {
+    return document.queryCommandState(command);
+  }
+
   deleteWord() {
     this.selectWord();
     this.exec("delete");
   }
 
-  selectWord() {
-    let range = this.findWordInContainer(true);
+  selectWord(forward) {
+    if (!forward) {
+      forward = true;
+    }
+    let range = this.findWordInContainer(forward);
     this._range = range;
     this.restoreSelection();
   }
@@ -336,6 +337,9 @@ class BooWysiwygE extends PolymerElement {
         this.exec("inserttext", "    ");
         e.preventDefault();
         break;
+      case "Enter":
+        this._handleEnter(e);
+        break;
       case "Delete":
       case "Backspace":
         if (!e.ctrlKey) {
@@ -358,6 +362,20 @@ class BooWysiwygE extends PolymerElement {
         this.backwardWord();
         e.preventDefault();
         break;
+    }
+  }
+
+  _handleEnter(e) {
+    let maxDepth = 3;
+    let depth = 0;
+    let node = this._range.startContainer;
+    while(node && depth < maxDepth) {
+      if (node.tagName == 'CODE') {
+        this.exec("inserttext", '\n');
+        e.preventDefault();
+        return;
+      }
+      node = node.parentNode;
     }
   }
 }
