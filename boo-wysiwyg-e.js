@@ -237,7 +237,7 @@ class BooWysiwygE extends PolymerElement {
     return [startIndex, start];
   }
 
-  _searchBackward(textNodes, startIndex, start, sep) {
+  _searchWordBegin(textNodes, startIndex, start, sep) {
     let node = null;
     while(startIndex >= 0 && startIndex < textNodes.length) {
       node = textNodes[startIndex];
@@ -260,7 +260,7 @@ class BooWysiwygE extends PolymerElement {
     return [node, start];
   }
 
-  _searchForward(textNodes, endIndex, end, sep) {
+  _searchWordEnd(textNodes, endIndex, end, sep) {
     let node = null;
     while(endIndex < textNodes.length && endIndex > -1) {
       node = textNodes[endIndex];
@@ -296,11 +296,11 @@ class BooWysiwygE extends PolymerElement {
       return range;
     }
     let pos = this._rightSearchStart(textNodes, node, forward, sep);
-    let nodeStart = this._searchBackward(textNodes, pos[0], pos[1], sep);
+    let nodeStart = this._searchWordBegin(textNodes, pos[0], pos[1], sep);
     if (nodeStart[0]) {
       range.setStart(nodeStart[0], nodeStart[1]);
     }
-    let nodeEnd = this._searchForward(textNodes, pos[0], pos[1], sep);
+    let nodeEnd = this._searchWordEnd(textNodes, pos[0], pos[1], sep);
     if (nodeEnd[0]) {
       range.setEnd(nodeEnd[0], nodeEnd[1]);
     }

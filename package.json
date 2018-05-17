@@ -1,5 +1,5 @@
 {
-  "name": "@polymer/boo-wysiwyg-e",
+  "name": "boo-wysiwyg-e",
   "version": "0.0.1",
   "resolutions": {
     "inherits": "2.0.3",
@@ -10,6 +10,7 @@
   },
   "main": "boo-wysiwyg-e.js",
   "dependencies": {
+    "boo-color-selector": "0.0.1",
     "@polymer/polymer": "^3.0.0",
     "@polymer/iron-iconset-svg": "^3.0.0-pre.18",
     "@polymer/paper-icon-button": "^3.0.0-pre.18",
