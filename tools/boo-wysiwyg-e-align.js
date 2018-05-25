@@ -9,52 +9,87 @@ import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 class BooWysiwygEAlign extends BooWysiwygETool {
   static get template() {
     return html`
-    <style>
-      paper-item:hover {
-        cursor: pointer;
-      }
-    </style>
-    <paper-menu-button>
+      <style>
+        paper-item:hover {
+          cursor: pointer;
+        }
+        :host([disabled]) {
+          color: grey;
+        }
+      </style>
 
-      <paper-icon-button title="对齐方式" 
-        icon="boo-wysiwyg-e:format-align-center" 
-        slot="dropdown-trigger"></paper-icon-button>
+      <array-selector 
+        id="selector" 
+        items=[[aligns]] 
+        selected={{selected}}></array-selector>
 
-      <paper-listbox slot="dropdown-content">
-        <paper-item data-id="justifyCenter" on-click="select">
-          <iron-icon icon="boo-wysiwyg-e:format-align-center"></iron-icon>
-          <span>居中对齐</span>
-        </paper-item>
-        <paper-item data-id="justifyFull" on-click="select">
-          <iron-icon icon="boo-wysiwyg-e:format-align-justify"></iron-icon>
-          <span>两端对齐</span>
-        </paper-item>
-        <paper-item data-id="justifyLeft" on-click="select">
-          <iron-icon icon="boo-wysiwyg-e:format-align-left"></iron-icon>
-          <span>左对齐</span>
-        </paper-item>
-        <paper-item data-id="justifyRight" on-click="select">
-          <iron-icon icon="boo-wysiwyg-e:format-align-right"></iron-icon>
-          <span>右对齐</span>
-        </paper-item>
-      </paper-listbox>
+      <paper-menu-button>
 
-    </paper-menu-button>
-`;
+        <paper-icon-button title="[[selected.label]]" 
+          icon="[[selected.icon]]" 
+          slot="dropdown-trigger"></paper-icon-button>
+
+        <paper-listbox slot="dropdown-content">
+          <template id="aligns" is="dom-repeat" items=[[aligns]]>
+            <paper-item on-click="select">
+              <iron-icon icon="[[item.icon]]"></iron-icon>
+              <span>[[item.label]]</span>
+            </paper-item>
+          </template>
+        </paper-listbox>
+
+      </paper-menu-button>
+    `;
   }
 
-  static get is() { return "boo-wysiwyg-e-align"; }
+  static get properties() {
+    return {
+      aligns: {
+        type: Array,
+        value: [{
+          command: "justifyLeft",
+          icon: "boo-wysiwyg-e:format-align-left",
+          label: "左对齐"
+        }, {
+          command: "justifyCenter",
+          icon: "boo-wysiwyg-e:format-align-center",
+          label: "居中对齐"
+        }, {
+          command: "justifyRight",
+          icon: "boo-wysiwyg-e:format-align-right",
+          label: "右对齐"
+        }, {
+          command: "justifyFull",
+          icon: "boo-wysiwyg-e:format-align-justify",
+          label: "两端对齐"
+        }]
+      },
+      selected:  Object,
+    };
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.$.selector.select(this.aligns[0]);
+    this.editor.addEventListener("selectionchange", this._onFocus.bind(this));
+  }
 
   select(e) {
     let node = e.target;
-    let value = '';
-    do {
-      if (node.tagName == 'PAPER-ITEM') {
-        value = node.getAttribute("data-id");
+    let item = this.$.aligns.itemForElement(e.target)
+    this.$.selector.select(item);
+    this.editor.exec(this.selected.command, false);
+  }
+
+  _onFocus() {
+    for(let i in this.aligns) {
+      let state = this.editor.commandState(this.aligns[i].command);
+      console.log(this.aligns[i].command, state);
+      if (state) {
+        this.$.selector.select(this.aligns[i]);
         break;
       }
-    } while(node = node.parentNode);
-    this.editor.exec(value, false);
+    }
   }
 }
-window.customElements.define(BooWysiwygEAlign.is, BooWysiwygEAlign);
+window.customElements.define("boo-wysiwyg-e-align", BooWysiwygEAlign);

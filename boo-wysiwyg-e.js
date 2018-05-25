@@ -13,7 +13,11 @@ document.head.appendChild($_documentContainer.content);
 export class BooWysiwygETool extends PolymerElement {
   static get properties() {
     return {
-      editor: Object
+      editor: Object,
+      disabled: {
+        type: Boolean,
+        reflectAttribute: true
+      }
     };
   }
   connectedCallback() {
@@ -126,6 +130,7 @@ class BooWysiwygE extends PolymerElement {
       if (selection.rangeCount > 0) {
         this._range = selection.getRangeAt(0);
       }
+      this.dispatchEvent(new CustomEvent("selectionchange"));
     }.bind(this));
   }
 
