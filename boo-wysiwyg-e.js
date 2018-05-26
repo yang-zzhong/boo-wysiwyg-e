@@ -1,6 +1,7 @@
 import { PolymerElement } from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
+import 'boo-land-row/boo-land-row.js';
 
 
 const $_documentContainer = document.createElement('template');
@@ -53,6 +54,9 @@ class BooWysiwygE extends PolymerElement {
       :host(:focus) {
         outline: none;
       }
+      #editorContainer {
+        @apply --boo-wysiwyg-e-wrapper;
+      }
       #editor {
         min-height: 250px;
         padding: 10px;
@@ -75,8 +79,17 @@ class BooWysiwygE extends PolymerElement {
         border: 1px solid #f0f0f0;
         width: 100%;
         box-sizing: border-box;
+        @apply --boo-wysiwyg-e-toolbar;
         position: sticky;
         top: 0px;
+      }
+      boo-land-row {
+        --boo-land-row-to-left: {
+          top: 12px;
+        }
+        --boo-land-row-to-right: {
+          top: 12px;
+        }
       }
     </style>
     <iron-iconset-svg size="24" name="boo-wysiwyg-e">
@@ -92,10 +105,21 @@ class BooWysiwygE extends PolymerElement {
         <g id="code"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"></path></g>
         <g id="format-list-bulleted"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12.17c-.74 0-1.33.6-1.33 1.33s.6 1.33 1.33 1.33 1.33-.6 1.33-1.33-.59-1.33-1.33-1.33zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"></path></g>
         <g id="format-list-numbered"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"></path></g>
+
+        <g id="to-left"><path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"></path></g>
+        <g id="to-right"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path></g>
       </defs></svg>
     </iron-iconset-svg>
-    <div id="toolbar"><slot></slot></div>
-    <div id="editor" contenteditable></div>
+    <boo-land-row id="toolbar">
+      <paper-icon-button slot="to-left" icon="boo-wysiwyg-e:to-left"></paper-icon-button>
+      <div slot="content">
+        <slot></slot>
+      </div>
+      <paper-icon-button slot="to-right" icon="boo-wysiwyg-e:to-right"></paper-icon-button>
+    </boo-land-row>
+    <div id="editorContainer">
+      <div id="editor" contenteditable></div>
+    </div>
 `;
   }
 
@@ -132,6 +156,9 @@ class BooWysiwygE extends PolymerElement {
       }
       this.dispatchEvent(new CustomEvent("selectionchange"));
     }.bind(this));
+    setTimeout(function() {
+      this.$.toolbar.update();
+    }.bind(this), 1000);
   }
 
   restoreSelection() {

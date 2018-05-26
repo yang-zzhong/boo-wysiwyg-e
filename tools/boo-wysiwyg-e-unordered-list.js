@@ -7,7 +7,7 @@ class BooWysiwygEUnorderedList extends BooWysiwygETool {
     return html`
       <paper-icon-button 
         title="无序列表" 
-        icon="boo-wysiwyg-e:format-list-numbered" 
+        icon="boo-wysiwyg-e:format-list-bulleted" 
         on-click="orderedList"></paper-icon-button>
 `;
   }

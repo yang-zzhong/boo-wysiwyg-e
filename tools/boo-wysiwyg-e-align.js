@@ -84,7 +84,6 @@ class BooWysiwygEAlign extends BooWysiwygETool {
   _onFocus() {
     for(let i in this.aligns) {
       let state = this.editor.commandState(this.aligns[i].command);
-      console.log(this.aligns[i].command, state);
       if (state) {
         this.$.selector.select(this.aligns[i]);
         break;

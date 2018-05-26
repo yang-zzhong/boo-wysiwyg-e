@@ -8,32 +8,60 @@ import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 class BooWysiwygETitle extends BooWysiwygETool {
   static get template() {
     return html`
-    <style>
-      paper-item:hover {
-        cursor: pointer;
-      }
-    </style>
-    <paper-menu-button>
+      <style>
+        paper-item:hover {
+          cursor: pointer;
+        }
+      </style>
+      <paper-menu-button>
 
-      <paper-icon-button icon="boo-wysiwyg-e:text-format" title="标题/段落" slot="dropdown-trigger"></paper-icon-button>
+        <paper-icon-button 
+          icon="boo-wysiwyg-e:text-format" 
+          title="标题/段落" 
+          slot="dropdown-trigger"></paper-icon-button>
 
-      <paper-listbox slot="dropdown-content">
-        <paper-item on-click="select"><h1>H1</h1></paper-item>
-        <paper-item on-click="select"><h2>H2</h2></paper-item>
-        <paper-item on-click="select"><h3>H3</h3></paper-item>
-        <paper-item on-click="select"><h4>H4</h4></paper-item>
-        <paper-item on-click="select"><h5>H5</h5></paper-item>
-        <paper-item on-click="select"><h6>H6</h6></paper-item>
-        <paper-item on-click="select"><p>P</p></paper-item>
-      </paper-listbox>
-    </paper-menu-button>
-`;
+        <paper-listbox slot="dropdown-content">
+          <template is="dom-repeat" items=[[blocks]]>
+            <paper-item on-click="select">[[item.label]]</paper-item>
+          </template>
+        </paper-listbox>
+      </paper-menu-button>
+    `;
   }
 
-  static get is() { return "boo-wysiwyg-e-title"; }
+  static get properties() {
+    return {
+      blocks: {
+        type: Array,
+        value: [{
+          block: "H1",
+          label: "H1"
+        }, {
+          block: "H2",
+          label: "H2"
+        }, {
+          block: "H3",
+          label: "H3"
+        }, {
+          block: "H4",
+          label: "H4"
+        }, {
+          block: "H5",
+          label: "H5"
+        }, {
+          block: "H6",
+          label: "H6"
+        }, {
+          block: "P",
+          label: "P"
+        }]
+      },
+      selected: Object
+    };
+  }
 
   select(e) {
     this.editor.exec("formatBlock", e.target.textContent);
   }
 }
-window.customElements.define(BooWysiwygETitle.is, BooWysiwygETitle);
+window.customElements.define("boo-wysiwyg-e-title", BooWysiwygETitle);

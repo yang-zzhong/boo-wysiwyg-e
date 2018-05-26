@@ -10,18 +10,19 @@
   },
   "main": "boo-wysiwyg-e.js",
   "dependencies": {
-    "boo-color-selector": "0.0.1",
-    "@polymer/polymer": "^3.0.0",
+    "@polymer/iron-flex-layout": "^3.0.0-pre.18",
     "@polymer/iron-iconset-svg": "^3.0.0-pre.18",
-    "@polymer/paper-icon-button": "^3.0.0-pre.18",
+    "@polymer/neon-animation": "^3.0.0-pre.18",
     "@polymer/paper-button": "^3.0.0-pre.18",
+    "@polymer/paper-icon-button": "^3.0.0-pre.18",
+    "@polymer/paper-item": "^3.0.0-pre.18",
+    "@polymer/paper-listbox": "^3.0.0-pre.18",
     "@polymer/paper-menu-button": "^3.0.0-pre.18",
     "@polymer/paper-slider": "^3.0.0-pre.18",
-    "@polymer/iron-flex-layout": "^3.0.0-pre.18",
-    "web-animations-js": "^2.3.1",
-    "@polymer/neon-animation": "^3.0.0-pre.18",
-    "@polymer/paper-listbox": "^3.0.0-pre.18",
-    "@polymer/paper-item": "^3.0.0-pre.18"
+    "@polymer/polymer": "^3.0.0",
+    "boo-color-selector": "0.0.1",
+    "boo-land-row": "0.0.2",
+    "web-animations-js": "^2.3.1"
   },
   "devDependencies": {
     "@polymer/iron-demo-helpers": "^3.0.0-pre.18",
