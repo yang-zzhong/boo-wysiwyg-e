@@ -3,6 +3,7 @@ import '@polymer/paper-menu-button/paper-menu-button.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-listbox/paper-listbox.js';
 import '@polymer/paper-item/paper-item.js';
+import '@polymer/iron-icon/iron-icon.js';
 import {BooWysiwygETool} from '../boo-wysiwyg-e.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 class BooWysiwygETitle extends BooWysiwygETool {
@@ -22,7 +23,9 @@ class BooWysiwygETitle extends BooWysiwygETool {
 
         <paper-listbox slot="dropdown-content">
           <template is="dom-repeat" items=[[blocks]]>
-            <paper-item on-click="select">[[item.label]]</paper-item>
+            <paper-item on-click="select">
+              [[item.label]]
+            </paper-item>
           </template>
         </paper-listbox>
       </paper-menu-button>
