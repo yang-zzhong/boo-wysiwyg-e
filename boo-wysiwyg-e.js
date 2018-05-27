@@ -187,6 +187,15 @@ class BooWysiwygE extends PolymerElement {
     this.restoreSelection();
   }
 
+  range() {
+    return this._range;
+  }
+
+  selectNode(node) {
+    this._range.selectNode(node);
+    this.restoreSelection();
+  }
+
   forwardWord() {
     let range = this.findWord(true);
     this._range = range;
@@ -234,7 +243,7 @@ class BooWysiwygE extends PolymerElement {
     if (node.nodeType == 3) {
       return node;
     }
-    return this.findTextNode(node)[0];
+    return this.findTextNodes(node)[0];
   }
 
   _rightSearchStart(textNodes, node, forward, sep) {
@@ -310,7 +319,7 @@ class BooWysiwygE extends PolymerElement {
   }
 
   findBetween(forward, sep) {
-    let textNodes = this.findTextNode();
+    let textNodes = this.findTextNodes();
     let node = this._selectedRangeStartTextNode();
     let range = this._range.cloneRange();
     if (!node) {
@@ -328,7 +337,7 @@ class BooWysiwygE extends PolymerElement {
     return range;
   }
 
-  findTextNode(node) {
+  findTextNodes(node) {
     let textNodes = [];
     if (!node) {
       node = this.$.editor;
@@ -337,7 +346,7 @@ class BooWysiwygE extends PolymerElement {
       var c = node.childNodes[i];
       switch(c.nodeType) {  
         case 1:  
-          textNodes = textNodes.concat(this.findTextNode(c));
+          textNodes = textNodes.concat(this.findTextNodes(c));
           break;
         case 3:  
           textNodes.push(c);
@@ -345,6 +354,16 @@ class BooWysiwygE extends PolymerElement {
       }  
     }
     return textNodes;
+  }
+
+  text(node) {
+    let textNodes = this.findTextNodes(node);
+    let result = '';
+    for (let i in textNodes) {
+      result += textNodes[i].data;
+    }
+
+    return result;
   }
 
   _placeholderChanged(placeholder) {
@@ -390,8 +409,12 @@ class BooWysiwygE extends PolymerElement {
     let depth = 0;
     let node = this._range.startContainer;
     while(node && depth < maxDepth) {
-      if (node.tagName == 'CODE') {
-        this.exec("inserttext", '\n');
+      if (node.tagName == 'PRE') {
+        this.exec("inserthtml", "<br>");
+        // let p = node.parentNode;
+        // let content = this.text(p) + "\\n";
+        // console.log(content);
+        // this.exec("inserttext", content);
         e.preventDefault();
         return;
       }

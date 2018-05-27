@@ -22,8 +22,7 @@ class BooWysiwygECode extends BooWysiwygETool {
   static get is() { return "boo-wysiwyg-e-code"; }
 
   code() {
-    this.editor.exec("inserthtml", "<pre><code>code</code></pre>");
-    this.editor.selectWord(false);
+    this.editor.exec("formatblock", "pre");
   }
 }
 window.customElements.define(BooWysiwygECode.is, BooWysiwygECode);

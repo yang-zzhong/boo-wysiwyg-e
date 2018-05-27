@@ -71,7 +71,8 @@ class BooWysiwygETitle extends BooWysiwygETool {
   }
 
   select(e) {
-    this.editor.exec("formatBlock", e.target.textContent);
+    console.log(e.target.textContent.trim());
+    this.editor.exec("formatBlock", e.target.textContent.trim());
   }
 }
 window.customElements.define("boo-wysiwyg-e-title", BooWysiwygETitle);
