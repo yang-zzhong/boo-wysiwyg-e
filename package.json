@@ -1,6 +1,6 @@
 {
   "name": "boo-wysiwyg-e",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
