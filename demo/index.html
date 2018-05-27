@@ -17,13 +17,18 @@
     <script type="module" src="../node_modules/@polymer/iron-iconset-svg/iron-iconset-svg.js"></script>
     <script type="module" src="../boo-wysiwyg-e.js"></script>
     <script type="module" src="../tools/boo-wysiwyg-e-bold.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-clear.js"></script>
     <script type="module" src="../tools/boo-wysiwyg-e-title.js"></script>
     <script type="module" src="../tools/boo-wysiwyg-e-align.js"></script>
     <script type="module" src="../tools/boo-wysiwyg-e-text-color.js"></script>
     <script type="module" src="../tools/boo-wysiwyg-e-back-color.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-undo.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-redo.js"></script>
     <script type="module" src="../tools/boo-wysiwyg-e-code.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-italic.js"></script>
     <script type="module" src="../tools/boo-wysiwyg-e-ordered-list.js"></script>
     <script type="module" src="../tools/boo-wysiwyg-e-unordered-list.js"></script>
+    <script type="module" src="../tools/boo-wysiwyg-e-link.js"></script>
 
     <!-- FIXME(polymer-modulizer):
         These imperative modules that innerHTML your HTML are
@@ -52,16 +57,21 @@ $_documentContainer.innerHTML = `<div class="vertical-section-container centered
       <h3>Basic boo-wysiwyg-e demo</h3>
       <demo-snippet>
         <template>
-          <boo-wysiwyg-e no-auto-grow>
+          <boo-wysiwyg-e>
             <app-toolbar>
               <boo-wysiwyg-e-bold></boo-wysiwyg-e-bold>
+              <boo-wysiwyg-e-italic></boo-wysiwyg-e-italic>
               <boo-wysiwyg-e-title></boo-wysiwyg-e-title>
               <boo-wysiwyg-e-align></boo-wysiwyg-e-align>
               <boo-wysiwyg-e-text-color></boo-wysiwyg-e-text-color>
               <boo-wysiwyg-e-back-color></boo-wysiwyg-e-back-color>
               <boo-wysiwyg-e-code></boo-wysiwyg-e-code>
+              <boo-wysiwyg-e-link></boo-wysiwyg-e-link>
+              <boo-wysiwyg-e-clear></boo-wysiwyg-e-clear>
               <boo-wysiwyg-e-ordered-list></boo-wysiwyg-e-ordered-list>
               <boo-wysiwyg-e-unordered-list></boo-wysiwyg-e-unordered-list>
+              <boo-wysiwyg-e-undo></boo-wysiwyg-e-undo>
+              <boo-wysiwyg-e-redo></boo-wysiwyg-e-redo>
             </app-toolbar>
           </boo-wysiwyg-e>
         </template>

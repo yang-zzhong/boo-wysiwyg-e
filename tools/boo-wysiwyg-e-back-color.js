@@ -10,7 +10,7 @@ class BooWysiwygEBackColor extends BooWysiwygETextColor {
       },
       icon: {
         type: String,
-        value: "boo-wysiwyg-e:format-color-fill"
+        value: "bwe-color:format-color-fill"
       }
     };
   }

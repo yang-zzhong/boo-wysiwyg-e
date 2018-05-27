@@ -6,6 +6,8 @@ import '@polymer/paper-item/paper-item.js';
 import '@polymer/iron-icon/iron-icon.js';
 import {BooWysiwygETool} from '../boo-wysiwyg-e.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
+
 class BooWysiwygETitle extends BooWysiwygETool {
   static get template() {
     return html`
@@ -14,10 +16,15 @@ class BooWysiwygETitle extends BooWysiwygETool {
           cursor: pointer;
         }
       </style>
+      <iron-iconset-svg size="24" name="bwe-title">
+        <svg><defs>
+          <g id="text-format"><path d="M5 17v2h14v-2H5zm4.5-4.2h5l.9 2.2h2.1L12.75 4h-1.5L6.5 15h2.1l.9-2.2zM12 5.98L13.87 11h-3.74L12 5.98z"></path></g>
+        </defs></svg>
+      </iron-iconset-svg>
       <paper-menu-button>
 
         <paper-icon-button 
-          icon="boo-wysiwyg-e:text-format" 
+          icon="bwe-title:text-format" 
           title="标题/段落" 
           slot="dropdown-trigger"></paper-icon-button>
 
