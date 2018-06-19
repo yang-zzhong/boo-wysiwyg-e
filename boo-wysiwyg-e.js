@@ -98,7 +98,7 @@ class BooWysiwygE extends PolymerElement {
           <g id="to-right"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path></g>
         </defs></svg>
       </iron-iconset-svg>
-      <boo-land-row id="toolbar" button-static>
+      <boo-land-row id="toolbar">
         <paper-icon-button slot="to-left" icon="boo-wysiwyg-e:to-left"></paper-icon-button>
         <div slot="content">
           <slot></slot>
