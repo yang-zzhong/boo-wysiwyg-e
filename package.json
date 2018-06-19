@@ -1,6 +1,6 @@
 {
   "name": "boo-wysiwyg-e",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
@@ -22,7 +22,7 @@
     "@polymer/paper-slider": "^3.0.0-pre.18",
     "@polymer/polymer": "^3.0.0",
     "boo-color-selector": "0.0.1",
-    "boo-land-row": "0.0.3",
+    "boo-land-row": "0.0.5",
     "web-animations-js": "^2.3.1"
   },
   "devDependencies": {
