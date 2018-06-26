@@ -17,8 +17,8 @@ class BooWysiwygEBackColor extends BooWysiwygETextColor {
 
   select() {
     if (this.editor) {
+      this.$.dialog.opened = false;
       this.editor.exec("backcolor", this.value);
-      this.$.dropdown.close();
     }
   }
 }

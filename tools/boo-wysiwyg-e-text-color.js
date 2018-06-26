@@ -22,7 +22,7 @@ export class BooWysiwygETextColor extends BooWysiwygETool {
           <g id="format-color-text"><path fill-opacity=".36" d="M0 20h24v4H0z"></path><path d="M11 3L5.5 17h2.25l1.12-3h6.25l1.12 3h2.25L13 3h-2zm-1.38 9L12 5.67 14.38 12H9.62z"></path></g>
         </defs></svg>
       </iron-iconset-svg>
-      <boo-color-dialog color="{{color}}" colors="{{colors}}" on-selected="select">
+      <boo-color-dialog id="dialog" color="{{value}}" colors="{{values}}" on-selected="select">
         <paper-icon-button title="[[title]]" icon="[[icon]]"></paper-icon-button>
       </boo-color-dialog>
     `;
@@ -51,8 +51,8 @@ export class BooWysiwygETextColor extends BooWysiwygETool {
 
   select() {
     if (this.editor) {
+      this.$.dialog.opened = false;
       this.editor.exec("forecolor", this.value);
-      this.$.dropdown.close();
     }
   }
 }
