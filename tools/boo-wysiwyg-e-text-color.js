@@ -3,7 +3,7 @@ import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import '@polymer/paper-menu-button/paper-menu-button.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-slider/paper-slider.js';
-import 'boo-color-selector/boo-color-selector.js';
+import 'boo-color-selector/boo-color-dialog.js';
 import {BooWysiwygETool} from '../boo-wysiwyg-e.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
@@ -22,17 +22,9 @@ export class BooWysiwygETextColor extends BooWysiwygETool {
           <g id="format-color-text"><path fill-opacity=".36" d="M0 20h24v4H0z"></path><path d="M11 3L5.5 17h2.25l1.12-3h6.25l1.12 3h2.25L13 3h-2zm-1.38 9L12 5.67 14.38 12H9.62z"></path></g>
         </defs></svg>
       </iron-iconset-svg>
-      <paper-menu-button id="dropdown" ignore-select> 
-
-        <paper-icon-button slot="dropdown-trigger" title="[[title]]" icon="[[icon]]"></paper-icon-button>
-
-        <div slot="dropdown-content">
-          <boo-color-selector 
-            color={{value}}
-            colors={{values}}
-            on-selected="select"></boo-color-selector>
-        </div>
-      </paper-menu-button>
+      <boo-color-dialog color="{{color}}" colors="{{colors}}" on-selected="select">
+        <paper-icon-button title="[[title]]" icon="[[icon]]"></paper-icon-button>
+      </boo-color-dialog>
     `;
   }
 
