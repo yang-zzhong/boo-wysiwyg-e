@@ -47,68 +47,70 @@ export class BooWysiwygETool extends PolymerElement {
 class BooWysiwygE extends PolymerElement {
   static get template() {
     return html`
-    <style>
-      :host {
-        display: block;
-      }
-      :host(:focus) {
-        outline: none;
-      }
-      #editorContainer {
-        @apply --boo-wysiwyg-e-wrapper;
-      }
-      #editor {
-        min-height: 250px;
-        padding: 10px;
-        overflow: auto;
-        border-left: 1px solid #f0f0f0;
-        border-bottom: 1px solid #f0f0f0;
-        border-right: 1px solid #f0f0f0;
-        @apply --boo-wysiwyg-e-editor;
-      }
-      #editor:focus {
-        outline: none;
-      }
-      #editor[contenteditable=true]:empty:before {
-        content: attr(placeholder);
-        display: block;
-        opacity: .6;
-      }
-      #toolbar {
-        background-color: white;
-        border: 1px solid #f0f0f0;
-        width: 100%;
-        box-sizing: border-box;
-        @apply --boo-wysiwyg-e-toolbar;
-        position: sticky;
-        top: 0px;
-      }
-      boo-land-row {
-        --boo-land-row-to-left: {
-          top: 12px;
+      <style>
+        :host {
+          display: block;
         }
-        --boo-land-row-to-right: {
-          top: 12px;
+        :host(:focus) {
+          outline: none;
         }
-      }
-    </style>
-    <iron-iconset-svg size="24" name="boo-wysiwyg-e">
-      <svg><defs>
-        <g id="to-left"><path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"></path></g>
-        <g id="to-right"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path></g>
-      </defs></svg>
-    </iron-iconset-svg>
-    <boo-land-row id="toolbar">
-      <paper-icon-button slot="to-left" icon="boo-wysiwyg-e:to-left"></paper-icon-button>
-      <div slot="content">
-        <slot></slot>
+        #editorContainer {
+          @apply --boo-wysiwyg-e-wrapper;
+        }
+        #editor {
+          min-height: 250px;
+          padding: 10px;
+          overflow: auto;
+          border-left: 1px solid #f0f0f0;
+          border-bottom: 1px solid #f0f0f0;
+          border-right: 1px solid #f0f0f0;
+          @apply --boo-wysiwyg-e-editor;
+        }
+        #editor:focus {
+          outline: none;
+        }
+        #editor[contenteditable=true]:empty:before {
+          content: attr(placeholder);
+          display: block;
+          opacity: .6;
+        }
+        #toolbar {
+          background-color: white;
+          border: 1px solid #f0f0f0;
+          width: 100%;
+          box-sizing: border-box;
+          @apply --boo-wysiwyg-e-toolbar;
+          position: sticky;
+          top: 0px;
+        }
+        boo-land-row {
+          --boo-land-row-to-left: {
+            top: 12px;
+          }
+          --boo-land-row-to-right: {
+            top: 12px;
+          }
+          z-index: 1000000;
+        }
+      </style>
+      <iron-iconset-svg size="24" name="boo-wysiwyg-e">
+        <svg><defs>
+          <g id="to-left"><path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"></path></g>
+          <g id="to-right"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path></g>
+        </defs></svg>
+      </iron-iconset-svg>
+      <boo-land-row id="toolbar">
+        <paper-icon-button slot="to-left" icon="boo-wysiwyg-e:to-left"></paper-icon-button>
+        <div slot="content">
+          <slot></slot>
+        </div>
+        <paper-icon-button slot="to-right" icon="boo-wysiwyg-e:to-right"></paper-icon-button>
+      </boo-land-row>
+      <div id="editorContainer">
+        <div id="codeTheme"></div>
+        <div id="editor" contenteditable></div>
       </div>
-      <paper-icon-button slot="to-right" icon="boo-wysiwyg-e:to-right"></paper-icon-button>
-    </boo-land-row>
-    <div id="editorContainer">
-      <div id="editor" contenteditable></div>
-    </div>
-`;
+    `;
   }
 
   static get is() { return 'boo-wysiwyg-e'; }
@@ -120,6 +122,12 @@ class BooWysiwygE extends PolymerElement {
         observer: "_placeholderChanged",
         value: ""
       },
+      codeTheme: {
+        type: String,
+        value: "default",
+        observer: "_codeThemeChanged"
+      },
+      _theme: String,
       value: {
         type: String,
         value: "",
@@ -227,6 +235,41 @@ class BooWysiwygE extends PolymerElement {
     range.setStart(node, start);
     range.setEnd(node, end);
     return range;
+  }
+
+  _codeThemeChanged(name) {
+    let imported = null;
+    switch(name) {
+      case "atom-one-light":
+        imported = import("./highlight/theme/atom-one-light.js");
+        break;
+      case "default":
+        imported = import("./highlight/theme/default.js");
+        break;
+      case "github":
+        imported = import("./highlight/theme/github.js");
+        break;
+      case "kustom-dark":
+        imported = import("./highlight/theme/kustom-dark.js");
+        break;
+      case "kustom-light":
+        imported = import("./highlight/theme/kustom-light.js");
+        break;
+      case "one-dark":
+        imported = import("./highlight/theme/one-dark.js");
+        break;
+      case "solarized-dark":
+        imported = import("./highlight/theme/solarized-dark.js");
+        break;
+      case "solarized-light":
+        imported = import("./highlight/theme/solarized-light.js");
+        break;
+      default:
+        imported = import("./highlight/theme/default.js");
+    };
+    imported.then(function(res) {
+      this.$.codeTheme.innerHTML = res.booEditorCodeTheme.innerHTML;
+    }.bind(this));
   }
 
   _selectedRangeStartTextNode() {

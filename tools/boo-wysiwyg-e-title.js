@@ -65,8 +65,7 @@ class BooWysiwygETitle extends BooWysiwygETool {
           block: "P",
           label: "P"
         }]
-      },
-      selected: Object
+      }
     };
   }
 
