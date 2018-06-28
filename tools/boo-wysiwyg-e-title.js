@@ -15,6 +15,9 @@ class BooWysiwygETitle extends BooWysiwygETool {
         paper-item:hover {
           cursor: pointer;
         }
+        paper-listbox {
+          @apply --boo-wysiwyg-e-title-list;
+        }
       </style>
       <iron-iconset-svg size="24" name="bwe-title">
         <svg><defs>

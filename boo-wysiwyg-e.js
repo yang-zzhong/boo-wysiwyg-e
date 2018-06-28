@@ -75,7 +75,6 @@ class BooWysiwygE extends PolymerElement {
           opacity: .6;
         }
         #toolbar {
-          background-color: white;
           border: 1px solid #f0f0f0;
           width: 100%;
           box-sizing: border-box;

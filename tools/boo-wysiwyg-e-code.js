@@ -27,13 +27,33 @@ class BooWysiwygECode extends BooWysiwygETool {
           }
         }
         [slot=content] {
+          background-color: var(--boo-wysiwyg-e-code-bg-color);
+          color: var(--boo-wysiwyg-e-code-fg-color);
           padding: 10px;
+        }
+        [slot=move-trigger] {
+          background-color: var(--boo-wysiwyg-e-code-bg-color);
+          color: var(--boo-wysiwyg-e-code-fg-color);
+        }
+        paper-listbox {
+          background-color: var(--boo-wysiwyg-e-code-bg-color);
+          color: var(--boo-wysiwyg-e-code-fg-color);
+        }
+        paper-textarea {
+          --paper-input-container-input: {
+            color: var(--boo-wysiwyg-e-code-fg-color);
+          }
+          --paper-input-container-label: {
+            color: var(--boo-wysiwyg-e-code-fg-color);
+          }
+          --paper-input-container-label-focus: {
+            color: var(--boo-wysiwyg-e-code-fg-color);
+          }
         }
         .oper {
           @apply --layout-horizontal;
           @apply --layout-justified;
         }
-        
         .inputWrapper {
           max-height: calc(100vh - 150px);
           overflow-x: hidden;

@@ -44,6 +44,35 @@ const $_documentContainer = document.createElement('template');
 
 $_documentContainer.innerHTML = `<custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
+        boo-wysiwyg-e {
+          --boo-land-row-back-color: black;
+          background-color: black;
+          color: white;
+        }
+        boo-wysiwyg-e-text-color {
+          --boo-color-fg-color: white;
+          --boo-color-bg-color: black;
+        }
+        boo-wysiwyg-e-title {
+          --boo-wysiwyg-e-title-list: {
+            background-color: black;
+            color: white;
+          }
+        }
+        boo-wysiwyg-e-align {
+          --boo-wysiwyg-e-align-list: {
+            background-color: black;
+            color: white;
+          }
+        }
+        boo-wysiwyg-e-code {
+          --boo-wysiwyg-e-code-bg-color: black;
+          --boo-wysiwyg-e-code-fg-color: white;
+        }
+        boo-wysiwyg-e-link {
+          --boo-wysiwyg-e-link-bg-color: black;
+          --boo-wysiwyg-e-link-fg-color: white;
+        }
       </style>
     </custom-style>`;
 

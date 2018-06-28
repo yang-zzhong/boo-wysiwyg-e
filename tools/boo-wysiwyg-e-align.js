@@ -18,6 +18,9 @@ class BooWysiwygEAlign extends BooWysiwygETool {
         :host([disabled]) {
           color: grey;
         }
+        paper-listbox {
+          @apply --boo-wysiwyg-e-align-list;
+        }
       </style>
 
       <array-selector 

@@ -11,9 +11,20 @@ class BooWysiwygELink extends BooWysiwygETool {
     return html`
       <style>
         [slot=dropdown-content] {
+          background-color: var(--boo-wysiwyg-e-link-bg-color);
+          color: var(--boo-wysiwyg-e-link-fg-color);
           padding: 10px 20px;
         }
         paper-input {
+          --paper-input-container-input: {
+            color: var(--boo-wysiwyg-e-link-fg-color);
+          }
+          --paper-input-container-label: {
+            color: var(--boo-wysiwyg-e-link-fg-color);
+          }
+          --paper-input-container-label-focus: {
+            color: var(--boo-wysiwyg-e-link-fg-color);
+          }
           width: 250px;
         }
       </style>
@@ -47,7 +58,7 @@ class BooWysiwygELink extends BooWysiwygETool {
   }
 
   _add() {
-    console.log('_add');
+    this.editor.exec('inserthtml', '<a href="'+this.href+'">'+this.name+'</a>');
   }
 }
 window.customElements.define("boo-wysiwyg-e-link", BooWysiwygELink);
