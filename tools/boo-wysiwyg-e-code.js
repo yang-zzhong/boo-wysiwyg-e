@@ -60,7 +60,7 @@ class BooWysiwygECode extends BooWysiwygETool {
 
         <app-toolbar slot="move-trigger">
           <span>插入代码</span>
-          <paper-dropdown-menu>
+          <paper-dropdown-menu label="选择主题">
             <paper-listbox slot="dropdown-content" selected="{{_tidx}}">
               <template id="lang" is="dom-repeat" items="[[themes]]">
                 <paper-item>[[item]]</paper-item>
@@ -75,6 +75,7 @@ class BooWysiwygECode extends BooWysiwygETool {
             <paper-textarea 
               value="{{_code}}"
               label="输入代码..." 
+              on-keydown="_keyBind"
               on-input="_reheight" rows="10"></paper-textarea>
           </div>
           <div class="oper">
@@ -129,6 +130,15 @@ class BooWysiwygECode extends BooWysiwygETool {
     hljs.highlightBlock(code);
 
     return code.innerHTML;
+  }
+
+  _keyBind(e) {
+    switch (e.key) {
+      case "Tab":
+        document.execCommand("inserttext", false,  "    ");
+        e.preventDefault();
+        break;
+    }
   }
 
   _tidxChanged(idx) {

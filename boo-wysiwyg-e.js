@@ -141,7 +141,7 @@ class BooWysiwygE extends PolymerElement {
     super.connectedCallback();
     this.$.editor.innerHTML = this.value;
     this.$.editor.addEventListener("input", function() {
-      this.value = this.$.editor.innerHTML;
+      this._setValue();
       this.dispatchEvent(new CustomEvent("input"));
     }.bind(this));
     this.$.editor.addEventListener("keydown", this._defaultKeyListener.bind(this));
@@ -235,6 +235,11 @@ class BooWysiwygE extends PolymerElement {
     range.setStart(node, start);
     range.setEnd(node, end);
     return range;
+  }
+
+  _setValue() {
+    this.value = this.$.codeTheme.innerHTML + this.$.editor.innerHTML;
+    console.log(this.value);
   }
 
   _codeThemeChanged(name) {
