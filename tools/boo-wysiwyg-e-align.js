@@ -19,6 +19,8 @@ class BooWysiwygEAlign extends BooWysiwygETool {
           color: grey;
         }
         paper-listbox {
+          background-color: --boo-wysiwyg-e-bg-color;
+          color: --boo-wysiwyg-e-fg-color;
           @apply --boo-wysiwyg-e-align-list;
         }
       </style>

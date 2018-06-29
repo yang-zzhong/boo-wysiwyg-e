@@ -128,20 +128,13 @@ class BooWysiwygE extends PolymerElement {
         observer: "_codeThemeChanged"
       },
       _theme: String,
-      value: {
-        type: String,
-        value: "",
-        notify: true
-      },
       _selection: Object,
     };
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.$.editor.innerHTML = this.value;
     this.$.editor.addEventListener("input", function() {
-      this._setValue();
       this.dispatchEvent(new CustomEvent("input"));
     }.bind(this));
     this.$.editor.addEventListener("keydown", this._defaultKeyListener.bind(this));
@@ -237,13 +230,25 @@ class BooWysiwygE extends PolymerElement {
     return range;
   }
 
-  _setValue() {
-    let value = this.$.codeTheme.innerHTML + this.$.editor.innerHTML;
-    this.value = String(value)
+  content() {
+    let ct = this.$.codeTheme.innerHTML
+      .replace(/\/\**\*\//g, '')
+      .replace(/\/\/*\n/g, '')
+      .replace(/[\n\t\s]/g, '');
+    return String(ct + this.$.editor.innerHTML)
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
       .replace(/=""/g, '')
       .replace(/=&gt;/g, '=>');
+  }
+
+  setContent(content) {
+    if (content) {
+      let reg = /(\<style\>.*\<\/style\>)/g;
+      let styles = content.match(reg);
+      this.$.codeTheme.innerHTML = styles.join('');
+      this.$.editor.innerHTML = content.replace(reg, '');
+    }
   }
 
   _codeThemeChanged(name) {

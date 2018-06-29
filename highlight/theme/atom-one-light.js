@@ -3,7 +3,6 @@ import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 export const booEditorCodeTheme = html`
 <style>
   /*
-
   Atom One Light by Daniel Gamage
   Original One Light Syntax theme from https://github.com/atom/one-light-syntax
 

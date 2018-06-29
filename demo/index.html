@@ -12,24 +12,7 @@
 
     <script type="module" src="../node_modules/@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
     <script type="module" src="../node_modules/@polymer/iron-demo-helpers/demo-snippet.js"></script>
-    <script type="module" src="../node_modules/@polymer/app-layout/app-toolbar/app-toolbar.js"></script>
-    <script type="module" src="../node_modules/@polymer/paper-icon-button/paper-icon-button.js"></script>
-    <script type="module" src="../node_modules/@polymer/iron-iconset-svg/iron-iconset-svg.js"></script>
-    <script type="module" src="../boo-wysiwyg-e.js"></script>
-    <script type="module" src="../highlight/theme/default.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-bold.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-clear.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-title.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-align.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-text-color.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-back-color.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-undo.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-redo.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-code.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-italic.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-ordered-list.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-unordered-list.js"></script>
-    <script type="module" src="../tools/boo-wysiwyg-e-link.js"></script>
+    <script type="module" src="./test-editor.js"></script>
 
     <!-- FIXME(polymer-modulizer):
         These imperative modules that innerHTML your HTML are
@@ -90,60 +73,7 @@ const $_documentContainer = document.createElement('template');
 $_documentContainer.innerHTML = `<div class="vertical-section-container centered">
       <h3>Basic boo-wysiwyg-e demo</h3>
       <demo-snippet>
-        <template>
-          <style>
-            boo-wysiwyg-e {
-              --boo-land-row-back-color: black;
-              background-color: black;
-              color: white;
-            }
-            boo-wysiwyg-e-text-color {
-              --boo-color-fg-color: white;
-              --boo-color-bg-color: black;
-            }
-            boo-wysiwyg-e-back-color {
-              --boo-color-fg-color: white;
-              --boo-color-bg-color: black;
-            }
-            boo-wysiwyg-e-title {
-              --boo-wysiwyg-e-title-list: {
-                background-color: black;
-                color: white;
-              }
-            }
-            boo-wysiwyg-e-align {
-              --boo-wysiwyg-e-align-list: {
-                background-color: black;
-                color: white;
-              }
-            }
-            boo-wysiwyg-e-code {
-              --boo-wysiwyg-e-code-bg-color: black;
-              --boo-wysiwyg-e-code-fg-color: white;
-            }
-            boo-wysiwyg-e-link {
-              --boo-wysiwyg-e-link-bg-color: black;
-              --boo-wysiwyg-e-link-fg-color: white;
-            }
-          </style>
-          <boo-wysiwyg-e>
-            <app-toolbar>
-              <boo-wysiwyg-e-bold></boo-wysiwyg-e-bold>
-              <boo-wysiwyg-e-italic></boo-wysiwyg-e-italic>
-              <boo-wysiwyg-e-title></boo-wysiwyg-e-title>
-              <boo-wysiwyg-e-align></boo-wysiwyg-e-align>
-              <boo-wysiwyg-e-text-color></boo-wysiwyg-e-text-color>
-              <boo-wysiwyg-e-back-color></boo-wysiwyg-e-back-color>
-              <boo-wysiwyg-e-code></boo-wysiwyg-e-code>
-              <boo-wysiwyg-e-link></boo-wysiwyg-e-link>
-              <boo-wysiwyg-e-clear></boo-wysiwyg-e-clear>
-              <boo-wysiwyg-e-ordered-list></boo-wysiwyg-e-ordered-list>
-              <boo-wysiwyg-e-unordered-list></boo-wysiwyg-e-unordered-list>
-              <boo-wysiwyg-e-undo></boo-wysiwyg-e-undo>
-              <boo-wysiwyg-e-redo></boo-wysiwyg-e-redo>
-            </app-toolbar>
-          </boo-wysiwyg-e>
-        </template>
+        <template><test-editor></test-editor></template>
       </demo-snippet>
     </div>`;
 
