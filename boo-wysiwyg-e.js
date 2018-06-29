@@ -2,6 +2,7 @@ import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
 import 'boo-land-row/boo-land-row.js';
+import "./highlight/theme/default.js";
 
 
 const $_documentContainer = document.createElement('template');
@@ -107,7 +108,7 @@ class BooWysiwygE extends PolymerElement {
         <paper-icon-button slot="to-right" icon="boo-wysiwyg-e:to-right"></paper-icon-button>
       </boo-land-row>
       <div id="editorContainer">
-        <div id="codeTheme"></div>
+        <div id="codeTheme"><div id="___themeContent"></div></div>
         <div id="editor" contenteditable></div>
       </div>
     `;
@@ -231,22 +232,19 @@ class BooWysiwygE extends PolymerElement {
   }
 
   content() {
-    let ct = this.$.codeTheme.innerHTML
-      .replace(/\/\**\*\//g, '')
-      .replace(/\/\/*\n/g, '')
-      .replace(/[\n\t\s]/g, '');
-    return String(ct + this.$.editor.innerHTML)
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/=""/g, '')
-      .replace(/=&gt;/g, '=>');
+    let ct = this.$.codeTheme.innerHTML.replace(/[\n\t]/g, '');
+    return String(ct + this.$.editor.innerHTML);
   }
 
   setContent(content) {
     if (content) {
-      let reg = /(\<style\>.*\<\/style\>)/g;
-      let styles = content.match(reg);
-      this.$.codeTheme.innerHTML = styles.join('');
+      let reg = /(\<div id=\"___themeContent\"\>.*\<\/div\>)/g;
+      let style = content.match(reg)[0];
+      if (style) {
+        this.$.___themeContent.innerHTML = style
+          .replace(/\<div id=\"___themeContent\"\>/, '')
+          .replace(/\<\/div\>/, '');
+      }
       this.$.editor.innerHTML = content.replace(reg, '');
     }
   }
@@ -282,7 +280,7 @@ class BooWysiwygE extends PolymerElement {
         imported = import("./highlight/theme/default.js");
     };
     imported.then(function(res) {
-      this.$.codeTheme.innerHTML = res.booEditorCodeTheme.innerHTML;
+      this.$.___themeContent.innerHTML = res.booEditorCodeTheme.innerHTML;
     }.bind(this));
   }
 
