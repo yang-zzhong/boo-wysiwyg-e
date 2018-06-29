@@ -53,6 +53,10 @@ $_documentContainer.innerHTML = `<custom-style>
           --boo-color-fg-color: white;
           --boo-color-bg-color: black;
         }
+        boo-wysiwyg-e-back-color {
+          --boo-color-fg-color: white;
+          --boo-color-bg-color: black;
+        }
         boo-wysiwyg-e-title {
           --boo-wysiwyg-e-title-list: {
             background-color: black;
@@ -87,6 +91,41 @@ $_documentContainer.innerHTML = `<div class="vertical-section-container centered
       <h3>Basic boo-wysiwyg-e demo</h3>
       <demo-snippet>
         <template>
+          <style>
+            boo-wysiwyg-e {
+              --boo-land-row-back-color: black;
+              background-color: black;
+              color: white;
+            }
+            boo-wysiwyg-e-text-color {
+              --boo-color-fg-color: white;
+              --boo-color-bg-color: black;
+            }
+            boo-wysiwyg-e-back-color {
+              --boo-color-fg-color: white;
+              --boo-color-bg-color: black;
+            }
+            boo-wysiwyg-e-title {
+              --boo-wysiwyg-e-title-list: {
+                background-color: black;
+                color: white;
+              }
+            }
+            boo-wysiwyg-e-align {
+              --boo-wysiwyg-e-align-list: {
+                background-color: black;
+                color: white;
+              }
+            }
+            boo-wysiwyg-e-code {
+              --boo-wysiwyg-e-code-bg-color: black;
+              --boo-wysiwyg-e-code-fg-color: white;
+            }
+            boo-wysiwyg-e-link {
+              --boo-wysiwyg-e-link-bg-color: black;
+              --boo-wysiwyg-e-link-fg-color: white;
+            }
+          </style>
           <boo-wysiwyg-e>
             <app-toolbar>
               <boo-wysiwyg-e-bold></boo-wysiwyg-e-bold>

@@ -141,6 +141,7 @@ class BooWysiwygECode extends BooWysiwygETool {
   code() {
     let code = this._highlight(this._code);
     this.editor.exec("inserthtml", "<pre><code>\n"+code+"\n</code></pre><br/>");
+    this._code = "";
     this.opened = false;
   }
 
