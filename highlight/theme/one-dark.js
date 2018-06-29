@@ -1,4 +1,4 @@
-import { html } from '../../../@polymer/lit-element/lit-element.js';
+import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 
 export const booEditorCodeTheme = html`
 <style>

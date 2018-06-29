@@ -237,8 +237,12 @@ class BooWysiwygE extends PolymerElement {
   }
 
   _setValue() {
-    this.value = this.$.codeTheme.innerHTML + this.$.editor.innerHTML;
-    console.log(this.value);
+    let value = this.$.codeTheme.innerHTML + this.$.editor.innerHTML;
+    this.value = String(value)
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/=""/g, '')
+      .replace(/=&gt;/g, '=>');
   }
 
   _codeThemeChanged(name) {
