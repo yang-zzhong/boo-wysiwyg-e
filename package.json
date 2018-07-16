@@ -23,8 +23,8 @@
     "@polymer/paper-menu-button": "^3.0.0-pre.21",
     "@polymer/paper-dropdown-menu": "^3.0.0-pre.21",
     "@polymer/polymer": "^3.0.0",
-    "boo-window": "0.0.8",
-    "boo-color-selector": "0.1.0",
+    "boo-window": "0.0.9",
+    "boo-color-selector": "0.1.1",
     "boo-land-row": "0.0.9",
     "web-animations-js": "^2.3.1"
   },
