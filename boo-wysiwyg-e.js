@@ -91,7 +91,7 @@ class BooWysiwygE extends PolymerElement {
           --boo-land-row-to-right: {
             top: 12px;
           }
-          z-index: 1000000;
+          z-index: var(--boo-wysiwyg-toolbar-index, 1);
         }
       </style>
       <iron-iconset-svg size="24" name="boo-wysiwyg-e">
