@@ -2,7 +2,6 @@ import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
 import 'boo-land-row/boo-land-row.js';
-import "./highlight/theme/default.js";
 
 
 const $_documentContainer = document.createElement('template');
@@ -108,7 +107,6 @@ class BooWysiwygE extends PolymerElement {
         <paper-icon-button slot="to-right" icon="boo-wysiwyg-e:to-right"></paper-icon-button>
       </boo-land-row>
       <div id="editorContainer">
-        <div id="codeTheme"><div id="___themeContent"></div></div>
         <div id="editor" contenteditable></div>
       </div>
     `;
@@ -123,11 +121,6 @@ class BooWysiwygE extends PolymerElement {
         observer: "_placeholderChanged",
         value: ""
       },
-      codeTheme: {
-        type: String,
-        value: "default",
-        observer: "_codeThemeChanged"
-      },
       _theme: String,
       _selection: Object,
     };
@@ -136,6 +129,7 @@ class BooWysiwygE extends PolymerElement {
   connectedCallback() {
     super.connectedCallback();
     this.$.editor.addEventListener("input", function() {
+      this.value = this.$.editor.innerHTML;
       this.dispatchEvent(new CustomEvent("input"));
     }.bind(this));
     this.$.editor.addEventListener("keydown", this._defaultKeyListener.bind(this));
@@ -173,6 +167,14 @@ class BooWysiwygE extends PolymerElement {
 
   commandState(command) {
     return document.queryCommandState(command);
+  }
+
+  setContent(content) {
+    this.$.editor.innerHTML = content;
+  }
+
+  content() {
+    return this.$.editor.innerHTML;
   }
 
   deleteWord() {
@@ -229,59 +231,6 @@ class BooWysiwygE extends PolymerElement {
     range.setStart(node, start);
     range.setEnd(node, end);
     return range;
-  }
-
-  content() {
-    let ct = this.$.codeTheme.innerHTML.replace(/[\n\t]/g, '');
-    return String(ct + this.$.editor.innerHTML);
-  }
-
-  setContent(content) {
-    if (content) {
-      let reg = /(\<div id=\"___themeContent\"\>.*\<\/div\>)/g;
-      let style = content.match(reg)[0];
-      if (style) {
-        this.$.___themeContent.innerHTML = style
-          .replace(/\<div id=\"___themeContent\"\>/, '')
-          .replace(/\<\/div\>/, '');
-      }
-      this.$.editor.innerHTML = content.replace(reg, '');
-    }
-  }
-
-  _codeThemeChanged(name) {
-    let imported = null;
-    switch(name) {
-      case "atom-one-light":
-        imported = import("./highlight/theme/atom-one-light.js");
-        break;
-      case "default":
-        imported = import("./highlight/theme/default.js");
-        break;
-      case "github":
-        imported = import("./highlight/theme/github.js");
-        break;
-      case "kustom-dark":
-        imported = import("./highlight/theme/kustom-dark.js");
-        break;
-      case "kustom-light":
-        imported = import("./highlight/theme/kustom-light.js");
-        break;
-      case "one-dark":
-        imported = import("./highlight/theme/one-dark.js");
-        break;
-      case "solarized-dark":
-        imported = import("./highlight/theme/solarized-dark.js");
-        break;
-      case "solarized-light":
-        imported = import("./highlight/theme/solarized-light.js");
-        break;
-      default:
-        imported = import("./highlight/theme/default.js");
-    };
-    imported.then(function(res) {
-      this.$.___themeContent.innerHTML = res.booEditorCodeTheme.innerHTML;
-    }.bind(this));
   }
 
   _selectedRangeStartTextNode() {

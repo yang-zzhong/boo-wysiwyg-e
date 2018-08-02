@@ -9,8 +9,8 @@ import '@polymer/paper-item/paper-item.js';
 import '@polymer/paper-input/paper-textarea.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
+import 'code-sample/code-sample.js';
 import 'boo-window/boo-window.js';
-import '../highlight/highlight-import.js';
 
 class BooWysiwygECode extends BooWysiwygETool {
   static get template() {
@@ -39,6 +39,7 @@ class BooWysiwygECode extends BooWysiwygETool {
           background-color: var(--boo-wysiwyg-e-code-bg-color);
           color: var(--boo-wysiwyg-e-code-fg-color);
         }
+        paper-dropdown-menu,
         paper-textarea {
           --paper-input-container-input: {
             color: var(--boo-wysiwyg-e-code-fg-color);
@@ -80,9 +81,9 @@ class BooWysiwygECode extends BooWysiwygETool {
 
         <app-toolbar slot="move-trigger">
           <span>插入代码</span>
-          <paper-dropdown-menu label="选择主题">
-            <paper-listbox slot="dropdown-content" selected="{{_tidx}}">
-              <template id="lang" is="dom-repeat" items="[[themes]]">
+          <paper-dropdown-menu value="{{theme}}" label="选择主题">
+            <paper-listbox slot="dropdown-content">
+              <template id="themes" is="dom-repeat" items="[[themes]]">
                 <paper-item>[[item]]</paper-item>
               </template>
             </paper-listbox>
@@ -120,14 +121,13 @@ class BooWysiwygECode extends BooWysiwygETool {
       themes: {
         type: Array,
         value: [
-          "default", "atom-one-light", "github", "kustom-dark", "kustom-light",
-          "one-dark", "solarized-dark", "solarized-light"
+          "one-dark", "atom-one-light", "default", "github", "kustom-dark", "kustom-light",
+          "solarized-dark", "solarized-light"
         ]
       },
-      _tidx: {
-        type: Number,
-        value: 0,
-        observer: "_tidxChanged"
+      theme: {
+        type: String,
+        value: "one-dark",
       },
       _code: String,
     };
@@ -139,18 +139,10 @@ class BooWysiwygECode extends BooWysiwygETool {
   }
 
   code() {
-    let code = this._highlight(this._code);
-    this.editor.exec("inserthtml", "<pre><code>\n"+code+"\n</code></pre><br/>");
+    console.log(this.theme);
+    this.editor.exec("inserthtml", "<br/><code-sample theme-name=\""+this.theme+"\"><template>"+this._code+"</template></code-sample><br/><br/>");
     this._code = "";
     this.opened = false;
-  }
-
-  _highlight(str) {
-    let code = document.createElement('code');
-    code.innerHTML = this._entitize(this._cleanIndentation(str));
-    hljs.highlightBlock(code);
-
-    return code.innerHTML;
   }
 
   _keyBind(e) {
@@ -162,27 +154,8 @@ class BooWysiwygECode extends BooWysiwygETool {
     }
   }
 
-  _tidxChanged(idx) {
-    if (this.editor) {
-      this.editor.codeTheme = this.themes[idx];
-    }
-  }
-
-  _cleanIndentation(str) {
-    const pattern = str.match(/\s*\n[\t\s]*/);
-    return str.replace(new RegExp(pattern, 'g'), '\n');
-  }
-
-  _entitize(str) {
-    return String(str)
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/=""/g, '')
-      .replace(/=&gt;/g, '=>')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+  _selectTheme(e) {
+    this.theme = this.$.themes.itemForElement(e.target);
   }
 
   _open() {
