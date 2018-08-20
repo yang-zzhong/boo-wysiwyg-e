@@ -1,7 +1,7 @@
 {
   "name": "boo-wysiwyg-e",
   "description": "a great wysiwyg editor",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
@@ -26,7 +26,7 @@
     "@polymer/polymer": "^3.0.0",
     "boo-window": "0.0.9",
     "boo-color-selector": "0.1.1",
-    "boo-land-row": "0.1.0",
+    "boo-land-row": "0.1.1",
     "web-animations-js": "^2.3.1"
   },
   "devDependencies": {

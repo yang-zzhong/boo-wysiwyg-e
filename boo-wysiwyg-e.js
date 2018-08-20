@@ -177,6 +177,10 @@ class BooWysiwygE extends PolymerElement {
     return this.$.editor.innerHTML;
   }
 
+  contentNode() {
+    return this.$.editor;
+  }
+
   deleteWord() {
     this.selectWord();
     this.exec("delete");
