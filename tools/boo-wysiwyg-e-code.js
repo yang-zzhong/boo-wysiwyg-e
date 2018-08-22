@@ -1,6 +1,7 @@
 import '@polymer/polymer/polymer-element.js';
 import {BooWysiwygETool} from '../boo-wysiwyg-e.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+import '@polymer/neon-animation/animations/hero-animation.js';
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
@@ -10,7 +11,7 @@ import '@polymer/paper-input/paper-textarea.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import 'code-sample/code-sample.js';
-import 'boo-window/boo-window.js';
+import {BooWindow} from 'boo-window/boo-window.js';
 
 class BooWysiwygECode extends BooWysiwygETool {
   static get template() {
@@ -20,11 +21,15 @@ class BooWysiwygECode extends BooWysiwygETool {
           @apply --layout-horizontal;
           @apply --layout-justified;
           @apply --layout-end;
+          box-sizing: border-box;
         }
         boo-window {
           --boo-window-container: {
             box-shadow: 0px 0px 10px rgba(0, 0, 0, .4);
           }
+        }
+        paper-dropdown-menu {
+          width: 150px;
         }
         [slot=content] {
           background-color: var(--boo-wysiwyg-e-code-bg-color);
@@ -56,11 +61,15 @@ class BooWysiwygECode extends BooWysiwygETool {
           @apply --layout-justified;
         }
         .inputWrapper {
-          max-height: calc(100vh - 150px);
           overflow-x: hidden;
           overflow-y: auto;
+          box-sizing: border-box;
+          max-height: calc(100vh - 160px);
         }
 
+        paper-textarea {
+          height: 100%;
+        }
       </style>
       <iron-iconset-svg size="24" name="bwe-code">
         <svg><defs>
@@ -69,6 +78,7 @@ class BooWysiwygECode extends BooWysiwygETool {
       </iron-iconset-svg>
 
       <paper-icon-button 
+        id="button"
         title="插入代码" 
         icon="bwe-code:code" 
         on-click="_open"></paper-icon-button>
@@ -79,7 +89,7 @@ class BooWysiwygECode extends BooWysiwygETool {
         pos-policy="center"
         width="600">
 
-        <app-toolbar slot="move-trigger">
+        <app-toolbar id="header" slot="move-trigger">
           <span>插入代码</span>
           <paper-dropdown-menu value="{{theme}}" label="选择主题">
             <paper-listbox slot="dropdown-content">
@@ -92,14 +102,14 @@ class BooWysiwygECode extends BooWysiwygETool {
         
         <div slot="content">
 
-          <div class="inputWrapper">
+          <div id="content" class="inputWrapper">
             <paper-textarea 
               value="{{_code}}"
               label="输入代码..." 
               on-keydown="_keyBind"
               on-input="_reheight" rows="10"></paper-textarea>
           </div>
-          <div class="oper">
+          <div id="operate" class="oper">
             <span></span>
             <span>
               <paper-button on-click="_close">取消</paper-button>
@@ -116,6 +126,7 @@ class BooWysiwygECode extends BooWysiwygETool {
     return {
       opened: {
         type: Boolean,
+        observer: '_openedChanged',
         notify: true
       },
       themes: {
@@ -136,13 +147,42 @@ class BooWysiwygECode extends BooWysiwygETool {
   connectedCallback() {
     super.connectedCallback();
     this.editor.codeTheme = this.themes[0];
+    this.sharedElements = {
+      code: this.$.button,
+    };
+    this.$.win.sharedElements = {
+      code: this.$.win.shadowRoot.querySelector('.wrapper'),
+    };
+    this._animation();
   }
 
   code() {
-    console.log(this.theme);
     this.editor.exec("inserthtml", "<br/><code-sample theme-name=\""+this.theme+"\"><template>"+this._code+"</template></code-sample><br/><br/>");
     this._code = "";
     this.opened = false;
+  }
+
+  resetLayout() {
+    let hr = this.$.header.getBoundingClientRect();
+    let wr = this.$.win.getBoundingClientRect();
+    let or = {height: 0};
+    if (this.$.operate) {
+      or = this.$.operate.getBoundingClientRect();
+    }
+    let wh = wr.height;
+    if (!this.$.win.smallScreen) {
+      wh = Math.min(BooWindow.screenHeight - 40, wh);
+      this.$.win.height = wh;
+    }
+    let height = (wh - hr.height - or.height + 20);
+    this.$.content.style.height = height + 'px';
+    this.$.win.update();
+  }
+
+  _openedChanged(opened) {
+    if (opened && this.$.win.smallScreen) {
+      this.resetLayout();
+    }
   }
 
   _keyBind(e) {
@@ -169,6 +209,23 @@ class BooWysiwygECode extends BooWysiwygETool {
   _reheight() {
     this.$.win.height = this.$.win.computeHeight();
     this.$.win.update();
+  }
+
+  _animation() {
+   this.$.win.animationConfig = {
+      entry: [{
+        name: "hero-animation",
+        id: "code",
+        fromPage: this,
+        toPage: this.$.win,
+      }],
+      exit: [{
+        name: "hero-animation",
+        id: "code",
+        fromPage: this.$.win,
+        toPage: this,
+      }]
+    };
   }
 }
 
