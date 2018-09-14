@@ -362,7 +362,7 @@ class BooWysiwygE extends PolymerElement {
   _defaultKeyListener(e) {
     switch (e.key) {
       case "Tab":
-        this.exec("inserttext", "    ");
+        this.exec("inserttext", "\t");
         e.preventDefault();
         break;
       case "Enter":
@@ -394,17 +394,17 @@ class BooWysiwygE extends PolymerElement {
   }
 
   _handleEnter(e) {
-    let maxDepth = 3;
-    let depth = 0;
-    let node = this._range.startContainer;
-    while(node && depth < maxDepth) {
-      if (node.tagName == 'CODE') {
-        this.exec("inserttext", '\n');
-        e.preventDefault();
-        return;
-      }
-      node = node.parentNode;
-    }
+    // let maxDepth = 3;
+    // let depth = 0;
+    // let node = this._range.startContainer;
+    // while(node && depth < maxDepth) {
+    //   if (node.tagName == 'CODE') {
+    //     this.exec("inserttext", '\n');
+    //     e.preventDefault();
+    //     return;
+    //   }
+    //   node = node.parentNode;
+    // }
   }
 }
 

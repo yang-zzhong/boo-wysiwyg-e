@@ -11,6 +11,7 @@ import '@polymer/paper-input/paper-textarea.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import 'code-sample/code-sample.js';
+import '../boo-code-sample.js';
 import {BooWindow} from 'boo-window/boo-window.js';
 
 class BooWysiwygECode extends BooWysiwygETool {
@@ -157,7 +158,11 @@ class BooWysiwygECode extends BooWysiwygETool {
   }
 
   code() {
-    this.editor.exec("inserthtml", "<br/><code-sample theme-name=\""+this.theme+"\"><template>"+this._code+"</template></code-sample><br/><br/>");
+    this.editor.exec("inserthtml", '<br/>' +
+        '<code-sample slot="content" theme-name=\"'+this.theme+'\">' +
+          '<template>'+this._code+'</template>'+
+        '</code-sample>' +
+      '<br/> <br/>');
     this._code = "";
     this.opened = false;
   }
@@ -188,7 +193,7 @@ class BooWysiwygECode extends BooWysiwygETool {
   _keyBind(e) {
     switch (e.key) {
       case "Tab":
-        document.execCommand("inserttext", false,  "    ");
+        document.execCommand("inserttext", false,  "\t");
         e.preventDefault();
         break;
     }
