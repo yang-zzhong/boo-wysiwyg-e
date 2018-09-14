@@ -1,7 +1,7 @@
 {
   "name": "boo-wysiwyg-e",
   "description": "a great wysiwyg editor",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
@@ -11,7 +11,7 @@
   },
   "main": "boo-wysiwyg-e.js",
   "dependencies": {
-    "code-sample": "^2.0.5",
+    "code-sample": "^2.0.6",
     "@polymer/iron-flex-layout": "^3.0.0-pre.21",
     "@polymer/iron-iconset-svg": "^3.0.0-pre.21",
     "@polymer/neon-animation": "^3.0.0-pre.21",
