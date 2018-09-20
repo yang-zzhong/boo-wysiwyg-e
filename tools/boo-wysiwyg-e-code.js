@@ -11,7 +11,6 @@ import '@polymer/paper-input/paper-textarea.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import 'code-sample/code-sample.js';
-import '../boo-code-sample.js';
 import {BooWindow} from 'boo-window/boo-window.js';
 
 class BooWysiwygECode extends BooWysiwygETool {
