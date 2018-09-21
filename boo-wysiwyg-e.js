@@ -56,6 +56,7 @@ class BooWysiwygE extends PolymerElement {
         }
         #editorContainer {
           @apply --boo-wysiwyg-e-wrapper;
+          position: relative;
         }
         #editor {
           min-height: 250px;
@@ -65,6 +66,26 @@ class BooWysiwygE extends PolymerElement {
           border-bottom: 1px solid #f0f0f0;
           border-right: 1px solid #f0f0f0;
           @apply --boo-wysiwyg-e-editor;
+        }
+        .menu-wrapper {
+          position: absolute;
+        }
+        .tool-menu {
+          position: absolute;
+          background-color: white;
+          color: red;
+          padding: 10px;
+          white-space: nowrap;
+          display: inline-block;
+          z-index: 1;
+          display: none;
+        }
+        .tool-item {
+          padding: 0px 10px;
+          display: inline-block;
+        }
+        .tool-item:hover {
+          cursor: pointer;
         }
         #editor:focus {
           outline: none;
@@ -128,21 +149,25 @@ class BooWysiwygE extends PolymerElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.$.editor.addEventListener("input", function() {
+    this.$.editor.addEventListener("input", () => {
       this.value = this.$.editor.innerHTML;
+      setTimeout(() => this.resetMenu(), 100);
       this.dispatchEvent(new CustomEvent("input"));
-    }.bind(this));
+    });
     this.$.editor.addEventListener("keydown", this._defaultKeyListener.bind(this));
-    document.addEventListener("selectionchange", function(e) {
+    document.addEventListener("selectionchange", e => {
+      if (!this.shadowRoot.getSelection) {
+        return;
+      }
       let selection = this.shadowRoot.getSelection();
       if (selection.rangeCount > 0) {
         this._range = selection.getRangeAt(0);
       }
       this.dispatchEvent(new CustomEvent("selectionchange"));
-    }.bind(this));
-    setTimeout(function() {
+    });
+    setTimeout(() => {
       this.$.toolbar.update();
-    }.bind(this), 1000);
+    }, 1000);
   }
 
   restoreSelection() {
@@ -238,6 +263,9 @@ class BooWysiwygE extends PolymerElement {
   }
 
   _selectedRangeStartTextNode() {
+    if (!this._range) {
+      return this.findTextNode(node)[0];
+    }
     let node = this._range.startContainer;
     if (node.nodeType == 3) {
       return node;
@@ -365,9 +393,9 @@ class BooWysiwygE extends PolymerElement {
         this.exec("inserttext", "\t");
         e.preventDefault();
         break;
-      case "Enter":
-        this._handleEnter(e);
-        break;
+        // case "Enter":
+        // cathis._handleEnter(e);
+        // cabreak;
       case "Delete":
       case "Backspace":
         if (!e.ctrlKey) {
@@ -393,7 +421,69 @@ class BooWysiwygE extends PolymerElement {
     }
   }
 
-  _handleEnter(e) {
+  id() {
+    return Math.random().toString(32).substr(2);
+  }
+
+  attachMenu(node, menu) {
+    let menuWrapper = document.createElement('div');
+    this.$.editorContainer.insertBefore(menu, this.$.editor);
+    let timer = null;
+    node.addEventListener('mouseenter', () => {
+      clearTimeout(timer);
+      menu.style.display = 'block';
+    });
+    menu.addEventListener('mouseenter', () => {
+      clearTimeout(timer);
+      menu.style.display = 'block';
+    });
+    node.addEventListener('mouseout', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => menu.style.display = 'none', 500);
+    });
+    menu.addEventListener('mouseout', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => menu.style.display = 'none', 500);
+    });
+    let pos = this.pos(node);
+    menu.style.top = pos.y + 'px';
+    menu.style.left = pos.x + 'px';
+  }
+
+  resetMenu() {
+    let menus = this.$.editorContainer.querySelectorAll('.tool-menu');
+    menus.forEach(menu => this.moveMenu(menu));
+  }
+
+  moveMenu(menu) {
+    let node = this.$.editor.querySelector('#' + menu.getAttribute('data-for'));
+    if (!node) {
+      menu.parentNode.removeChild(menu);
+      return;
+    }
+    let pos = this.pos(node);
+    menu.style.top = pos.y + 'px';
+    menu.style.left = pos.x + 'px';
+  }
+
+  pos(node) {
+    let pos = {
+      x: 0,
+      y: 0
+    };
+    while(node != this.$.editor) {
+      console.log(node);
+      console.log('left', node.offsetLeft);
+      console.log('top', node.offsetTop);
+      pos.x += node.offsetLeft;
+      pos.y += node.offsetTop;
+      node = node.parentNode;
+    }
+
+    return pos;
+  }
+
+  // _handleEnter(e) {
     // let maxDepth = 3;
     // let depth = 0;
     // let node = this._range.startContainer;
@@ -405,7 +495,7 @@ class BooWysiwygE extends PolymerElement {
     //   }
     //   node = node.parentNode;
     // }
-  }
+  // }
 }
 
 window.customElements.define(BooWysiwygE.is, BooWysiwygE);

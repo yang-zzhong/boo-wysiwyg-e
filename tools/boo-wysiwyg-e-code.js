@@ -157,13 +157,51 @@ class BooWysiwygECode extends BooWysiwygETool {
   }
 
   code() {
+    if (this.codeId) {
+      let node = this.editor.$.editor.querySelector("#" + this.codeId);
+      node.innerHTML = '<template>'+this._code+'</template>';
+      node.notifyContentChanged();
+      this._code = "";
+      this.opened = false;
+      return;
+    }
+    let id = 'a' + this.editor.id();
     this.editor.exec("inserthtml", '<br/>' +
-        '<code-sample slot="content" theme-name=\"'+this.theme+'\">' +
+        '<code-sample id="' + id + '" theme-name=\"'+this.theme+'\">' +
           '<template>'+this._code+'</template>'+
         '</code-sample>' +
       '<br/> <br/>');
+
+    let node = this.editor.$.editor.querySelector("#" + id);
+    this.editor.attachMenu(node, this.getMenu(node));
+
     this._code = "";
     this.opened = false;
+  }
+
+  getMenu(node) {
+    let con = document.createElement('div');
+    con.setAttribute('data-for', node.getAttribute('id'));
+    con.classList.add('tool-menu');
+    let edit = document.createElement('span');
+    edit.classList.add('tool-item');
+    edit.innerHTML = '编辑';
+    edit.addEventListener('click', () => {
+      this.codeId = node.getAttribute('id');
+      this._code = node.code();
+      this.opened = true;
+    });
+    let del = document.createElement('span');
+    del.innerHTML = '删除';
+    del.addEventListener('click', () => {
+      node.parentNode.removeChild(node);
+      con.parentNode.removeChild(con);
+    });
+    del.classList.add('tool-item');
+    con.appendChild(edit);
+    con.appendChild(del);
+
+    return con;
   }
 
   resetLayout() {
@@ -203,10 +241,12 @@ class BooWysiwygECode extends BooWysiwygETool {
   }
 
   _open() {
+    this.codeId = null;
     this.opened = true;
   }
 
   _close() {
+    this.codeId = null;
     this.opened = false;
   }
 
