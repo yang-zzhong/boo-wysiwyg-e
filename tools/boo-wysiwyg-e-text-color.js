@@ -1,3 +1,4 @@
+import '@polymer/neon-animation/animations/hero-animation.js';
 import '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import '@polymer/paper-menu-button/paper-menu-button.js';
@@ -18,7 +19,7 @@ export class BooWysiwygETextColor extends BooWysiwygETool {
         </defs></svg>
       </iron-iconset-svg>
       <boo-color-dialog id="dialog" color="{{value}}" colors="{{values}}" on-selected="select">
-        <paper-icon-button title="[[title]]" icon="[[icon]]"></paper-icon-button>
+        <paper-icon-button id="trigger" title="[[title]]" icon="[[icon]]"></paper-icon-button>
       </boo-color-dialog>
     `;
   }
@@ -44,11 +45,41 @@ export class BooWysiwygETextColor extends BooWysiwygETool {
     };
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    let win = this.$.dialog.shadowRoot.querySelector('boo-window');
+    win.sharedElements = {
+      color: win.shadowRoot.querySelector('.wrapper'),
+    };
+    this.sharedElements = {
+      color: this.$.trigger
+    };
+    win.animationConfig = this._animation(win);
+  }
+
   select() {
     if (this.editor) {
       this.$.dialog.opened = false;
       this.editor.exec("forecolor", this.value);
     }
   }
+
+  _animation(page) {
+   return {
+      entry: [{
+        name: "hero-animation",
+        id: "color",
+        fromPage: this,
+        toPage: page,
+      }],
+      exit: [{
+        name: "hero-animation",
+        id: "color",
+        fromPage: page,
+        toPage: this,
+      }]
+    };
+  }
 }
+
 window.customElements.define("boo-wysiwyg-e-text-color", BooWysiwygETextColor);

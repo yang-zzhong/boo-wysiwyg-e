@@ -52,4 +52,5 @@ class BooWysiwygEBold extends BooWysiwygETool {
     this.bold = this.editor.commandState("bold");
   }
 }
+
 window.customElements.define("boo-wysiwyg-e-bold", BooWysiwygEBold);

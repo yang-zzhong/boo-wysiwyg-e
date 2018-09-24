@@ -2,7 +2,6 @@ import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
 import 'boo-land-row/boo-land-row.js';
-import "./highlight/theme/default.js";
 
 
 const $_documentContainer = document.createElement('template');
@@ -57,6 +56,7 @@ class BooWysiwygE extends PolymerElement {
         }
         #editorContainer {
           @apply --boo-wysiwyg-e-wrapper;
+          position: relative;
         }
         #editor {
           min-height: 250px;
@@ -66,6 +66,26 @@ class BooWysiwygE extends PolymerElement {
           border-bottom: 1px solid #f0f0f0;
           border-right: 1px solid #f0f0f0;
           @apply --boo-wysiwyg-e-editor;
+        }
+        .menu-wrapper {
+          position: absolute;
+        }
+        .tool-menu {
+          position: absolute;
+          background-color: white;
+          color: red;
+          padding: 10px;
+          white-space: nowrap;
+          display: inline-block;
+          z-index: 1;
+          display: none;
+        }
+        .tool-item {
+          padding: 0px 10px;
+          display: inline-block;
+        }
+        .tool-item:hover {
+          cursor: pointer;
         }
         #editor:focus {
           outline: none;
@@ -91,7 +111,7 @@ class BooWysiwygE extends PolymerElement {
           --boo-land-row-to-right: {
             top: 12px;
           }
-          z-index: 1000000;
+          z-index: var(--boo-wysiwyg-toolbar-index, 1);
         }
       </style>
       <iron-iconset-svg size="24" name="boo-wysiwyg-e">
@@ -108,7 +128,6 @@ class BooWysiwygE extends PolymerElement {
         <paper-icon-button slot="to-right" icon="boo-wysiwyg-e:to-right"></paper-icon-button>
       </boo-land-row>
       <div id="editorContainer">
-        <div id="codeTheme"><div id="___themeContent"></div></div>
         <div id="editor" contenteditable></div>
       </div>
     `;
@@ -123,11 +142,6 @@ class BooWysiwygE extends PolymerElement {
         observer: "_placeholderChanged",
         value: ""
       },
-      codeTheme: {
-        type: String,
-        value: "default",
-        observer: "_codeThemeChanged"
-      },
       _theme: String,
       _selection: Object,
     };
@@ -135,20 +149,25 @@ class BooWysiwygE extends PolymerElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.$.editor.addEventListener("input", function() {
+    this.$.editor.addEventListener("input", () => {
+      this.value = this.$.editor.innerHTML;
+      setTimeout(() => this.resetMenu(), 100);
       this.dispatchEvent(new CustomEvent("input"));
-    }.bind(this));
+    });
     this.$.editor.addEventListener("keydown", this._defaultKeyListener.bind(this));
-    document.addEventListener("selectionchange", function(e) {
+    document.addEventListener("selectionchange", e => {
+      if (!this.shadowRoot.getSelection) {
+        return;
+      }
       let selection = this.shadowRoot.getSelection();
       if (selection.rangeCount > 0) {
         this._range = selection.getRangeAt(0);
       }
       this.dispatchEvent(new CustomEvent("selectionchange"));
-    }.bind(this));
-    setTimeout(function() {
+    });
+    setTimeout(() => {
       this.$.toolbar.update();
-    }.bind(this), 1000);
+    }, 1000);
   }
 
   restoreSelection() {
@@ -173,6 +192,18 @@ class BooWysiwygE extends PolymerElement {
 
   commandState(command) {
     return document.queryCommandState(command);
+  }
+
+  setContent(content) {
+    this.$.editor.innerHTML = content;
+  }
+
+  content() {
+    return this.$.editor.innerHTML;
+  }
+
+  contentNode() {
+    return this.$.editor;
   }
 
   deleteWord() {
@@ -231,60 +262,10 @@ class BooWysiwygE extends PolymerElement {
     return range;
   }
 
-  content() {
-    let ct = this.$.codeTheme.innerHTML.replace(/[\n\t]/g, '');
-    return String(ct + this.$.editor.innerHTML);
-  }
-
-  setContent(content) {
-    if (content) {
-      let reg = /(\<div id=\"___themeContent\"\>.*\<\/div\>)/g;
-      let style = content.match(reg)[0];
-      if (style) {
-        this.$.___themeContent.innerHTML = style
-          .replace(/\<div id=\"___themeContent\"\>/, '')
-          .replace(/\<\/div\>/, '');
-      }
-      this.$.editor.innerHTML = content.replace(reg, '');
-    }
-  }
-
-  _codeThemeChanged(name) {
-    let imported = null;
-    switch(name) {
-      case "atom-one-light":
-        imported = import("./highlight/theme/atom-one-light.js");
-        break;
-      case "default":
-        imported = import("./highlight/theme/default.js");
-        break;
-      case "github":
-        imported = import("./highlight/theme/github.js");
-        break;
-      case "kustom-dark":
-        imported = import("./highlight/theme/kustom-dark.js");
-        break;
-      case "kustom-light":
-        imported = import("./highlight/theme/kustom-light.js");
-        break;
-      case "one-dark":
-        imported = import("./highlight/theme/one-dark.js");
-        break;
-      case "solarized-dark":
-        imported = import("./highlight/theme/solarized-dark.js");
-        break;
-      case "solarized-light":
-        imported = import("./highlight/theme/solarized-light.js");
-        break;
-      default:
-        imported = import("./highlight/theme/default.js");
-    };
-    imported.then(function(res) {
-      this.$.___themeContent.innerHTML = res.booEditorCodeTheme.innerHTML;
-    }.bind(this));
-  }
-
   _selectedRangeStartTextNode() {
+    if (!this._range) {
+      return this.findTextNode(node)[0];
+    }
     let node = this._range.startContainer;
     if (node.nodeType == 3) {
       return node;
@@ -409,12 +390,12 @@ class BooWysiwygE extends PolymerElement {
   _defaultKeyListener(e) {
     switch (e.key) {
       case "Tab":
-        this.exec("inserttext", "    ");
+        this.exec("inserttext", "\t");
         e.preventDefault();
         break;
-      case "Enter":
-        this._handleEnter(e);
-        break;
+        // case "Enter":
+        // cathis._handleEnter(e);
+        // cabreak;
       case "Delete":
       case "Backspace":
         if (!e.ctrlKey) {
@@ -440,19 +421,81 @@ class BooWysiwygE extends PolymerElement {
     }
   }
 
-  _handleEnter(e) {
-    let maxDepth = 3;
-    let depth = 0;
-    let node = this._range.startContainer;
-    while(node && depth < maxDepth) {
-      if (node.tagName == 'CODE') {
-        this.exec("inserttext", '\n');
-        e.preventDefault();
-        return;
-      }
+  id() {
+    return Math.random().toString(32).substr(2);
+  }
+
+  attachMenu(node, menu) {
+    let menuWrapper = document.createElement('div');
+    this.$.editorContainer.insertBefore(menu, this.$.editor);
+    let timer = null;
+    node.addEventListener('mouseenter', () => {
+      clearTimeout(timer);
+      menu.style.display = 'block';
+    });
+    menu.addEventListener('mouseenter', () => {
+      clearTimeout(timer);
+      menu.style.display = 'block';
+    });
+    node.addEventListener('mouseout', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => menu.style.display = 'none', 500);
+    });
+    menu.addEventListener('mouseout', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => menu.style.display = 'none', 500);
+    });
+    let pos = this.pos(node);
+    menu.style.top = pos.y + 'px';
+    menu.style.left = pos.x + 'px';
+  }
+
+  resetMenu() {
+    let menus = this.$.editorContainer.querySelectorAll('.tool-menu');
+    menus.forEach(menu => this.moveMenu(menu));
+  }
+
+  moveMenu(menu) {
+    let node = this.$.editor.querySelector('#' + menu.getAttribute('data-for'));
+    if (!node) {
+      menu.parentNode.removeChild(menu);
+      return;
+    }
+    let pos = this.pos(node);
+    menu.style.top = pos.y + 'px';
+    menu.style.left = pos.x + 'px';
+  }
+
+  pos(node) {
+    let pos = {
+      x: 0,
+      y: 0
+    };
+    while(node != this.$.editor) {
+      console.log(node);
+      console.log('left', node.offsetLeft);
+      console.log('top', node.offsetTop);
+      pos.x += node.offsetLeft;
+      pos.y += node.offsetTop;
       node = node.parentNode;
     }
+
+    return pos;
   }
+
+  // _handleEnter(e) {
+    // let maxDepth = 3;
+    // let depth = 0;
+    // let node = this._range.startContainer;
+    // while(node && depth < maxDepth) {
+    //   if (node.tagName == 'CODE') {
+    //     this.exec("inserttext", '\n');
+    //     e.preventDefault();
+    //     return;
+    //   }
+    //   node = node.parentNode;
+    // }
+  // }
 }
 
 window.customElements.define(BooWysiwygE.is, BooWysiwygE);

@@ -106,4 +106,5 @@ class BooWysiwygEAlign extends BooWysiwygETool {
     }
   }
 }
+
 window.customElements.define("boo-wysiwyg-e-align", BooWysiwygEAlign);
