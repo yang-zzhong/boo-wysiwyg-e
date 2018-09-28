@@ -24,6 +24,9 @@ class BooWysiwygECode extends BooWysiwygETool {
           box-sizing: border-box;
         }
         boo-window {
+          --boo-window: {
+            background-color: var(--boo-wysiwyg-e-code-bg-color);
+          }
           --boo-window-container: {
             box-shadow: 0px 0px 10px rgba(0, 0, 0, .4);
           }
@@ -35,6 +38,7 @@ class BooWysiwygECode extends BooWysiwygETool {
           background-color: var(--boo-wysiwyg-e-code-bg-color);
           color: var(--boo-wysiwyg-e-code-fg-color);
           padding: 10px;
+          box-sizing: border-box;
         }
         [slot=move-trigger] {
           background-color: var(--boo-wysiwyg-e-code-bg-color);
