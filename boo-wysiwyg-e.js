@@ -1,6 +1,8 @@
 import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
+import '@polymer/iron-flex-layout/iron-flex-layout.js';
+import '@polymer/paper-tabs/paper-tabs.js';
 import 'boo-land-row/boo-land-row.js';
 
 
@@ -56,7 +58,6 @@ class BooWysiwygE extends PolymerElement {
         }
         #editorContainer {
           @apply --boo-wysiwyg-e-wrapper;
-          position: relative;
         }
         #editor {
           min-height: 250px;
@@ -67,26 +68,6 @@ class BooWysiwygE extends PolymerElement {
           border-right: 1px solid #f0f0f0;
           @apply --boo-wysiwyg-e-editor;
         }
-        .menu-wrapper {
-          position: absolute;
-        }
-        .tool-menu {
-          position: absolute;
-          background-color: white;
-          color: red;
-          padding: 10px;
-          white-space: nowrap;
-          display: inline-block;
-          z-index: 1;
-          display: none;
-        }
-        .tool-item {
-          padding: 0px 10px;
-          display: inline-block;
-        }
-        .tool-item:hover {
-          cursor: pointer;
-        }
         #editor:focus {
           outline: none;
         }
@@ -95,23 +76,9 @@ class BooWysiwygE extends PolymerElement {
           display: block;
           opacity: .6;
         }
-        #toolbar {
-          background-color: inherit;
-          border: 1px solid #f0f0f0;
-          width: 100%;
-          box-sizing: border-box;
-          @apply --boo-wysiwyg-e-toolbar;
-          position: sticky;
-          top: 0px;
-        }
-        boo-land-row {
-          --boo-land-row-to-left: {
-            top: 12px;
-          }
-          --boo-land-row-to-right: {
-            top: 12px;
-          }
-          z-index: var(--boo-wysiwyg-toolbar-index, 1);
+        paper-tabs {
+          @apply --layout-horizontal;
+          @apply --layout-center;
         }
       </style>
       <iron-iconset-svg size="24" name="boo-wysiwyg-e">
@@ -120,13 +87,9 @@ class BooWysiwygE extends PolymerElement {
           <g id="to-right"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path></g>
         </defs></svg>
       </iron-iconset-svg>
-      <boo-land-row id="toolbar">
-        <paper-icon-button slot="to-left" icon="boo-wysiwyg-e:to-left"></paper-icon-button>
-        <div slot="content">
-          <slot></slot>
-        </div>
-        <paper-icon-button slot="to-right" icon="boo-wysiwyg-e:to-right"></paper-icon-button>
-      </boo-land-row>
+      <paper-tabs scrollable>
+        <slot></slot>
+      </paper-tabs>
       <div id="editorContainer">
         <div id="editor" contenteditable></div>
       </div>
@@ -165,9 +128,11 @@ class BooWysiwygE extends PolymerElement {
       }
       this.dispatchEvent(new CustomEvent("selectionchange"));
     });
+    /*
     setTimeout(() => {
       this.$.toolbar.update();
     }, 1000);
+    */
   }
 
   restoreSelection() {
@@ -181,6 +146,7 @@ class BooWysiwygE extends PolymerElement {
 
   focus() {
     this.$.editor.focus();
+    console.log(this.shadowRoot.getSelection().focusNode);
     this.restoreSelection();
     this.dispatchEvent(new CustomEvent("focus"));
   }
@@ -393,9 +359,6 @@ class BooWysiwygE extends PolymerElement {
         this.exec("inserttext", "\t");
         e.preventDefault();
         break;
-        // case "Enter":
-        // cathis._handleEnter(e);
-        // cabreak;
       case "Delete":
       case "Backspace":
         if (!e.ctrlKey) {
@@ -472,9 +435,6 @@ class BooWysiwygE extends PolymerElement {
       y: 0
     };
     while(node != this.$.editor) {
-      console.log(node);
-      console.log('left', node.offsetLeft);
-      console.log('top', node.offsetTop);
       pos.x += node.offsetLeft;
       pos.y += node.offsetTop;
       node = node.parentNode;

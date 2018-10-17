@@ -22,9 +22,13 @@ class TestEditor extends PolymerElement {
     return html`
       <style>
         boo-wysiwyg-e {
-          --boo-land-row-back-color: black;
           background-color: black;
           color: white;
+          --boo-wysiwyg-e-editor: {
+            border-left: 1px solid black;
+            border-bottom: 1px solid black;
+            border-right: 1px solid black;
+          }
         }
         boo-wysiwyg-e-text-color {
           --boo-color-fg-color: white;
