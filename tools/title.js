@@ -4,14 +4,15 @@ import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-listbox/paper-listbox.js';
 import '@polymer/paper-item/paper-item.js';
 import '@polymer/iron-icon/iron-icon.js';
-import {BooWysiwygETool} from '../boo-wysiwyg-e.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
+import { Tool } from '../tool.js';
+import '../tool-shared-styles.js';
 
-class BooWysiwygETitle extends BooWysiwygETool {
+class Title extends Tool {
   static get template() {
     return html`
-      <style>
+      <style include="tool-shared-styles">
         paper-item:hover {
           cursor: pointer;
         }
@@ -19,16 +20,12 @@ class BooWysiwygETitle extends BooWysiwygETool {
           @apply --boo-wysiwyg-e-title-list;
         }
       </style>
-      <iron-iconset-svg size="24" name="bwe-title">
-        <svg><defs>
-          <g id="text-format"><path d="M5 17v2h14v-2H5zm4.5-4.2h5l.9 2.2h2.1L12.75 4h-1.5L6.5 15h2.1l.9-2.2zM12 5.98L13.87 11h-3.74L12 5.98z"></path></g>
-        </defs></svg>
-      </iron-iconset-svg>
+
       <paper-menu-button>
 
         <paper-icon-button 
-          icon="bwe-title:text-format" 
-          title="标题/段落" 
+          icon="boo-wysiwyg:text-format" 
+          title="标题" 
           slot="dropdown-trigger"></paper-icon-button>
 
         <paper-listbox slot="dropdown-content">
@@ -38,6 +35,7 @@ class BooWysiwygETitle extends BooWysiwygETool {
             </paper-item>
           </template>
         </paper-listbox>
+
       </paper-menu-button>
     `;
   }
@@ -64,17 +62,21 @@ class BooWysiwygETitle extends BooWysiwygETool {
         }, {
           block: "H6",
           label: "H6"
-        }, {
-          block: "P",
-          label: "P"
         }]
       }
     };
   }
 
+  command() {
+    return 'formatBlock';
+  }
+
+  isFormat() {
+    return false;
+  }
+
   select(e) {
-    console.log(e.target.textContent.trim());
-    this.editor.exec("formatBlock", e.target.textContent.trim());
+    this.editor.focus().exec("formatBlock", e.target.textContent.trim());
   }
 }
-window.customElements.define("boo-wysiwyg-e-title", BooWysiwygETitle);
+window.customElements.define("boo-wysiwyg-title", Title);

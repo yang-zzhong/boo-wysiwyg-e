@@ -1,42 +1,32 @@
-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
+import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@polymer/paper-tabs/paper-tabs.js';
-import 'boo-land-row/boo-land-row.js';
-
-
-const $_documentContainer = document.createElement('template');
-$_documentContainer.setAttribute('style', 'display: none;');
-
-$_documentContainer.innerHTML = `<dom-module id="boo-wysiwyg-e-tool"></dom-module>`;
-
-document.head.appendChild($_documentContainer.content);
-
-export class BooWysiwygETool extends PolymerElement {
-  static get properties() {
-    return {
-      editor: Object,
-      disabled: {
-        type: Boolean,
-        reflectAttribute: true
-      }
-    };
-  }
-  connectedCallback() {
-    super.connectedCallback();
-    let node = this;
-    while(node = node.parentNode) {
-      if (node.tagName == 'BOO-WYSIWYG-E') {
-        this.editor = node;
-        break;
-      }
-    }
-    if (!this.editor) {
-      throw "editor not found";
-    }
-  }
-}
+import './editor.js';
+import './tools/bold.js';
+import './tools/justify-left.js';
+import './tools/justify-right.js';
+import './tools/justify-center.js';
+import './tools/justify-full.js';
+import './tools/remove-format.js';
+import './tools/underline.js';
+import './tools/strike.js';
+import './tools/italic.js';
+import './tools/redo.js';
+import './tools/undo.js';
+import './tools/unordered-list.js';
+import './tools/ordered-list.js';
+import './tools/backcolor.js';
+import './tools/forecolor.js';
+import './tools/code.js';
+import './tools/p.js';
+import './tools/link.js';
+import './tools/unlink.js';
+import './tools/indent.js';
+import './tools/outdent.js';
+import './tools/super-script.js';
+import './tools/sub-script.js';
+import './tools/title.js';
 
 /**
  * `boo-wysiwyg-e`
@@ -53,409 +43,121 @@ class BooWysiwygE extends PolymerElement {
         :host {
           display: block;
         }
-        :host(:focus) {
-          outline: none;
-        }
-        #editorContainer {
-          @apply --boo-wysiwyg-e-wrapper;
-        }
-        #editor {
-          min-height: 250px;
-          padding: 10px;
-          overflow: auto;
-          border-left: 1px solid #f0f0f0;
-          border-bottom: 1px solid #f0f0f0;
-          border-right: 1px solid #f0f0f0;
-          @apply --boo-wysiwyg-e-editor;
-        }
-        #editor:focus {
-          outline: none;
-        }
-        #editor[contenteditable=true]:empty:before {
-          content: attr(placeholder);
-          display: block;
-          opacity: .6;
-        }
         paper-tabs {
+          position: sticky;
+          top: 0px;
+          z-index: 1;
+          outline: none;
+          background-color: white;
+          @apply --boo-wysiwyge-e-toolbar;
           @apply --layout-horizontal;
           @apply --layout-center;
         }
+        div {
+          position: sticky;
+          top: 0px;
+          z-index: 1;
+          background-color: white;
+        }
+        boo-wysiwyg-e-editor {
+          overflow: auto;
+          padding: 10px;
+        }
       </style>
-      <iron-iconset-svg size="24" name="boo-wysiwyg-e">
-        <svg><defs>
-          <g id="to-left"><path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"></path></g>
-          <g id="to-right"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path></g>
-        </defs></svg>
-      </iron-iconset-svg>
-      <paper-tabs scrollable>
-        <slot></slot>
-      </paper-tabs>
-      <div id="editorContainer">
-        <div id="editor" contenteditable></div>
-      </div>
+      <template is="dom-if" if="[[!noToolbarScrollable]]">
+        <paper-tabs scrollable hide-scroll-buttons="[[hideToolbarScrollButtons]]">
+          <app-toolbar>
+            <boo-wysiwyg-bold editor="[[editor]]"></boo-wysiwyg-bold>
+            <boo-wysiwyg-underline editor="[[editor]]"></boo-wysiwyg-underline>
+            <boo-wysiwyg-italic editor="[[editor]]"></boo-wysiwyg-italic>
+            <boo-wysiwyg-strike editor="[[editor]]"></boo-wysiwyg-strike>
+            <boo-wysiwyg-backcolor editor="[[editor]]"></boo-wysiwyg-backcolor>
+            <boo-wysiwyg-forecolor editor="[[editor]]"></boo-wysiwyg-forecolor>
+            <boo-wysiwyg-indent editor="[[editor]]"></boo-wysiwyg-indent>
+            <boo-wysiwyg-outdent editor="[[editor]]"></boo-wysiwyg-outdent>
+            <boo-wysiwyg-justify-left editor="[[editor]]"></boo-wysiwyg-justify-left>
+            <boo-wysiwyg-justify-center editor="[[editor]]"></boo-wysiwyg-justify-center>
+            <boo-wysiwyg-justify-right editor="[[editor]]"></boo-wysiwyg-justify-right>
+            <boo-wysiwyg-justify-full editor="[[editor]]"></boo-wysiwyg-justify-full>
+            <boo-wysiwyg-unordered-list editor="[[editor]]"></boo-wysiwyg-unordered-list>
+            <boo-wysiwyg-ordered-list editor="[[editor]]"></boo-wysiwyg-ordered-list>
+            <boo-wysiwyg-undo editor="[[editor]]"></boo-wysiwyg-undo>
+            <boo-wysiwyg-redo editor="[[editor]]"></boo-wysiwyg-redo>
+            <boo-wysiwyg-code editor="[[editor]]"></boo-wysiwyg-code>
+            <boo-wysiwyg-p editor="[[editor]]"></boo-wysiwyg-p>
+            <boo-wysiwyg-link editor="[[editor]]"></boo-wysiwyg-link>
+            <boo-wysiwyg-unlink editor="[[editor]]"></boo-wysiwyg-unlink>
+            <boo-wysiwyg-superscript editor="[[editor]]"></boo-wysiwyg-superscript>
+            <boo-wysiwyg-subscript editor="[[editor]]"></boo-wysiwyg-subscript>
+            <boo-wysiwyg-title editor="[[editor]]"></boo-wysiwyg-title>
+            <boo-wysiwyg-remove-format editor="[[editor]]"></boo-wysiwyg-remove-format>
+          </app-toolbar>
+        </paper-tabs>
+      </template>
+      <template is="dom-if" if="[[noToolbarScrollable]]">
+        <div>
+          <boo-wysiwyg-bold editor="[[editor]]"></boo-wysiwyg-bold>
+          <boo-wysiwyg-underline editor="[[editor]]"></boo-wysiwyg-underline>
+          <boo-wysiwyg-italic editor="[[editor]]"></boo-wysiwyg-italic>
+          <boo-wysiwyg-strike editor="[[editor]]"></boo-wysiwyg-strike>
+          <boo-wysiwyg-backcolor editor="[[editor]]"></boo-wysiwyg-backcolor>
+          <boo-wysiwyg-forecolor editor="[[editor]]"></boo-wysiwyg-forecolor>
+          <boo-wysiwyg-indent editor="[[editor]]"></boo-wysiwyg-indent>
+          <boo-wysiwyg-outdent editor="[[editor]]"></boo-wysiwyg-outdent>
+          <boo-wysiwyg-justify-left editor="[[editor]]"></boo-wysiwyg-justify-left>
+          <boo-wysiwyg-justify-center editor="[[editor]]"></boo-wysiwyg-justify-center>
+          <boo-wysiwyg-justify-right editor="[[editor]]"></boo-wysiwyg-justify-right>
+          <boo-wysiwyg-justify-full editor="[[editor]]"></boo-wysiwyg-justify-full>
+          <boo-wysiwyg-unordered-list editor="[[editor]]"></boo-wysiwyg-unordered-list>
+          <boo-wysiwyg-ordered-list editor="[[editor]]"></boo-wysiwyg-ordered-list>
+          <boo-wysiwyg-undo editor="[[editor]]"></boo-wysiwyg-undo>
+          <boo-wysiwyg-redo editor="[[editor]]"></boo-wysiwyg-redo>
+          <boo-wysiwyg-code editor="[[editor]]"></boo-wysiwyg-code>
+          <boo-wysiwyg-p editor="[[editor]]"></boo-wysiwyg-p>
+          <boo-wysiwyg-link editor="[[editor]]"></boo-wysiwyg-link>
+          <boo-wysiwyg-unlink editor="[[editor]]"></boo-wysiwyg-unlink>
+          <boo-wysiwyg-superscript editor="[[editor]]"></boo-wysiwyg-superscript>
+          <boo-wysiwyg-subscript editor="[[editor]]"></boo-wysiwyg-subscript>
+          <boo-wysiwyg-title editor="[[editor]]"></boo-wysiwyg-title>
+          <boo-wysiwyg-remove-format editor="[[editor]]"></boo-wysiwyg-remove-format>
+        </div>
+      </template>
+      <boo-wysiwyg-e-editor 
+        id="editor" 
+        style-with-css
+        value="{{value}}"
+        placeholder="[[placeholder]]"></boo-wysiwyg-e-editor>
     `;
   }
 
   static get is() { return 'boo-wysiwyg-e'; }
   static get properties() {
     return {
-      noAutoGrow: Boolean,
+      hideToolbarScrollButtons: {
+        type: Boolean,
+        reflectToAttribute: true,
+      },
+      noToolbarScrollable: {
+        type: Boolean,
+        reflectToAttribute: true,
+        value: false
+      },
+      editor: Object,
       placeholder: {
         type: String,
-        observer: "_placeholderChanged",
+        reflectToAttribute: true,
         value: ""
       },
-      _theme: String,
-      _selection: Object,
+      value: {
+        type: String,
+        notify: true
+      },
     };
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.$.editor.addEventListener("input", () => {
-      this.value = this.$.editor.innerHTML;
-      setTimeout(() => this.resetMenu(), 100);
-      this.dispatchEvent(new CustomEvent("input"));
-    });
-    this.$.editor.addEventListener("keydown", this._defaultKeyListener.bind(this));
-    document.addEventListener("selectionchange", e => {
-      if (!this.shadowRoot.getSelection) {
-        return;
-      }
-      let selection = this.shadowRoot.getSelection();
-      if (selection.rangeCount > 0) {
-        this._range = selection.getRangeAt(0);
-      }
-      this.dispatchEvent(new CustomEvent("selectionchange"));
-    });
-    /*
-    setTimeout(() => {
-      this.$.toolbar.update();
-    }, 1000);
-    */
+    this.editor = this.$.editor;
   }
-
-  restoreSelection() {
-    if (!this._range) {
-      return;
-    } 
-    let selection = this.shadowRoot.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(this._range);
-  }
-
-  focus() {
-    this.$.editor.focus();
-    console.log(this.shadowRoot.getSelection().focusNode);
-    this.restoreSelection();
-    this.dispatchEvent(new CustomEvent("focus"));
-  }
-
-  exec(command, param) {
-    this.focus();
-    document.execCommand(command, false, param);
-  }
-
-  commandState(command) {
-    return document.queryCommandState(command);
-  }
-
-  setContent(content) {
-    this.$.editor.innerHTML = content;
-  }
-
-  content() {
-    return this.$.editor.innerHTML;
-  }
-
-  contentNode() {
-    return this.$.editor;
-  }
-
-  deleteWord() {
-    this.selectWord();
-    this.exec("delete");
-  }
-
-  selectWord(forward) {
-    if (!forward) {
-      forward = true;
-    }
-    let range = this.findWordInContainer(forward);
-    this._range = range;
-    this.restoreSelection();
-  }
-
-  forwardWord() {
-    let range = this.findWord(true);
-    this._range = range;
-    this._range.collapse(false);
-    this.restoreSelection();
-  }
-
-  backwardWord() {
-    let range = this.findWord(false);
-    this._range = range;
-    this._range.collapse(true);
-    this.restoreSelection();
-  }
-
-  findWordInContainer(forward) {
-    let range = this._range.cloneRange();
-    let node = this._selectedRangeStartTextNode();
-    if (!node) {
-      return range;
-    }
-    let start = forward ? this._range.startOffset : Math.max(this._range.startOffset - 1, 0);
-    while(node.data[forward ? start : start - 1] == " ") {
-      forward ? start++ : start--;
-    }
-    let end = start;
-    while(start > 0) {
-      if (node.data[start - 1] == " ") {
-        break;
-      }
-      start--;
-    }
-    while(end < node.data.length) {
-      if (node.data[end] == " ") {
-        break;
-      }
-      end++;
-    }
-    range.setStart(node, start);
-    range.setEnd(node, end);
-    return range;
-  }
-
-  _selectedRangeStartTextNode() {
-    if (!this._range) {
-      return this.findTextNode(node)[0];
-    }
-    let node = this._range.startContainer;
-    if (node.nodeType == 3) {
-      return node;
-    }
-    return this.findTextNode(node)[0];
-  }
-
-  _rightSearchStart(textNodes, node, forward, sep) {
-    let start = forward ? this._range.startOffset : Math.max(this._range.startOffset - 1, 0);
-    let startIndex = textNodes.indexOf(node);
-    while(startIndex < textNodes.length && startIndex > -1) {
-      node = textNodes[startIndex];
-      let found = false;
-      while (start < node.data.length && start >= 0) {
-        if (node.data[start] != sep) {
-          found = true;
-          break;
-        }
-        forward ? start++ : start--;
-      }
-      if (found) {
-        break;
-      }
-      forward ? startIndex++ : startIndex--;
-    }
-    return [startIndex, start];
-  }
-
-  _searchWordBegin(textNodes, startIndex, start, sep) {
-    let node = null;
-    while(startIndex >= 0 && startIndex < textNodes.length) {
-      node = textNodes[startIndex];
-      let found = false;
-      while(start > 0) {
-        if (node.data[start - 1] == sep) {
-          found = true;
-          break;
-        }
-        start--;
-      }
-      if (found) {
-        break;
-      }
-      if (startIndex > 0) {
-        start = textNodes[startIndex].length - 1;
-      }
-      startIndex--;
-    }
-    return [node, start];
-  }
-
-  _searchWordEnd(textNodes, endIndex, end, sep) {
-    let node = null;
-    while(endIndex < textNodes.length && endIndex > -1) {
-      node = textNodes[endIndex];
-      let found = false;
-      while(end < node.data.length) {
-        if (node.data[end] == sep) {
-          found = true;
-          break;
-        }
-        end++;
-      }
-      if (found) {
-        break;
-      }
-      if (endIndex < textNodes.length - 1) {
-        end = 0;
-      }
-      endIndex++;
-    }
-
-    return [node, end];
-  }
-
-  findWord(forward) {
-    return this.findBetween(forward, " ");
-  }
-
-  findBetween(forward, sep) {
-    let textNodes = this.findTextNode();
-    let node = this._selectedRangeStartTextNode();
-    let range = this._range.cloneRange();
-    if (!node) {
-      return range;
-    }
-    let pos = this._rightSearchStart(textNodes, node, forward, sep);
-    let nodeStart = this._searchWordBegin(textNodes, pos[0], pos[1], sep);
-    if (nodeStart[0]) {
-      range.setStart(nodeStart[0], nodeStart[1]);
-    }
-    let nodeEnd = this._searchWordEnd(textNodes, pos[0], pos[1], sep);
-    if (nodeEnd[0]) {
-      range.setEnd(nodeEnd[0], nodeEnd[1]);
-    }
-    return range;
-  }
-
-  findTextNode(node) {
-    let textNodes = [];
-    if (!node) {
-      node = this.$.editor;
-    }
-    for (let i = 0; i < node.childNodes.length; i++) {  
-      var c = node.childNodes[i];
-      switch(c.nodeType) {  
-        case 1:  
-          textNodes = textNodes.concat(this.findTextNode(c));
-          break;
-        case 3:  
-          textNodes.push(c);
-          break;  
-      }  
-    }
-    return textNodes;
-  }
-
-  _placeholderChanged(placeholder) {
-    this.$.editor.setAttribute('placeholder', placeholder);
-  }
-
-  _defaultKeyListener(e) {
-    switch (e.key) {
-      case "Tab":
-        this.exec("inserttext", "\t");
-        e.preventDefault();
-        break;
-      case "Delete":
-      case "Backspace":
-        if (!e.ctrlKey) {
-          return;
-        }
-        this.deleteWord();
-        e.preventDefault();
-        break;
-      case "ArrowRight":
-        if (!e.ctrlKey) {
-          return;
-        }
-        this.forwardWord();
-        e.preventDefault();
-        break;
-      case "ArrowLeft":
-        if (!e.ctrlKey) {
-          return;
-        }
-        this.backwardWord();
-        e.preventDefault();
-        break;
-    }
-  }
-
-  id() {
-    return Math.random().toString(32).substr(2);
-  }
-
-  attachMenu(node, menu) {
-    let menuWrapper = document.createElement('div');
-    this.$.editorContainer.insertBefore(menu, this.$.editor);
-    let timer = null;
-    node.addEventListener('mouseenter', () => {
-      clearTimeout(timer);
-      menu.style.display = 'block';
-    });
-    menu.addEventListener('mouseenter', () => {
-      clearTimeout(timer);
-      menu.style.display = 'block';
-    });
-    node.addEventListener('mouseout', () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => menu.style.display = 'none', 500);
-    });
-    menu.addEventListener('mouseout', () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => menu.style.display = 'none', 500);
-    });
-    let pos = this.pos(node);
-    menu.style.top = pos.y + 'px';
-    menu.style.left = pos.x + 'px';
-  }
-
-  resetMenu() {
-    let menus = this.$.editorContainer.querySelectorAll('.tool-menu');
-    menus.forEach(menu => this.moveMenu(menu));
-  }
-
-  moveMenu(menu) {
-    let node = this.$.editor.querySelector('#' + menu.getAttribute('data-for'));
-    if (!node) {
-      menu.parentNode.removeChild(menu);
-      return;
-    }
-    let pos = this.pos(node);
-    menu.style.top = pos.y + 'px';
-    menu.style.left = pos.x + 'px';
-  }
-
-  pos(node) {
-    let pos = {
-      x: 0,
-      y: 0
-    };
-    while(node != this.$.editor) {
-      pos.x += node.offsetLeft;
-      pos.y += node.offsetTop;
-      node = node.parentNode;
-    }
-
-    return pos;
-  }
-
-  // _handleEnter(e) {
-    // let maxDepth = 3;
-    // let depth = 0;
-    // let node = this._range.startContainer;
-    // while(node && depth < maxDepth) {
-    //   if (node.tagName == 'CODE') {
-    //     this.exec("inserttext", '\n');
-    //     e.preventDefault();
-    //     return;
-    //   }
-    //   node = node.parentNode;
-    // }
-  // }
 }
-
 window.customElements.define(BooWysiwygE.is, BooWysiwygE);
