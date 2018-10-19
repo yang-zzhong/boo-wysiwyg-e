@@ -33,7 +33,7 @@ class Backcolor extends Tool {
   }
 
   _valueChanged(color) {
-    this.editor.focus().exec(this.command(), color).update();
+    this.editarea.focus().exec(this.command(), color).update();
   }
 }
 

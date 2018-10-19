@@ -76,7 +76,7 @@ class Title extends Tool {
   }
 
   select(e) {
-    this.editor.focus().exec("formatBlock", e.target.textContent.trim());
+    this.editarea.focus().exec("formatBlock", e.target.textContent.trim());
   }
 }
 window.customElements.define("boo-wysiwyg-title", Title);

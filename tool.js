@@ -13,9 +13,9 @@ export class Tool extends PolymerElement {
         type: Boolean,
         notify: true,
       },
-      editor: {
+      editarea: {
         type: Object,
-        observer: '_editorChanged'
+        observer: '_editareaChanged'
       },
       disabled: {
         type: Boolean,
@@ -24,9 +24,9 @@ export class Tool extends PolymerElement {
     };
   }
 
-  _editorChanged(editor) {
+  _editareaChanged(editarea) {
     if (this.isFormat()) {
-      editor.register(this.command(), this);
+      editarea.register(this.command(), this);
     }
   }
 
@@ -34,7 +34,7 @@ export class Tool extends PolymerElement {
     if (this.disabled) {
       return;
     }
-    this.editor.focus().exec(this.command()).update();
+    this.editarea.focus().exec(this.command()).update();
   }
 
   isFormat() {

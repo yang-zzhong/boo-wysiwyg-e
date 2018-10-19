@@ -24,7 +24,7 @@ class Paragraph extends Tool {
   }
 
   _formatBlock() {
-    this.editor.focus().exec('formatBlock', 'div');
+    this.editarea.focus().exec('formatBlock', 'div');
   }
 }
 

@@ -106,7 +106,7 @@ class Link extends Tool {
 
   _insertLink() {
     setTimeout(() => {
-      this.editor
+      this.editarea
         .focus()
         .select(this.editorSelected)
         .exec(this.command(), this.value);
@@ -117,7 +117,7 @@ class Link extends Tool {
   _openedChanged(opened) {
     if (opened) {
       setTimeout(() => {
-        this.editorSelected = this.editor.selected();
+        this.editorSelected = this.editarea.selected();
         this.$.input.focus();
       }, 350);
     }

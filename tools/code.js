@@ -24,7 +24,7 @@ class Code extends Tool {
   }
 
   _code() {
-    this.editor.focus().exec('formatBlock', 'pre');
+    this.editarea.focus().exec('formatBlock', 'pre');
   }
 }
 
