@@ -10,6 +10,7 @@ class TestEditor extends PolymerElement {
       </style>
       <boo-wysiwyg-e 
         placeholder="hello world"
+        no-toolbar-scrollable
         hide-toolbar-scroll-buttons
         id="editor" value="{{value}}">
       </boo-wysiwyg-e>

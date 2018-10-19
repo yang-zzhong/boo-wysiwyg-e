@@ -49,6 +49,7 @@ class Link extends Tool {
       <boo-window 
         opened="{{opened}}"
         no-resize
+        no-small-screen
         width="370px" pos-policy="center" id="win">
         
         <div slot="content">

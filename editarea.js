@@ -259,28 +259,6 @@ class EditArea extends PolymerElement {
         this.exec("inserttext", "\t");
         e.preventDefault();
         break;
-      case "Delete":
-      case "Backspace":
-        if (!e.ctrlKey) {
-          return;
-        }
-        this.deleteWord();
-        e.preventDefault();
-        break;
-      case "ArrowRight":
-        if (!e.ctrlKey) {
-          return;
-        }
-        this.forwardWord();
-        e.preventDefault();
-        break;
-      case "ArrowLeft":
-        if (!e.ctrlKey) {
-          return;
-        }
-        this.backwardWord();
-        e.preventDefault();
-        break;
     }
   }
 }
