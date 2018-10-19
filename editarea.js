@@ -1,6 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 
-class Editor extends PolymerElement {
+class EditArea extends PolymerElement {
 
   static get template() {
     return html`
@@ -12,6 +12,7 @@ class Editor extends PolymerElement {
           width: 100%;
           min-height: 300px;
           display: block;
+          @apply --boo-wysiwyg-editarea;
         }
         #editArea:focus {
           outline: none;
@@ -20,6 +21,7 @@ class Editor extends PolymerElement {
           content: attr(placeholder);
           display: block;
           opacity: .6;
+          @apply --boo-wysiwyg-placeholder;
         }
         #editArea pre {
           display: block;
@@ -43,26 +45,31 @@ class Editor extends PolymerElement {
       },
       readonly: {
         type: Boolean,
+        notify: true,
         reflectToAttribute: true,
         observer: '_readonlyChanged',
       },
       enableAbsolutePositionEditor: {
         type: Boolean,
+        notify: true,
         reflectToAttribute: true,
         observer: "_enableAbsolutePositionEditorChanged"
       },
       enableInlineTableEditing: {
         type: Boolean,
+        notify: true,
         reflectToAttribute: true,
         observer: "_enableInlineTableEditingChanged"
       },
       defaultParagraphSeparator: {
         type: String,
+        notify: true,
         reflectToAttribute: true,
         observer: "_defaultParagraphSeparatorChanged"
       },
-      styleWithCSS: {
-        type: String,
+      styleWithCss: {
+        type: Boolean,
+        notify: true,
         reflectToAttribute: true,
         observer: "_styleWithCSSChanged"
       },
@@ -84,12 +91,8 @@ class Editor extends PolymerElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.$.editArea.addEventListener("input", e => {
-      this.value = this.$.editArea.innerHTML;
-    });
-    document.addEventListener("selectionchange", e => {
-      this.update();
-    });
+    this.$.editArea.addEventListener("input", e => this.value = this.$.editArea.innerHTML);
+    document.addEventListener("selectionchange", e => this.update());
     this.$.editArea.addEventListener("keydown", this._defaultKeyListener.bind(this));
   }
 
@@ -282,4 +285,4 @@ class Editor extends PolymerElement {
   }
 }
 
-window.customElements.define('boo-wysiwyg-e-editor', Editor);
+window.customElements.define('boo-wysiwyg-editarea', EditArea);

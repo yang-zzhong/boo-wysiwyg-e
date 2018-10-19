@@ -2,7 +2,7 @@ import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@polymer/paper-tabs/paper-tabs.js';
-import './editor.js';
+import './editarea.js';
 import './tools/bold.js';
 import './tools/justify-left.js';
 import './tools/justify-right.js';
@@ -31,7 +31,6 @@ import './tools/title.js';
 /**
  * `boo-wysiwyg-e`
  * 
- *
  * @customElement
  * @polymer
  * @demo demo/index.html
@@ -58,6 +57,7 @@ class BooWysiwygE extends PolymerElement {
           top: 0px;
           z-index: 1;
           background-color: white;
+          @apply --boo-wysiwyge-e-toolbar;
         }
         boo-wysiwyg-e-editor {
           overflow: auto;
@@ -85,11 +85,11 @@ class BooWysiwygE extends PolymerElement {
             <boo-wysiwyg-redo editor="[[editor]]"></boo-wysiwyg-redo>
             <boo-wysiwyg-code editor="[[editor]]"></boo-wysiwyg-code>
             <boo-wysiwyg-p editor="[[editor]]"></boo-wysiwyg-p>
+            <boo-wysiwyg-title editor="[[editor]]"></boo-wysiwyg-title>
             <boo-wysiwyg-link editor="[[editor]]"></boo-wysiwyg-link>
             <boo-wysiwyg-unlink editor="[[editor]]"></boo-wysiwyg-unlink>
             <boo-wysiwyg-superscript editor="[[editor]]"></boo-wysiwyg-superscript>
             <boo-wysiwyg-subscript editor="[[editor]]"></boo-wysiwyg-subscript>
-            <boo-wysiwyg-title editor="[[editor]]"></boo-wysiwyg-title>
             <boo-wysiwyg-remove-format editor="[[editor]]"></boo-wysiwyg-remove-format>
           </app-toolbar>
         </paper-tabs>
@@ -114,19 +114,23 @@ class BooWysiwygE extends PolymerElement {
           <boo-wysiwyg-redo editor="[[editor]]"></boo-wysiwyg-redo>
           <boo-wysiwyg-code editor="[[editor]]"></boo-wysiwyg-code>
           <boo-wysiwyg-p editor="[[editor]]"></boo-wysiwyg-p>
+          <boo-wysiwyg-title editor="[[editor]]"></boo-wysiwyg-title>
           <boo-wysiwyg-link editor="[[editor]]"></boo-wysiwyg-link>
           <boo-wysiwyg-unlink editor="[[editor]]"></boo-wysiwyg-unlink>
           <boo-wysiwyg-superscript editor="[[editor]]"></boo-wysiwyg-superscript>
           <boo-wysiwyg-subscript editor="[[editor]]"></boo-wysiwyg-subscript>
-          <boo-wysiwyg-title editor="[[editor]]"></boo-wysiwyg-title>
           <boo-wysiwyg-remove-format editor="[[editor]]"></boo-wysiwyg-remove-format>
         </div>
       </template>
-      <boo-wysiwyg-e-editor 
+      <boo-wysiwyg-editarea 
         id="editor" 
-        style-with-css
+        readonly="{{readonly}}"
+        enable-absolute-position-editor="{{enableAbsolutePositionEditor}}"
+        default-paragraph-separator="{{defaultParagraphSeparator}}"
+        style-with-css="{{styleWithCss}}"
+        enable-inline-table-editing="{{enableInlineTableEditing}}"
         value="{{value}}"
-        placeholder="[[placeholder]]"></boo-wysiwyg-e-editor>
+        placeholder="[[placeholder]]"></boo-wysiwyg-editarea>
     `;
   }
 
@@ -134,6 +138,26 @@ class BooWysiwygE extends PolymerElement {
   static get properties() {
     return {
       hideToolbarScrollButtons: {
+        type: Boolean,
+        reflectToAttribute: true,
+      },
+      readonly: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
+      enableAbsolutePositionEditor: {
+        type: Boolean,
+        reflectToAttribute: true,
+      },
+      enableInlineTableEditing: {
+        type: Boolean,
+        reflectToAttribute: true,
+      },
+      defaultParagraphSeparator: {
+        type: String,
+        reflectToAttribute: true,
+      },
+      styleWithCss: {
         type: Boolean,
         reflectToAttribute: true,
       },
@@ -145,8 +169,7 @@ class BooWysiwygE extends PolymerElement {
       editor: Object,
       placeholder: {
         type: String,
-        reflectToAttribute: true,
-        value: ""
+        reflectToAttribute: true
       },
       value: {
         type: String,

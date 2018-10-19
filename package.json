@@ -11,7 +11,7 @@
   },
   "main": "boo-wysiwyg-e.js",
   "dependencies": {
-    "code-sample": "^2.0.9",
+    "boo-window": "^0.2.0",
     "@polymer/iron-flex-layout": "^3.0.1",
     "@polymer/iron-iconset-svg": "^3.0.1",
     "@polymer/neon-animation": "^3.0.1",
@@ -25,9 +25,7 @@
     "@polymer/paper-item": "^3.0.1",
     "@polymer/paper-listbox": "^3.0.1",
     "@polymer/paper-menu-button": "^3.0.1",
-    "@polymer/paper-dropdown-menu": "^3.0.1",
-    "boo-color-selector": "0.1.9",
-    "boo-land-row": "0.1.6"
+    "@polymer/paper-dropdown-menu": "^3.0.1"
   },
   "devDependencies": {
     "@polymer/iron-demo-helpers": "^3.0.2",
