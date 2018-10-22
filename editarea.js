@@ -4,7 +4,7 @@ class EditArea extends PolymerElement {
 
   static get template() {
     return html`
-      <style>
+      <style include="boo-wysiwyg-styles">
         :host {
           display: block;
         }
@@ -29,6 +29,7 @@ class EditArea extends PolymerElement {
           color: white;
           border-radius: 2px;
           padding: 5px;
+          @apply --boo-wysiwyg-pre;
         }
       </style>
       <div id="editArea" contenteditable></div>
