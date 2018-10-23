@@ -12,6 +12,7 @@ class Backcolor extends ToggleTool {
       <paper-swatch-picker 
         horizontal-align="[[horizontalAlign]]"
         vertical-align="[[verticalAlign]]"
+        opened="{{opened}}"
         icon="boo-wysiwyg:format-color-fill" 
         color="{{value}}"></paper-swatch-picker>
     `;
@@ -19,6 +20,10 @@ class Backcolor extends ToggleTool {
 
   static get properties() {
     return {
+      opened: {
+        type: Boolean,
+        notify: true
+      },
       horizontalAlign: {
         type: String,
         reflectToAttribute: true
