@@ -1,7 +1,7 @@
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { Tool } from '../tool.js';
-import '../icons.js';
-import '../tool-shared-styles.js';
+import { Tool } from './tool.js';
+import './icons.js';
+import './tool-shared-styles.js';
 
 export class BlockTool extends Tool {
 

@@ -10,6 +10,8 @@ class Backcolor extends ToggleTool {
     return html`
       <style include="tool-shared-styles"></style>
       <paper-swatch-picker 
+        horizontal-align="[[horizontalAlign]]"
+        vertical-align="[[verticalAlign]]"
         icon="boo-wysiwyg:format-color-fill" 
         color="{{value}}"></paper-swatch-picker>
     `;
@@ -17,6 +19,14 @@ class Backcolor extends ToggleTool {
 
   static get properties() {
     return {
+      horizontalAlign: {
+        type: String,
+        reflectToAttribute: true
+      },
+      verticalAlign: {
+        type: String,
+        reflectToAttribute: true
+      },
       value: {
         type: String,
         observer: '_valueChanged'

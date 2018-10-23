@@ -45,6 +45,11 @@ class EditArea extends PolymerElement {
         observer: "_placeholderChanged",
         value: ""
       },
+      focused: {
+        type: Boolean,
+        reflectToAttribute: true,
+        notify: true
+      },
       readonly: {
         type: Boolean,
         notify: true,
@@ -104,6 +109,12 @@ class EditArea extends PolymerElement {
     super.connectedCallback();
     this.$.editArea.addEventListener("input", e => {
       this.value = this.$.editArea.innerHTML;
+    });
+    this.$.editArea.addEventListener("focusin", e => {
+      this.focused = true;
+    });
+    this.$.editArea.addEventListener("focusout", e => {
+      this.focused = false;
     });
     document.addEventListener("selectionchange", e => {
       this._selectionObservers.forEach(o => o.handleSelectionChanged());

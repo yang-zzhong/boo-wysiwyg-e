@@ -1,6 +1,6 @@
 import {Tool} from './tool.js';
-import '../icons.js';
-import '../tool-shared-styles.js';
+import './icons.js';
+import './tool-shared-styles.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 
 export class ToggleTool extends Tool {

@@ -124,6 +124,7 @@ class BooWysiwygE extends PolymerElement {
       </template>
       <boo-wysiwyg-editarea 
         id="editarea" 
+        focused="{{focus}}"
         custom-style="custom-style"
         readonly="{{readonly}}"
         enable-absolute-position-editarea="{{enableAbsolutePositionEditor}}"
@@ -138,6 +139,10 @@ class BooWysiwygE extends PolymerElement {
   static get is() { return 'boo-wysiwyg-e'; }
   static get properties() {
     return {
+      focus: {
+        type: Boolean,
+        observer: '_focusChanged'
+      },
       hideToolbarScrollButtons: {
         type: Boolean,
         reflectToAttribute: true,
@@ -182,6 +187,10 @@ class BooWysiwygE extends PolymerElement {
   connectedCallback() {
     super.connectedCallback();
     this.editarea = this.$.editarea;
+  }
+
+  _focusChanged(focus) {
+    console.log(focus);
   }
 }
 window.customElements.define(BooWysiwygE.is, BooWysiwygE);

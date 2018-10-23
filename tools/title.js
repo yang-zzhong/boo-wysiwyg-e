@@ -21,7 +21,9 @@ class Title extends Tool {
         }
       </style>
 
-      <paper-menu-button>
+      <paper-menu-button 
+        horizontal-align="[[horizontalAlign]]" 
+        vertical-align="[[verticalAlign]]">
 
         <paper-icon-button 
           icon="boo-wysiwyg:text-format" 
@@ -29,10 +31,8 @@ class Title extends Tool {
           slot="dropdown-trigger"></paper-icon-button>
 
         <paper-listbox slot="dropdown-content">
-          <template is="dom-repeat" items=[[blocks]]>
-            <paper-item on-click="select">
-              [[item.label]]
-            </paper-item>
+          <template is="dom-repeat" items="[[blocks]]">
+            <paper-item on-click="select">[[item]]</paper-item>
           </template>
         </paper-listbox>
 
@@ -42,27 +42,17 @@ class Title extends Tool {
 
   static get properties() {
     return {
+      horizontalAlign: {
+        type: String,
+        reflectToAttribute: true
+      },
+      verticalAlign: {
+        type: String,
+        reflectToAttribute: true
+      },
       blocks: {
         type: Array,
-        value: [{
-          block: "H1",
-          label: "H1"
-        }, {
-          block: "H2",
-          label: "H2"
-        }, {
-          block: "H3",
-          label: "H3"
-        }, {
-          block: "H4",
-          label: "H4"
-        }, {
-          block: "H5",
-          label: "H5"
-        }, {
-          block: "H6",
-          label: "H6"
-        }]
+        value: ["h1","h2", "h3", "h4", "h5", "h6"]
       }
     };
   }
@@ -75,7 +65,8 @@ class Title extends Tool {
     this.editarea
       .focus()
       .selectCurrent()
-      .exec("formatBlock", e.target.textContent.trim());
+      .exec("formatBlock", e.target.textContent.trim().toUpperCase());
   }
 }
+
 window.customElements.define("boo-wysiwyg-title", Title);
