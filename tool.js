@@ -4,15 +4,6 @@ export class Tool extends PolymerElement {
 
   static get properties() {
     return {
-      active: {
-        type: Boolean,
-        reflectToAttribute: true,
-        computed: '_computeActive(value)'
-      },
-      value: {
-        type: Boolean,
-        notify: true,
-      },
       editarea: {
         type: Object,
         observer: '_editareaChanged'
@@ -25,23 +16,12 @@ export class Tool extends PolymerElement {
   }
 
   _editareaChanged(editarea) {
-    if (this.isFormat()) {
-      editarea.register(this.command(), this);
+    if (typeof this.handleSelectionChanged == 'function') {
+      editarea.addSelectionObserver(this);
     }
   }
 
-  _toggle() {
-    if (this.disabled) {
-      return;
-    }
-    this.editarea.focus().exec(this.command()).update();
-  }
-
-  isFormat() {
-    return true;
-  }
-
-  _computeActive(value) {
-    return value;
+  exec(command, params) {
+    this.editarea.focus().exec(command, params);
   }
 }

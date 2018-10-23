@@ -44,6 +44,7 @@ class Link extends Tool {
 
       <paper-icon-button
         icon="boo-wysiwyg:link"
+        title="添加链接"
         on-click="_open"></paper-icon-button>
 
       <boo-window 
@@ -79,16 +80,8 @@ class Link extends Tool {
     };
   }
 
-  conncectedCallback() {
-    super.connectedCallback();
-  }
-
   command() {
     return 'createLink';
-  }
-
-  isFormat() {
-    return false;
   }
 
   _open() {
@@ -108,18 +101,15 @@ class Link extends Tool {
     setTimeout(() => {
       this.editarea
         .focus()
-        .select(this.editorSelected)
+        .selectCurrent()
         .exec(this.command(), this.value);
       this.opened = false;
-    }, 10);
+    }, 1);
   }
 
   _openedChanged(opened) {
     if (opened) {
-      setTimeout(() => {
-        this.editorSelected = this.editarea.selected();
-        this.$.input.focus();
-      }, 350);
+      setTimeout(() => this.$.input.focus(), 350);
     }
   }
 }

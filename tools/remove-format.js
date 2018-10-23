@@ -1,18 +1,18 @@
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { Tool } from '../tool.js';
-import '../icons.js';
-import '../tool-shared-styles.js';
+import { DirectTool } from '../direct-tool.js';
 
-class RemoveFormat extends Tool {
+class RemoveFormat extends DirectTool {
 
-  static get template() {
-    return html`
-      <style include="tool-shared-styles"></style>
-      <paper-icon-button
-        toggle
-        icon="boo-wysiwyg:clear"
-        on-click="_toggle"></paper-icon-button>
-    `;
+  static get properties() {
+    return {
+      icon: {
+        type: String,
+        value: 'boo-wysiwyg:clear',
+      },
+      title: {
+        type: String,
+        value: '清除格式'
+      }
+    };
   }
 
   command() {

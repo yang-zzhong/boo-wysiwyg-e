@@ -71,12 +71,11 @@ class Title extends Tool {
     return 'formatBlock';
   }
 
-  isFormat() {
-    return false;
-  }
-
   select(e) {
-    this.editarea.focus().exec("formatBlock", e.target.textContent.trim());
+    this.editarea
+      .focus()
+      .selectCurrent()
+      .exec("formatBlock", e.target.textContent.trim());
   }
 }
 window.customElements.define("boo-wysiwyg-title", Title);

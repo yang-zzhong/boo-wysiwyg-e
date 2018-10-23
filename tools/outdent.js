@@ -1,18 +1,18 @@
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { Tool } from '../tool.js';
-import '../icons.js';
-import '../tool-shared-styles.js';
+import { DirectTool } from '../direct-tool.js';
 
-class Outdent extends Tool {
+class Outdent extends DirectTool {
 
-  static get template() {
-    return html`
-      <style include="tool-shared-styles"></style>
-      <paper-icon-button
-        toggle
-        icon="boo-wysiwyg:format-indent-decrease"
-        on-click="_toggle"></paper-icon-button>
-    `;
+  static get properties() {
+    return {
+      icon: {
+        type: String,
+        value: 'boo-wysiwyg:format-indent-decrease',
+      },
+      title: {
+        type: String,
+        value: '减少缩进'
+      },
+    };
   }
 
   command() {

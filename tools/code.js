@@ -1,30 +1,22 @@
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { Tool } from '../tool.js';
-import '../icons.js';
-import '../tool-shared-styles.js';
+import {BlockTool} from '../block-tool.js';
 
-class Code extends Tool {
+class Code extends BlockTool {
 
-  static get template() {
-    return html`
-      <style include="tool-shared-styles"></style>
-      <paper-icon-button
-        toggle
-        icon="boo-wysiwyg:format-code"
-        on-click="_code"></paper-icon-button>
-    `;
+  static get properties() {
+    return {
+      icon: {
+        type: String,
+        value: 'boo-wysiwyg:format-code',
+      },
+      title: {
+        type: String,
+        value: '代码块'
+      }
+    };
   }
 
-  command() {
-    return 'formatBlock';
-  }
-
-  isFormat() {
-    return false;
-  }
-
-  _code() {
-    this.editarea.focus().exec('formatBlock', 'pre');
+  block() {
+    return 'pre';
   }
 }
 

@@ -124,6 +124,7 @@ class BooWysiwygE extends PolymerElement {
       </template>
       <boo-wysiwyg-editarea 
         id="editarea" 
+        custom-style="custom-style"
         readonly="{{readonly}}"
         enable-absolute-position-editarea="{{enableAbsolutePositionEditor}}"
         default-paragraph-separator="{{defaultParagraphSeparator}}"

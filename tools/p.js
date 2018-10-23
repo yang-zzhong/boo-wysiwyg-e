@@ -1,31 +1,22 @@
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { Tool } from '../tool.js';
-import '../icons.js';
-import '../tool-shared-styles.js';
+import {BlockTool} from '../block-tool.js';
 
-class Paragraph extends Tool {
+class P extends BlockTool {
 
-  static get template() {
-    return html`
-      <style include="tool-shared-styles"></style>
-      <paper-icon-button
-        toggle
-        icon="boo-wysiwyg:local-parking"
-        on-click="_formatBlock"></paper-icon-button>
-    `;
+  static get properties() {
+    return {
+      icon: {
+        type: String,
+        value: 'boo-wysiwyg:local-parking',
+      },
+      title: {
+        type: String,
+        value: '段落'
+      }
+    };
   }
-
-  command() {
-    return 'formatBlock';
-  }
-
-  isFormat() {
-    return false;
-  }
-
-  _formatBlock() {
-    this.editarea.focus().exec('formatBlock', 'div');
+  block() {
+    return 'div';
   }
 }
 
-window.customElements.define('boo-wysiwyg-p', Paragraph);
+window.customElements.define('boo-wysiwyg-p', P);

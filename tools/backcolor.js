@@ -1,10 +1,10 @@
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { Tool } from '../tool.js';
+import { ToggleTool } from '../toggle-tool.js';
 import '@polymer/paper-swatch-picker/paper-swatch-picker.js';
 import '../icons.js';
 import '../tool-shared-styles.js';
 
-class Backcolor extends Tool {
+class Backcolor extends ToggleTool {
 
   static get template() {
     return html`
@@ -25,15 +25,11 @@ class Backcolor extends Tool {
   }
 
   command() {
-    return 'backcolor';
-  }
-
-  isForamt() {
-    return false;
+    return 'backColor';
   }
 
   _valueChanged(color) {
-    this.editarea.focus().exec(this.command(), color).update();
+    this.editarea.focus().selectCurrent().exec(this.command(), color);
   }
 }
 

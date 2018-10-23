@@ -24,16 +24,12 @@ class Forecolor extends Tool {
     };
   }
 
-  isForamt() {
-    return false;
-  }
-
   command() {
-    return 'forecolor';
+    return 'foreColor';
   }
 
   _valueChanged(color) {
-    this.editarea.focus().exec(this.command(), color).update();
+    this.editarea.focus().selectCurrent().exec(this.command(), color);
   }
 }
 

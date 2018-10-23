@@ -1,18 +1,18 @@
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { Tool } from '../tool.js';
-import '../icons.js';
-import '../tool-shared-styles.js';
+import { ToggleTool } from '../toggle-tool.js';
 
-class Strike extends Tool {
+class Strike extends ToggleTool {
 
-  static get template() {
-    return html`
-      <style include="tool-shared-styles"></style>
-      <paper-icon-button
-        toggle
-        icon="boo-wysiwyg:format-strikethrough"
-        on-click="_toggle"></paper-icon-button>
-    `;
+  static get properties() {
+    return {
+      icon: {
+        type: String,
+        value: 'boo-wysiwyg:format-strikethrough',
+      },
+      title: {
+        type: String,
+        value: '删除线'
+      }
+    };
   }
 
   command() {

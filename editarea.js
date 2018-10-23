@@ -1,4 +1,5 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import {Keyboard} from './keyboard.js';
 
 class EditArea extends PolymerElement {
 
@@ -74,10 +75,6 @@ class EditArea extends PolymerElement {
         reflectToAttribute: true,
         observer: "_styleWithCSSChanged"
       },
-      formats: {
-        type: Object,
-        value: {},
-      },
       value: {
         type: String,
         notify: true,
@@ -86,19 +83,51 @@ class EditArea extends PolymerElement {
       scrollTarget: {
         type: Object,
         observer: "_scrollTargetChanged"
+      },
+      _selectionObservers: {
+        type: Array,
+        value: [],
+      },
+      _keyDownHandlers: {
+        type: Object,
+        value: {}
+      },
+      _currentRange: Object,
+      _inputObservers: {
+        type: Array,
+        value: []
       }
     };
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.$.editArea.addEventListener("input", e => this.value = this.$.editArea.innerHTML);
-    document.addEventListener("selectionchange", e => this.update());
-    this.$.editArea.addEventListener("keydown", this._defaultKeyListener.bind(this));
+    this.$.editArea.addEventListener("input", e => {
+      this.value = this.$.editArea.innerHTML;
+    });
+    document.addEventListener("selectionchange", e => {
+      this._selectionObservers.forEach(o => o.handleSelectionChanged());
+      if (this.selection().rangeCount == 0) {
+        return;
+      }
+      this._currentRange = this.selection().getRangeAt(0);
+    });
+    this.$.editArea.addEventListener('keydown', this._handleKeyDown.bind(this));
+    this.onKeyDown('Tab', function(e) {
+        this.exec("inserttext", "\t");
+        e.preventDefault();
+    });
   }
 
-  register(format, node) {
-    this.formats[format] = node;
+  onKeyDown(key, callback) {
+    this._keyDownHandlers[key] = callback;
+    return this;
+  }
+
+  addSelectionObserver(node) {
+    if (node.handleSelectionChanged) {
+      this._selectionObservers.push(node);
+    }
   }
 
   selection() {
@@ -111,6 +140,10 @@ class EditArea extends PolymerElement {
 
   offset() {
     return this.offsetSelectedStart();
+  }
+
+  selectCurrent() {
+    return this.select(this.selected());
   }
 
   focus() {
@@ -135,6 +168,10 @@ class EditArea extends PolymerElement {
     let node = toStart ? range.startContainer : range.endContainer;
     let offset = toStart ? range.startOffset : range.endOffset;
     return offset + this.countBefore(node);
+  }
+
+  update() {
+    this._selectionObservers.forEach(o => o.handleSelectionChanged());
   }
 
   countBefore(node) {
@@ -195,22 +232,18 @@ class EditArea extends PolymerElement {
   }
 
   selected() {
+    if (this._currentRange) {
+      return this._currentRange;
+    }
     if (this.selection().rangeCount == 0) {
       return;
     }
-
-    return this.selection().getRangeAt(0);
+    return this._currentRange = this.selection().getRangeAt(0);
   }
 
   exec(command, params) {
     document.execCommand(command, false, params);
     return this;
-  }
-
-  update() {
-    for(let command in this.formats) {
-      this.formats[command].value = document.queryCommandState(command);
-    }
   }
 
   _valueChanged(val, oldVal) {
@@ -254,13 +287,24 @@ class EditArea extends PolymerElement {
     this.focus().exec(c);
   }
 
-  _defaultKeyListener(e) {
-    switch (e.key) {
-      case "Tab":
-        this.exec("inserttext", "\t");
-        e.preventDefault();
-        break;
+  _handleKeyDown(e) {
+    let handler = this._keyDownHandlers[this._key(e)];
+    if (handler) {
+      return handler.call(this, e);
     }
+  }
+
+  _key(e) {
+    let key = [];
+    if (e.ctrlKey) {
+      key.push('Ctrl');
+    }
+    if (e.shiftKey) {
+      key.push('Shift');
+    }
+    key.push(e.key);
+
+    return key.join("+");
   }
 }
 

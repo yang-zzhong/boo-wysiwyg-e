@@ -1,21 +1,18 @@
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { Tool } from '../tool.js';
-import '../icons.js';
-import '../tool-shared-styles.js';
+import { ToggleTool } from '../toggle-tool.js';
 
-class JustifyRight extends Tool {
-
-  static get template() {
-    return html`
-      <style include="tool-shared-styles"></style>
-      <paper-icon-button
-        disabled="[[disabled]]"
-        icon="boo-wysiwyg:format-align-right"
-        title="右对齐"
-        on-click="_toggle"></paper-icon-button>
-    `;
+class JustifyRight extends ToggleTool {
+  static get properties() {
+    return {
+      icon: {
+        type: String,
+        value: 'boo-wysiwyg:format-align-right',
+      },
+      title: {
+        type: String,
+        value: '右对齐'
+      }
+    };
   }
-
   command() {
     return 'justifyRight';
   }

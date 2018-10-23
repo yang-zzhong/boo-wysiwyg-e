@@ -1,18 +1,17 @@
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { Tool } from '../tool.js';
-import '../icons.js';
-import '../tool-shared-styles.js';
+import { ToggleTool } from '../toggle-tool.js';
 
-class Italic extends Tool {
-
-  static get template() {
-    return html`
-      <style include="tool-shared-styles"></style>
-      <paper-icon-button
-        toggle
-        icon="boo-wysiwyg:format-italic"
-        on-click="_toggle"></paper-icon-button>
-    `;
+class Italic extends ToggleTool {
+  static get properties() {
+    return {
+      icon: {
+        type: String,
+        value: 'boo-wysiwyg:format-italic',
+      },
+      title: {
+        type: String,
+        value: '斜体字'
+      }
+    };
   }
 
   command() {
