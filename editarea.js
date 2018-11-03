@@ -146,7 +146,7 @@ class EditArea extends PolymerElement {
   index() {
     let root = {weight: 0, children: []};
     this.$.editArea.querySelectorAll('h1,h2,h3,h4').forEach((node) => {
-      let id = Math.random().toString(36).substr(2);
+      let id = "a" + Math.random().toString(36).substr(2);
       node.setAttribute("id", id);
       let item = {
         id: id,
