@@ -6,6 +6,22 @@ $_documentContainer.setAttribute('style', 'display: none;');
 $_documentContainer.innerHTML = `<iron-iconset-svg size="24" name="boo-wysiwyg">
 
 <svg><defs>
+
+  <g id="p">
+    <text stroke="null" transform="matrix(0.8515537760680693,0,0,0.8723946191317608,1.315661125618135,1.9826230118345634) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_1" y="18.61898" x="-0.807076">pa</text>
+  </g>
+  <g id="h1">
+    <text stroke="null" transform="matrix(0.8515537760680693,0,0,0.8723946191317608,1.315661125618135,1.9826230118345634) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_1" y="18.61898" x="-0.807076">h1</text>
+  </g>
+  <g id="h2">
+    <text stroke="null" transform="matrix(0.8515537760680693,0,0,0.8723946191317608,1.315661125618135,1.9826230118345634) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_1" y="18.61898" x="-0.807076">h2</text>
+  </g>
+  <g id="h3">
+    <text stroke="null" transform="matrix(0.8515537760680693,0,0,0.8723946191317608,1.315661125618135,1.9826230118345634) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_1" y="18.61898" x="-0.807076">h3</text>
+  </g>
+  <g id="h4">
+    <text stroke="null" transform="matrix(0.8515537760680693,0,0,0.8723946191317608,1.315661125618135,1.9826230118345634) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_1" y="18.61898" x="-0.807076">h4</text>
+  </g>
   <g id="text-format"><path d="M5 17v2h14v-2H5zm4.5-4.2h5l.9 2.2h2.1L12.75 4h-1.5L6.5 15h2.1l.9-2.2zM12 5.98L13.87 11h-3.74L12 5.98z"></path></g>
   <g id="format-bold"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"></path></g>
   <g id="format-align-center"><path d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"></path></g>

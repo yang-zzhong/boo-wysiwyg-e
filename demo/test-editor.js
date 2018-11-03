@@ -23,11 +23,11 @@ class TestEditor extends PolymerElement {
   }
 
   _setContent() {
-    this.$.editor.value = '<h1>我是一个好孩子</h1><div>我是一个好孩子</div>';
+    this.$.editor.setContent('<h1>我是一个好孩子</h1><div>我是一个好孩子</div>');
   }
 
   _getContent() {
-    this.$.pre.innerHTML = this.$.editor.value;
+    this.$.pre.innerHTML = this.$.editor.content();
   }
 }
 

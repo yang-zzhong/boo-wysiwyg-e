@@ -1,22 +1,23 @@
 import {BlockTool} from '../block-tool.js';
 
-class P extends BlockTool {
+class H3 extends BlockTool {
 
   static get properties() {
     return {
       icon: {
         type: String,
-        value: 'boo-wysiwyg:p',
+        value: 'boo-wysiwyg:h3',
       },
       title: {
         type: String,
-        value: '段落'
+        value: 'h3'
       }
     };
   }
+
   block() {
-    return 'div';
+    return 'h3';
   }
 }
 
-window.customElements.define('boo-wysiwyg-p', P);
+window.customElements.define('boo-wysiwyg-h3', H3);

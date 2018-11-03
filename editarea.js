@@ -80,11 +80,6 @@ class EditArea extends PolymerElement {
         reflectToAttribute: true,
         observer: "_styleWithCSSChanged"
       },
-      value: {
-        type: String,
-        notify: true,
-        observer: "_valueChanged"
-      },
       scrollTarget: {
         type: Object,
         observer: "_scrollTargetChanged"
@@ -108,7 +103,6 @@ class EditArea extends PolymerElement {
   connectedCallback() {
     super.connectedCallback();
     this.$.editArea.addEventListener("input", e => {
-      this.value = this.$.editArea.innerHTML;
       this.dispatchEvent(new CustomEvent('input'));
     });
     this.$.editArea.addEventListener("focusin", e => {
@@ -150,7 +144,7 @@ class EditArea extends PolymerElement {
       node.setAttribute("id", id);
       let item = {
         id: id,
-        title: node.innerHTML,
+        title: node.textContent,
         weight: parseInt(node.tagName.substr(1,1)),
         children: []
       };
@@ -289,13 +283,12 @@ class EditArea extends PolymerElement {
     return this;
   }
 
-  _valueChanged(val, oldVal) {
-    if (oldVal != null) {
-      return;
-    }
-    let offset = this.focus().offset();
-    this.$.editArea.innerHTML = val;
-    this.seek(offset);
+  setContent(content) {
+    this.$.editArea.innerHTML = content;
+  }
+
+  content() {
+    return this.$.editArea.innerHTML;
   }
 
   _placeholderChanged(placeholder) {

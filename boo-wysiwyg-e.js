@@ -26,7 +26,10 @@ import './tools/indent.js';
 import './tools/outdent.js';
 import './tools/super-script.js';
 import './tools/sub-script.js';
-import './tools/title.js';
+import './tools/h1.js';
+import './tools/h2.js';
+import './tools/h3.js';
+import './tools/h4.js';
 
 /**
  * `boo-wysiwyg-e`
@@ -85,7 +88,10 @@ class BooWysiwygE extends PolymerElement {
             <boo-wysiwyg-redo editarea="[[editarea]]"></boo-wysiwyg-redo>
             <boo-wysiwyg-code editarea="[[editarea]]"></boo-wysiwyg-code>
             <boo-wysiwyg-p editarea="[[editarea]]"></boo-wysiwyg-p>
-            <boo-wysiwyg-title editarea="[[editarea]]"></boo-wysiwyg-title>
+            <boo-wysiwyg-h1 editarea="[[editarea]]"></boo-wysiwyg-h1>
+            <boo-wysiwyg-h2 editarea="[[editarea]]"></boo-wysiwyg-h2>
+            <boo-wysiwyg-h3 editarea="[[editarea]]"></boo-wysiwyg-h3>
+            <boo-wysiwyg-h4 editarea="[[editarea]]"></boo-wysiwyg-h4>
             <boo-wysiwyg-link editarea="[[editarea]]"></boo-wysiwyg-link>
             <boo-wysiwyg-unlink editarea="[[editarea]]"></boo-wysiwyg-unlink>
             <boo-wysiwyg-superscript editarea="[[editarea]]"></boo-wysiwyg-superscript>
@@ -114,7 +120,10 @@ class BooWysiwygE extends PolymerElement {
           <boo-wysiwyg-redo editarea="[[editarea]]"></boo-wysiwyg-redo>
           <boo-wysiwyg-code editarea="[[editarea]]"></boo-wysiwyg-code>
           <boo-wysiwyg-p editarea="[[editarea]]"></boo-wysiwyg-p>
-          <boo-wysiwyg-title editarea="[[editarea]]"></boo-wysiwyg-title>
+          <boo-wysiwyg-h1 editarea="[[editarea]]"></boo-wysiwyg-h1>
+          <boo-wysiwyg-h2 editarea="[[editarea]]"></boo-wysiwyg-h2>
+          <boo-wysiwyg-h3 editarea="[[editarea]]"></boo-wysiwyg-h3>
+          <boo-wysiwyg-h4 editarea="[[editarea]]"></boo-wysiwyg-h4>
           <boo-wysiwyg-link editarea="[[editarea]]"></boo-wysiwyg-link>
           <boo-wysiwyg-unlink editarea="[[editarea]]"></boo-wysiwyg-unlink>
           <boo-wysiwyg-superscript editarea="[[editarea]]"></boo-wysiwyg-superscript>
@@ -132,7 +141,6 @@ class BooWysiwygE extends PolymerElement {
         default-paragraph-separator="{{defaultParagraphSeparator}}"
         style-with-css="{{styleWithCss}}"
         enable-inline-table-editing="{{enableInlineTableEditing}}"
-        value="{{value}}"
         placeholder="[[placeholder]]"></boo-wysiwyg-editarea>
     `;
   }
@@ -192,6 +200,14 @@ class BooWysiwygE extends PolymerElement {
 
   _focusChanged(focus) {
     console.log(focus);
+  }
+
+  setContent(content) {
+    this.editarea.setContent(content);
+  }
+
+  content() {
+    return this.editarea.content();
   }
 
   _input() {
