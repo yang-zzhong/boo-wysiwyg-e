@@ -148,6 +148,9 @@ class EditArea extends PolymerElement {
         weight: parseInt(node.tagName.substr(1,1)),
         children: []
       };
+      if (item.title.trim() == "") {
+        return;
+      }
       this.insertIndex(root, item);
     });
 
