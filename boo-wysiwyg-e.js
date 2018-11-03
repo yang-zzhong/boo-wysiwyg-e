@@ -127,6 +127,7 @@ class BooWysiwygE extends PolymerElement {
         focused="{{focus}}"
         custom-style="custom-style"
         readonly="{{readonly}}"
+        on-input="_input"
         enable-absolute-position-editarea="{{enableAbsolutePositionEditor}}"
         default-paragraph-separator="{{defaultParagraphSeparator}}"
         style-with-css="{{styleWithCss}}"
@@ -191,6 +192,13 @@ class BooWysiwygE extends PolymerElement {
 
   _focusChanged(focus) {
     console.log(focus);
+  }
+
+  _input() {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      console.log(this.$.editarea.index());
+    }, 5000);
   }
 }
 window.customElements.define(BooWysiwygE.is, BooWysiwygE);

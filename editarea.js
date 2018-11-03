@@ -109,6 +109,7 @@ class EditArea extends PolymerElement {
     super.connectedCallback();
     this.$.editArea.addEventListener("input", e => {
       this.value = this.$.editArea.innerHTML;
+      this.dispatchEvent(new CustomEvent('input'));
     });
     this.$.editArea.addEventListener("focusin", e => {
       this.focused = true;
@@ -122,6 +123,7 @@ class EditArea extends PolymerElement {
         return;
       }
       this._currentRange = this.selection().getRangeAt(0);
+      this.dispatchEvent(new CustomEvent('selectionchange'));
     });
     this.$.editArea.addEventListener('keydown', this._handleKeyDown.bind(this));
     this.onKeyDown('Tab', function(e) {
@@ -139,6 +141,36 @@ class EditArea extends PolymerElement {
     if (node.handleSelectionChanged) {
       this._selectionObservers.push(node);
     }
+  }
+
+  index() {
+    let root = {weight: 0, children: []};
+    this.$.editArea.querySelectorAll('h1,h2,h3,h4').forEach((node) => {
+      let id = Math.random().toString(36).substr(2);
+      node.setAttribute("id", id);
+      let item = {
+        id: id,
+        title: node.innerHTML,
+        weight: parseInt(node.tagName.substr(1,1)),
+        children: []
+      };
+      this.insertIndex(root, item);
+    });
+
+    return root.children;
+  }
+
+  insertIndex(root, item) {
+    let len = root.children.length - 1;
+    if (root.children.length == 0 || root.weight == item.weight - 1) {
+      root.children.push(item);
+      return;
+    }
+    if (root.children[len].weight >= item.weight) {
+      root.children.push(item);
+      return;
+    }
+    this.insertIndex(root.children[len], item);
   }
 
   selection() {
