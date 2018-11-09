@@ -30,6 +30,9 @@ export class BlockTool extends Tool {
   }
 
   formatBlock() {
-    this.editarea.focus().exec('formatBlock', this.block());
+    this.editarea.focus();
+    setTimeout(()=> {
+      this.editarea.exec('formatBlock', this.block());
+    }, 100);
   }
 }

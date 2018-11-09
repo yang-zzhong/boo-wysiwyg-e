@@ -1,5 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import {Keyboard} from './keyboard.js';
+import RangeHandler from './range/handler'
 
 class EditArea extends PolymerElement {
 
@@ -102,6 +103,23 @@ class EditArea extends PolymerElement {
 
   connectedCallback() {
     super.connectedCallback();
+    this.$.editArea.addEventListener('mouseup', () => {
+      this.saveCurrentRange();
+    }, false);
+    this.$.editArea.addEventListener('keyup', () => {
+      this.saveCurrentRange();
+    }, false)
+    this.$.editArea.addEventListener('mouseout', (e) => {
+      if (e.target === this.$.editArea) {
+        this.saveCurrentRange();
+      }
+    }, false);
+    this.touchHandler = (e) => {
+      if (this.$.editArea.contains(e.target)) {
+        this.saveCurrentRange();
+      }
+    }
+    window.addEventListener('touchend', this.touchHandler, false)
     this.$.editArea.addEventListener("input", e => {
       this.dispatchEvent(new CustomEvent('input'));
     });
@@ -111,18 +129,10 @@ class EditArea extends PolymerElement {
     this.$.editArea.addEventListener("focusout", e => {
       this.focused = false;
     });
-    document.addEventListener("selectionchange", e => {
-      this._selectionObservers.forEach(o => o.handleSelectionChanged());
-      if (this.selection().rangeCount == 0) {
-        return;
-      }
-      this._currentRange = this.selection().getRangeAt(0);
-      this.dispatchEvent(new CustomEvent('selectionchange'));
-    });
     this.$.editArea.addEventListener('keydown', this._handleKeyDown.bind(this));
-    this.onKeyDown('Tab', function(e) {
-        this.exec("inserttext", "\t");
-        e.preventDefault();
+    this.onKeyDown('Tab', e => {
+      this.exec("inserttext", "\t");
+      e.preventDefault();
     });
   }
 
@@ -175,6 +185,8 @@ class EditArea extends PolymerElement {
       return this.shadowRoot.getSelection();
     } else if (window.getSelection) {
       return window.getSelection();
+    } else {
+      return document.getSelection();
     }
   }
 
@@ -275,15 +287,52 @@ class EditArea extends PolymerElement {
     if (this._currentRange) {
       return this._currentRange;
     }
-    if (this.selection().rangeCount == 0) {
-      return;
-    }
-    return this._currentRange = this.selection().getRangeAt(0);
+    this.saveCurrentRange();
+    return this._currentRange;
   }
 
-  exec(command, params) {
-    document.execCommand(command, false, params);
-    return this;
+  exec(command, arg){
+    this.restoreSelection();
+    if (this._currentRange) {
+      new RangeHandler(this._currentRange).execCommand(command, arg);
+    }
+  }
+
+  saveCurrentRange(){
+    const selection = this.selection();
+    if (selection.rangeCount < 1) {
+      return;
+    }
+    const content = this.$.editArea;
+    for (let i = 0; i < selection.rangeCount; i++) {
+      const range = selection.getRangeAt(0);
+      let start = range.startContainer;
+      let end = range.endContainer;
+      // for IE11 : node.contains(textNode) always return false
+      start = start.nodeType === Node.TEXT_NODE ? start.parentNode : start;
+      end = end.nodeType === Node.TEXT_NODE ? end.parentNode : end;
+      if (content.contains(start) && content.contains(end)) {
+        this._currentRange = range;
+        break;
+      }
+    }
+  }
+
+  restoreSelection(){
+    const selection = this.selection();
+    selection.removeAllRanges();
+    if (this._currentRange) {
+      selection.addRange(this._currentRange);
+      return;
+    }
+    const content = this.$.editArea;
+    const div = document.createElement('div');
+    const range = document.createRange();
+    content.appendChild(div);
+    range.setStart(div, 0);
+    range.setEnd(div, 0);
+    selection.addRange(range);
+    this._currentRange = range;
   }
 
   setContent(content) {
