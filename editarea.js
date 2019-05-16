@@ -118,6 +118,9 @@ class EditArea extends LitElement {
       this.exec("inserttext", "\t");
       e.preventDefault();
     });
+    document.addEventListener('selectionchange', () => {
+      this.selectionChanged();
+    });
   }
 
   onKeyDown(key, callback) {
@@ -319,7 +322,7 @@ class EditArea extends LitElement {
   }
 
   _readonlyChanged(readonly) {
-    let ea = this.shadowRoot.querySelector('#editerea');
+    let ea = this.shadowRoot.querySelector('[name=area]');
     if (readonly) {
       ea.removeAttribute('contenteditable');
     } else {

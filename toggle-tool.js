@@ -36,9 +36,6 @@ export class BooWysiwygeToggleTool extends BooWysiwygeTool {
       throw 'no command found';
     }
     this.area().focus().exec(this.command());
-    if (typeof this.handleSelectionChanged == 'function') {
-      this.handleSelectionChanged();
-    }
   }
 
   handleSelectionChanged() {
