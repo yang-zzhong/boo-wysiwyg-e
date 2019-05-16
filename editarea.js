@@ -1,135 +1,119 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import {Keyboard} from './keyboard.js';
+import { LitElement, html, css } from 'lit-element';
 import RangeHandler from './range/handler'
 
-class EditArea extends PolymerElement {
+class EditArea extends LitElement {
 
-  static get template() {
-    return html`
-      <style include="boo-wysiwyg-styles">
-        :host {
-          display: block;
-        }
-        #editArea {
-          width: 100%;
-          min-height: 300px;
-          display: block;
-          @apply --boo-wysiwyg-editarea;
-        }
-        #editArea:focus {
-          outline: none;
-        }
-        #editArea:empty:before {
-          content: attr(placeholder);
-          display: block;
-          opacity: .6;
-          @apply --boo-wysiwyg-placeholder;
-        }
-        #editArea pre {
-          display: block;
-          background-color: rgb(109, 76, 65);
-          color: white;
-          border-radius: 2px;
-          padding: 5px;
-          @apply --boo-wysiwyg-pre;
-        }
-      </style>
-      <div id="editArea" contenteditable></div>
+  static get styles() {
+    return css`
+      :host {
+        display: block;
+      }
+      [name=area] {
+        width: 100%;
+        min-height: 300px;
+        display: block;
+      }
+      [name=area]:focus {
+        outline: none;
+      }
+      [name=area]:empty:before {
+        content: attr(placeholder);
+        display: block;
+        opacity: .6;
+      }
+      [name=area] pre {
+        display: block;
+        background-color: rgb(109, 76, 65);
+        color: white;
+        border-radius: 2px;
+        padding: 5px;
+      }
     `;
   }
 
+  render() {
+    return html`
+      <div name="area" contenteditable></div>
+    `;
+  }
   static get properties() {
     return {
-      placeholder: {
-        type: String,
-        reflectToAttribute: true,
-        observer: "_placeholderChanged",
-        value: ""
-      },
-      focused: {
-        type: Boolean,
-        reflectToAttribute: true,
-        notify: true
-      },
-      readonly: {
-        type: Boolean,
-        notify: true,
-        reflectToAttribute: true,
-        observer: '_readonlyChanged',
-      },
-      enableAbsolutePositionEditor: {
-        type: Boolean,
-        notify: true,
-        reflectToAttribute: true,
-        observer: "_enableAbsolutePositionEditorChanged"
-      },
-      enableInlineTableEditing: {
-        type: Boolean,
-        notify: true,
-        reflectToAttribute: true,
-        observer: "_enableInlineTableEditingChanged"
-      },
-      defaultParagraphSeparator: {
-        type: String,
-        notify: true,
-        reflectToAttribute: true,
-        observer: "_defaultParagraphSeparatorChanged"
-      },
-      styleWithCss: {
-        type: Boolean,
-        notify: true,
-        reflectToAttribute: true,
-        observer: "_styleWithCSSChanged"
-      },
-      scrollTarget: {
-        type: Object,
-        observer: "_scrollTargetChanged"
-      },
-      _selectionObservers: {
-        type: Array,
-        value: [],
-      },
-      _keyDownHandlers: {
-        type: Object,
-        value: {}
-      },
+      placeholder: { type: String },
+      focused: { type: Boolean },
+      readonly: { type: Boolean },
+      name: {type: String, reflect: true},
+      _selectionObservers: { type: Array },
+      _keyDownHandlers: { type: Object },
       _currentRange: Object,
-      _inputObservers: {
-        type: Array,
-        value: []
-      }
+      _inputObservers: { type: Array }
     };
+  }
+
+  constructor() {
+    super();
+    this._selectionObservers = [];
+    this._keyDownHandlers = [];
+    this._inputObservers = [];
+  }
+
+  attributeChangedCallback(name, old, val) {
+    super.attributeChangedCallback(name, old, val);
+    if (name == 'absolute-position-editor' && val) {
+      this._feature('enableAbsolutePositionEditor');
+    } else if (name == 'inline-table-editing') {
+      this._feature('enableInlineTableEditing');
+    } else if (name == 'default-paragraph-separator') {
+      this.focus().exec('defaultParagraphSeparator', val);
+    } else if (name == 'style-with-css') {
+      this._feature('styleWithCSS');
+    } else if (name == 'readonly') {
+      this._readonlyChanged(val);
+    } else if (name == 'placeholder') {
+      this._placeholderChanged(val);
+    } else if (name ="name") {
+      window.boo_wysiwyge_editarea = window.boo_wysiwyge_editarea || {};
+      window.boo_wysiwyge_editarea[val] = this;
+    }
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.$.editArea.addEventListener('mouseup', () => {
+    setTimeout(() => {
+      this.initEvent();
+    }, 1000);
+  }
+
+  initEvent() {
+    let ea = this.shadowRoot.querySelector("[name=area]");
+    ea.addEventListener('mouseup', () => {
       this.saveCurrentRange();
     }, false);
-    this.$.editArea.addEventListener('keyup', () => {
+    ea.addEventListener('keyup', () => {
       this.saveCurrentRange();
     }, false)
-    this.$.editArea.addEventListener('mouseout', (e) => {
-      if (e.target === this.$.editArea) {
+    ea.addEventListener('mouseout', (e) => {
+      if (e.target === ea) {
         this.saveCurrentRange();
       }
     }, false);
     this.touchHandler = (e) => {
-      if (this.$.editArea.contains(e.target)) {
+      if (ea.contains(e.target)) {
         this.saveCurrentRange();
       }
     }
     window.addEventListener('touchend', this.touchHandler, false)
-    this.$.editArea.addEventListener("input", e => {
+    ea.addEventListener("input", e => {
       this.dispatchEvent(new CustomEvent('input'));
     });
-    this.$.editArea.addEventListener("focusin", e => {
+    ea.addEventListener("focusin", e => {
+      this.dispatchEvent(new CustomEvent('focusin'));
       this.focused = true;
     });
-    this.$.editArea.addEventListener("focusout", e => {
+    ea.addEventListener("focusout", e => {
+      this.dispatchEvent(new CustomEvent('focusout'));
       this.focused = false;
     });
-    this.$.editArea.addEventListener('keydown', this._handleKeyDown.bind(this));
+    ea.addEventListener('keydown', this._handleKeyDown.bind(this));
     this.onKeyDown('Tab', e => {
       this.exec("inserttext", "\t");
       e.preventDefault();
@@ -145,39 +129,6 @@ class EditArea extends PolymerElement {
     if (node.handleSelectionChanged) {
       this._selectionObservers.push(node);
     }
-  }
-
-  index() {
-    let root = {weight: 0, children: []};
-    this.$.editArea.querySelectorAll('h1,h2,h3,h4').forEach((node) => {
-      let id = "a" + Math.random().toString(36).substr(2);
-      node.setAttribute("id", id);
-      let item = {
-        id: id,
-        title: node.textContent,
-        weight: parseInt(node.tagName.substr(1,1)),
-        children: []
-      };
-      if (item.title.trim() == "") {
-        return;
-      }
-      this.insertIndex(root, item);
-    });
-
-    return root.children;
-  }
-
-  insertIndex(root, item) {
-    let len = root.children.length - 1;
-    if (root.children.length == 0 || root.weight == item.weight - 1) {
-      root.children.push(item);
-      return;
-    }
-    if (root.children[len].weight >= item.weight) {
-      root.children.push(item);
-      return;
-    }
-    this.insertIndex(root.children[len], item);
   }
 
   selection() {
@@ -199,7 +150,8 @@ class EditArea extends PolymerElement {
   }
 
   focus() {
-    this.$.editArea.focus();
+    let ea = this.shadowRoot.querySelector('[name=area]');
+    ea.focus();
     return this;
   }
 
@@ -222,21 +174,22 @@ class EditArea extends PolymerElement {
     return offset + this.countBefore(node);
   }
 
-  update() {
+  selectionChanged() {
     this._selectionObservers.forEach(o => o.handleSelectionChanged());
   }
 
   countBefore(node) {
     let n = node;
     let len = 0;
-    if (node == undefined || node == this.$.editArea) {
+    let ea = this.shadowRoot.querySelector('[name=area]');
+    if (node == undefined || node == ea) {
       return 0;
     }
     while((node = node.previousSibling) != null) {
       n = node;
       len += this.text(node).length;
     }
-    if (n.parentNode != this.$.editArea) {
+    if (n.parentNode != ea) {
       len += this.countBefore(n.parentNode);
     }
 
@@ -254,7 +207,7 @@ class EditArea extends PolymerElement {
   }
 
   seek(offset, node) {
-    node = node || this.$.editArea;
+    node = node || this.shadowRoot.querySelector('[name=area]');
     let cn = node.childNodes;
     for(let i = 0; i < cn.length; i++) {
       if (cn[i].nodeType == 1) {
@@ -303,7 +256,7 @@ class EditArea extends PolymerElement {
     if (selection.rangeCount < 1) {
       return;
     }
-    const content = this.$.editArea;
+    const content = this.shadowRoot.querySelector('[name=area]');
     for (let i = 0; i < selection.rangeCount; i++) {
       const range = selection.getRangeAt(0);
       let start = range.startContainer;
@@ -325,7 +278,7 @@ class EditArea extends PolymerElement {
       selection.addRange(this._currentRange);
       return;
     }
-    const content = this.$.editArea;
+    const content = this.shadowRoot.querySelector("[name=area]");
     const div = document.createElement('div');
     const range = document.createRange();
     content.appendChild(div);
@@ -336,38 +289,41 @@ class EditArea extends PolymerElement {
   }
 
   setContent(content) {
-    this.$.editArea.innerHTML = content;
+    let ea = this.shadowRoot.querySelector('[name=area]');
+    ea.innerHTML = content;
   }
 
   content() {
-    return this.$.editArea.innerHTML;
+    let ea = this.shadowRoot.querySelector('[name=area]');
+    return ea.innerHTML;
   }
 
   _placeholderChanged(placeholder) {
-    this.$.editArea.setAttribute('placeholder', placeholder);
+    setTimeout(() => {
+      this.shadowRoot.querySelector('[name=area]').setAttribute('placeholder', placeholder);
+    }, 200);
   }
 
   _enableAbsolutePositionEditorChanged() {
-    this._feature('enableAbsolutePositionEditor');
+    this._feature('');
   }
 
   _enableInlineTableEditingChanged() {
-    this._feature('enableInlineTableEditing');
+    this._feature('');
   }
 
   _defaultParagraphSeparatorChanged(sep) {
-    this.focus().exec('defaultParagraphSeparator', sep);
   }
 
   _styleWithCSSChanged() {
-    this._feature('styleWithCSS');
   }
 
   _readonlyChanged(readonly) {
+    let ea = this.shadowRoot.querySelector('#editerea');
     if (readonly) {
-      this.$.editArea.removeAttribute('contenteditable');
+      ea.removeAttribute('contenteditable');
     } else {
-      this.$.editArea.setAttribute('contenteditable', true);
+      ea.setAttribute('contenteditable', true);
     }
   }
 

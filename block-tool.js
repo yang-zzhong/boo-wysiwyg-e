@@ -1,38 +1,26 @@
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { Tool } from './tool.js';
-import './icons.js';
-import './tool-shared-styles.js';
+import { BooWysiwygeTool } from './tool.js';
+import {html, css} from 'lit-element';
+import {sharedStyles} from './shared-styles.js';
 
-export class BlockTool extends Tool {
+export class BooWysiwygeBlockTool extends BooWysiwygeTool {
 
-  static get template() {
+  static get styles() {
+    return sharedStyles;
+  }
+
+  render() {
     return html`
-      <style include="tool-shared-styles"></style>
-      <paper-icon-button
-        toggle
-        icon="[[icon]]"
-        title="title"
-        on-click="formatBlock"></paper-icon-button>
+      <div class="icon-btn" title="${this.title()}" @click=${this.formatBlock}>
+        ${this.icon()}
+        <paper-ripple></paper-ripple>
+      </div>
     `;
   }
 
-  static get properties() {
-    return {
-      icon: {
-        type: String,
-        value: ""
-      },
-      title: {
-        type: String,
-        value: ""
-      }
-    };
-  }
-
   formatBlock() {
-    this.editarea.focus();
+    this.area().focus();
     setTimeout(()=> {
-      this.editarea.exec('formatBlock', this.block());
+      this.area().exec('formatBlock', this.block());
     }, 100);
   }
 }

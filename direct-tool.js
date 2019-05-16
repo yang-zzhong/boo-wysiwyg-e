@@ -1,38 +1,26 @@
-import {Tool} from './tool.js';
-import './icons.js';
-import './tool-shared-styles.js';
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+import {BooWysiwygeTool} from './tool.js';
+import {html, css} from 'lit-element';
+import {sharedStyles} from './shared-styles.js';
 
-export class DirectTool extends Tool {
-  static get template() {
-    return html`
-      <style include="tool-shared-styles"></style>
-      <paper-icon-button
-        toggle
-        icon="[[icon]]"
-        title="[[title]]"
-        on-click="_exec"></paper-icon-button>
-    `;
+export class BooWysiwygeDirectTool extends BooWysiwygeTool {
+
+  static get styles() {
+    return sharedStyles;
   }
 
-  static get properties() {
-    return {
-      icon: {
-        type: String,
-        value: ""
-      },
-      title: {
-        type: String,
-        value: ""
-      }
-    };
+  render() {
+    return html`
+      <div class="icon-btn" title="${this.title()}" @click=${this._exec}>
+        ${this.icon()}
+        <paper-ripple></paper-ripple>
+      </div>
+    `;
   }
 
   _exec() {
     if (typeof this.value == 'function') {
-      return this.exec(this.command(), this.value());
+      return this.area().focus().exec(this.command(), this.value());
     }
-
-    return this.exec(this.command());
+    return this.area().focus().exec(this.command());
   }
 }

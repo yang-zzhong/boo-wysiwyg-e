@@ -1,27 +1,28 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { LitElement, html, css } from 'lit-element';
+import '@polymer/paper-ripple/paper-ripple.js';
 
-export class Tool extends PolymerElement {
+export class BooWysiwygeTool extends LitElement {
 
   static get properties() {
     return {
-      editarea: {
-        type: Object,
-        observer: '_editareaChanged'
-      },
-      disabled: {
-        type: Boolean,
-        reflectToAttribute: true
-      }
+      editarea: {type: String, reflect: true},
+      area: {type: Object},
+      disabled: { type: Boolean, reflect: true}
     };
   }
 
-  _editareaChanged(editarea) {
-    if (typeof this.handleSelectionChanged == 'function') {
-      editarea.addSelectionObserver(this);
-    }
+  constructor() {
+    super();
+    setTimeout(() => {
+      if (typeof this.handleSelectionChanged == 'function') {
+        this.area().addSelectionObserver(this);
+      }
+    }, 100);
   }
 
-  exec(command, params) {
-    this.editarea.focus().exec(command, params);
+  area() {
+    if(window.boo_wysiwyge_editarea) {
+      return window.boo_wysiwyge_editarea[this.editarea];
+    }
   }
 }
