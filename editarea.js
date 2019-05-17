@@ -78,13 +78,11 @@ class EditArea extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    setTimeout(() => {
-      this.initEvent();
-    }, 1000);
+    setTimeout(() => this.initEvent(), 200);
   }
 
   initEvent() {
-    let ea = this.shadowRoot.querySelector("[name=area]");
+    let ea = this.area();
     ea.addEventListener('mouseup', () => {
       this.saveCurrentRange();
     }, false);
@@ -123,6 +121,10 @@ class EditArea extends LitElement {
     });
   }
 
+  area() {
+    return this.shadowRoot.querySelector('[name=area]');
+  }
+
   onKeyDown(key, callback) {
     this._keyDownHandlers[key] = callback;
     return this;
@@ -153,8 +155,7 @@ class EditArea extends LitElement {
   }
 
   focus() {
-    let ea = this.shadowRoot.querySelector('[name=area]');
-    ea.focus();
+    this.area().focus();
     return this;
   }
 
@@ -184,7 +185,7 @@ class EditArea extends LitElement {
   countBefore(node) {
     let n = node;
     let len = 0;
-    let ea = this.shadowRoot.querySelector('[name=area]');
+    let ea = this.area();
     if (node == undefined || node == ea) {
       return 0;
     }
@@ -210,7 +211,7 @@ class EditArea extends LitElement {
   }
 
   seek(offset, node) {
-    node = node || this.shadowRoot.querySelector('[name=area]');
+    node = node || this.area();
     let cn = node.childNodes;
     for(let i = 0; i < cn.length; i++) {
       if (cn[i].nodeType == 1) {
@@ -259,7 +260,7 @@ class EditArea extends LitElement {
     if (selection.rangeCount < 1) {
       return;
     }
-    const content = this.shadowRoot.querySelector('[name=area]');
+    const content = this.area();
     for (let i = 0; i < selection.rangeCount; i++) {
       const range = selection.getRangeAt(0);
       let start = range.startContainer;
@@ -281,7 +282,7 @@ class EditArea extends LitElement {
       selection.addRange(this._currentRange);
       return;
     }
-    const content = this.shadowRoot.querySelector("[name=area]");
+    const content = this.area();
     const div = document.createElement('div');
     const range = document.createRange();
     content.appendChild(div);
@@ -292,18 +293,18 @@ class EditArea extends LitElement {
   }
 
   setContent(content) {
-    let ea = this.shadowRoot.querySelector('[name=area]');
+    let ea = this.area();
     ea.innerHTML = content;
   }
 
   content() {
-    let ea = this.shadowRoot.querySelector('[name=area]');
+    let ea = this.area();
     return ea.innerHTML;
   }
 
   _placeholderChanged(placeholder) {
     setTimeout(() => {
-      this.shadowRoot.querySelector('[name=area]').setAttribute('placeholder', placeholder);
+      this.area().setAttribute('placeholder', placeholder);
     }, 200);
   }
 
@@ -322,11 +323,10 @@ class EditArea extends LitElement {
   }
 
   _readonlyChanged(readonly) {
-    let ea = this.shadowRoot.querySelector('[name=area]');
     if (readonly) {
-      ea.removeAttribute('contenteditable');
+      this.area().removeAttribute('contenteditable');
     } else {
-      ea.setAttribute('contenteditable', true);
+      this.area().setAttribute('contenteditable', true);
     }
   }
 
