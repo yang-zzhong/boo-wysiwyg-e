@@ -10,7 +10,7 @@ class EditArea extends LitElement {
       }
       [name=area] {
         width: 100%;
-        min-height: 300px;
+        min-height: var(--boo-wysiwyg-editarea, 100px);
         display: block;
       }
       [name=area]:focus {

@@ -12,7 +12,7 @@ class OrderedList extends BooWysiwygeToggleTool {
 class UnorderedList extends BooWysiwygeToggleTool {
   icon() { return formatListBulletedIcon; }
   title() { return '无序列表'; }
-  command() { return 'insertUnrderedList'; }
+  command() { return 'insertUnorderedList'; }
 }
 
 window.customElements.define('boo-wysiwyg-ordered-list', OrderedList);
