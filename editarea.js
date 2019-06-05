@@ -10,8 +10,12 @@ class EditArea extends LitElement {
       }
       [name=area] {
         width: 100%;
-        min-height: var(--boo-wysiwyg-editarea, 100px);
+        min-height: var(--boo-wysiwyg-editarea-min-height, 100px);
         display: block;
+      }
+      [name=area]>* {
+        max-width: 100%;
+        overflow-x: auto;
       }
       [name=area]:focus {
         outline: none;
@@ -36,6 +40,7 @@ class EditArea extends LitElement {
       <div name="area" contenteditable></div>
     `;
   }
+
   static get properties() {
     return {
       placeholder: { type: String },

@@ -35,7 +35,8 @@ export class BooWysiwygeToggleTool extends BooWysiwygeTool {
     if (typeof this.command != 'function') {
       throw 'no command found';
     }
-    this.area().focus().exec(this.command());
+    this.area().focus();
+    this.area().exec(this.command());
   }
 
   handleSelectionChanged() {
