@@ -1,19 +1,12 @@
 import {BooWysiwygeTool} from './tool.js';
-import {html, css} from 'lit-element';
+import {html} from 'lit-element';
 import {sharedStyles} from './shared-styles.js';
 import './icons.js';
 
 export class BooWysiwygeToggleTool extends BooWysiwygeTool {
 
   static get styles() {
-    const style = css`
-      :host([active]) .icon-btn {
-        background-color: #e0e0e0;
-        fill: blue;
-        color: blue;
-      }
-    `;
-    return [sharedStyles, style];
+    return [sharedStyles];
   }
 
   static get properties() {

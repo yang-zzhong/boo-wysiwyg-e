@@ -1,6 +1,7 @@
 import { BooWysiwygeToggleTool } from '../toggle-tool.js';
 import {formatBoldIcon, formatItalicIcon, formatUnderlinedIcon, formatStrikethroughIcon} from '../icons.js';
 import {LitElement, html} from 'lit-element';
+import {containerStyles} from '../shared-styles';
 
 class Bold extends BooWysiwygeToggleTool {
   icon() { return formatBoldIcon; }
@@ -32,11 +33,17 @@ window.customElements.define('boo-wysiwyg-underline', Underline);
 window.customElements.define('boo-wysiwyg-strike', Strike);
 
 class Text extends LitElement {
+
+  static get styles() {
+    return containerStyles;
+  }
+
   static get properties() {
     return {
       editarea: {type: String, reflect: true}
     };
   }
+
   render() {
     return html`
       <boo-wysiwyg-bold editarea=${this.editarea}></boo-wysiwyg-bold>

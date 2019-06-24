@@ -1,6 +1,7 @@
 import { BooWysiwygeToggleTool } from '../toggle-tool.js';
 import {formatAlignCenterIcon, formatAlignJustifyIcon, formatAlignLeftIcon, formatAlignRightIcon} from '../icons.js';
 import {LitElement, html} from 'lit-element';
+import {containerStyles} from '../shared-styles';
 
 class AlignCenter extends BooWysiwygeToggleTool {
   icon() { return formatAlignCenterIcon; }
@@ -27,11 +28,17 @@ class AlignFull extends BooWysiwygeToggleTool {
 }
 
 class Align extends LitElement {
+
+  static get styles() {
+    return containerStyles;
+  }
+
   static get properties() {
     return {
       editarea: {type: String, reflect: true}
     };
   }
+
   render() {
     return html`
       <boo-wysiwyg-align-left editarea=${this.editarea}></boo-wysiwyg-align-left>

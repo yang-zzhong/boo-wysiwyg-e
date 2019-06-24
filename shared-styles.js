@@ -18,7 +18,23 @@ export const sharedStyles = css`
     margin: 4px;
   }
 
-  :host([disabled]) .icon-btn {
+  :host {
+    display: inline-block;
+  }
 
+  :host([disabled]) .icon-btn {
+    fill: #e0e0e0;
+  }
+
+  :host([active]) .icon-btn {
+    background-color: #e0e0e0;
+    fill: blue;
+    color: blue;
+  }
+`;
+
+export const containerStyles = css`
+  :host {
+    vertical-align: center;
   }
 `;

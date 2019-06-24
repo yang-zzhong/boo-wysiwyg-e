@@ -1,6 +1,7 @@
 import { BooWysiwygeBlockTool } from '../block-tool.js';
-import {h1Icon, h2Icon, h3Icon, h4Icon, pIcon, formatCodeIcon} from '../icons.js';
+import {blockQuoteIcon, h1Icon, h2Icon, h3Icon, h4Icon, pIcon, formatCodeIcon} from '../icons.js';
 import {LitElement, html} from 'lit-element';
+import {containerStyles} from '../shared-styles';
 
 class Code extends BooWysiwygeBlockTool {
   icon() { return formatCodeIcon; }
@@ -38,14 +39,27 @@ class P extends BooWysiwygeBlockTool {
   block() { return 'div'; }
 }
 
+class BlockQuote extends BooWysiwygeBlockTool {
+  icon() { return blockQuoteIcon; }
+  title() { return '引用'; }
+  block() { return 'blockquote'; }
+}
+
+
 window.customElements.define('boo-wysiwyg-h1', H1);
 window.customElements.define('boo-wysiwyg-h2', H2);
 window.customElements.define('boo-wysiwyg-h3', H3);
 window.customElements.define('boo-wysiwyg-h4', H4);
 window.customElements.define('boo-wysiwyg-p', P);
 window.customElements.define('boo-wysiwyg-code', Code);
+window.customElements.define('boo-wysiwyg-blockquote', BlockQuote);
 
 class Block extends LitElement {
+
+  static get styles() {
+    return containerStyles;
+  }
+
   static get properties() {
     return {
       editarea: {type: String, reflect: true}
@@ -60,6 +74,7 @@ class Block extends LitElement {
       <boo-wysiwyg-h4 editarea=${this.editarea}></boo-wysiwyg-h4>
       <boo-wysiwyg-p editarea=${this.editarea}></boo-wysiwyg-p>
       <boo-wysiwyg-code editarea=${this.editarea}></boo-wysiwyg-code>
+      <boo-wysiwyg-blockquote editarea=${this.editarea}></boo-wysiwyg-blockquote>
     `;
   }
 }
