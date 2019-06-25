@@ -19,8 +19,11 @@ export class BooWysiwygeDirectTool extends BooWysiwygeTool {
 
   _exec() {
     if (typeof this.value == 'function') {
-      return this.area().focus().exec(this.command(), this.value());
+      this.area().focus();
+      this.exec(this.command(), this.value());
+      return;
     }
-    return this.area().focus().exec(this.command());
+    this.area().focus();
+    this.area().exec(this.command());
   }
 }

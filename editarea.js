@@ -8,27 +8,25 @@ class EditArea extends LitElement {
       :host {
         display: block;
       }
-      [name=area] {
-        width: 100%;
-        min-height: var(--boo-wysiwyg-editarea-min-height, 100px);
-        display: block;
+      ::slotted([contenteditable]) {
+        min-height: 100px;
       }
-      [name=area]>* {
+      ::slotted([contenteditable]>*) {
         max-width: 100%;
         overflow-x: auto;
       }
-      [name=area]:focus {
+      ::slotted([contenteditable]:focus) {
         outline: none;
       }
-      [name=area]:empty:before {
+      ::slotted([contenteditable][empty]:before) {
         content: attr(placeholder);
         display: block;
         opacity: .6;
       }
-      [name=area] pre {
+      ::slotted(pre) {
         display: block;
-        background-color: rgb(109, 76, 65);
-        color: white;
+        background-color: #f0f0f0;
+        color: black;
         border-radius: 2px;
         padding: 5px;
       }
@@ -36,15 +34,12 @@ class EditArea extends LitElement {
   }
 
   render() {
-    return html`
-      <div name="area" contenteditable></div>
-    `;
+    return html`<slot></slot>`;
   }
 
   static get properties() {
     return {
       placeholder: { type: String },
-      focused: { type: Boolean },
       readonly: { type: Boolean },
       name: {type: String, reflect: true},
       _selectionObservers: { type: Array },
@@ -75,7 +70,7 @@ class EditArea extends LitElement {
       this._readonlyChanged(val);
     } else if (name == 'placeholder') {
       this._placeholderChanged(val);
-    } else if (name ="name") {
+    } else if (name ="name" && val) {
       window.boo_wysiwyge_editarea = window.boo_wysiwyge_editarea || {};
       window.boo_wysiwyge_editarea[val] = this;
     }
@@ -83,7 +78,11 @@ class EditArea extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    setTimeout(() => this.initEvent(), 200);
+  }
+
+  firstUpdated() {
+    this.initEvent();
+    this.handleEmpty();
   }
 
   initEvent() {
@@ -105,16 +104,8 @@ class EditArea extends LitElement {
       }
     }
     window.addEventListener('touchend', this.touchHandler, false)
-    ea.addEventListener("input", e => {
-      this.dispatchEvent(new CustomEvent('input'));
-    });
-    ea.addEventListener("focusin", e => {
-      this.dispatchEvent(new CustomEvent('focusin'));
-      this.focused = true;
-    });
-    ea.addEventListener("focusout", e => {
-      this.dispatchEvent(new CustomEvent('focusout'));
-      this.focused = false;
+    ea.addEventListener('input', e => {
+      this.handleEmpty();
     });
     ea.addEventListener('keydown', this._handleKeyDown.bind(this));
     this.onKeyDown('Tab', e => {
@@ -124,10 +115,6 @@ class EditArea extends LitElement {
     document.addEventListener('selectionchange', () => {
       this.selectionChanged();
     });
-  }
-
-  area() {
-    return this.shadowRoot.querySelector('[name=area]');
   }
 
   onKeyDown(key, callback) {
@@ -142,8 +129,18 @@ class EditArea extends LitElement {
   }
 
   selection() {
-    if (this.shadowRoot.getSelection) {
-      return this.shadowRoot.getSelection();
+    let getShadowNode = () => {
+      let node = this;
+      for (; node; node = node.parentNode) {
+        if (node.toString() === "[object ShadowRoot]") {
+          return node;
+        }
+      }
+      return null;
+    }
+    let node = getShadowNode();
+    if (node && node.getSelection) {
+      return node.getSelection();
     } else if (window.getSelection) {
       return window.getSelection();
     } else {
@@ -157,11 +154,6 @@ class EditArea extends LitElement {
 
   selectCurrent() {
     return this.select(this.selected());
-  }
-
-  focus() {
-    this.area().focus();
-    return this;
   }
 
   offsetSelectedStart() {
@@ -187,10 +179,14 @@ class EditArea extends LitElement {
     this._selectionObservers.forEach(o => o.handleSelectionChanged());
   }
 
+  focus() {
+    this.area().focus();
+  }
+
   countBefore(node) {
     let n = node;
     let len = 0;
-    let ea = this.area();
+    let ea = this;
     if (node == undefined || node == ea) {
       return 0;
     }
@@ -216,7 +212,7 @@ class EditArea extends LitElement {
   }
 
   seek(offset, node) {
-    node = node || this.area();
+    node = node || this;
     let cn = node.childNodes;
     for(let i = 0; i < cn.length; i++) {
       if (cn[i].nodeType == 1) {
@@ -265,7 +261,7 @@ class EditArea extends LitElement {
     if (selection.rangeCount < 1) {
       return;
     }
-    const content = this.area();
+    const content = this;
     for (let i = 0; i < selection.rangeCount; i++) {
       const range = selection.getRangeAt(0);
       let start = range.startContainer;
@@ -287,7 +283,7 @@ class EditArea extends LitElement {
       selection.addRange(this._currentRange);
       return;
     }
-    const content = this.area();
+    const content = this;
     const div = document.createElement('div');
     const range = document.createRange();
     content.appendChild(div);
@@ -300,16 +296,28 @@ class EditArea extends LitElement {
   setContent(content) {
     let ea = this.area();
     ea.innerHTML = content;
+    this.handleEmpty();
+  }
+
+  handleEmpty() {
+    if (this.empty()) {
+      this.area().setAttribute('empty', true);
+    } else {
+      this.area().removeAttribute('empty');
+    }
+  }
+
+  empty() {
+    return this.innerHTML.trim().replace('<br>', '').length == 0;
   }
 
   content() {
-    let ea = this.area();
-    return ea.innerHTML;
+    return this.area().innerHTML;
   }
 
   _placeholderChanged(placeholder) {
     setTimeout(() => {
-      this.area().setAttribute('placeholder', placeholder);
+      this.setAttribute('placeholder', placeholder);
     }, 200);
   }
 
@@ -327,11 +335,16 @@ class EditArea extends LitElement {
   _styleWithCSSChanged() {
   }
 
+  area() {
+    return this.querySelector('[contenteditable]');
+  }
+
   _readonlyChanged(readonly) {
+    let area = this.area();
     if (readonly) {
-      this.area().removeAttribute('contenteditable');
+      area.removeAttribute('contenteditable');
     } else {
-      this.area().setAttribute('contenteditable', true);
+      area.setAttribute('contenteditable', true);
     }
   }
 

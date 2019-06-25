@@ -56,7 +56,9 @@ class BooWysiwygE extends LitElement {
         <boo-wysiwyg-undo editarea="editarea"></boo-wysiwyg-undo>
         <boo-wysiwyg-redo editarea="editarea"></boo-wysiwyg-redo>
       </div>
-      <boo-wysiwyg-editarea name="editarea" placeholder="请输入内容"></boo-wysiwyg-editarea>
+      <boo-wysiwyg-editarea name="editarea">
+        <div contenteditable placeholder="请输入内容"></div>
+      </boo-wysiwyg-editarea>
     `;
   }
 }

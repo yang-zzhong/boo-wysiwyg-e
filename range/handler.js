@@ -211,7 +211,6 @@ export default class RangeHandler {
       break;
     }
     case Command.FORMAT_BLOCK:
-      console.log(this.range);
       if (document.execCommand(Command.FORMAT_BLOCK, false, arg)) {
         break;
       }
