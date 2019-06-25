@@ -116,6 +116,7 @@ class EditArea extends LitElement {
     }
     window.addEventListener('touchend', this.touchHandler, false)
     ea.addEventListener('input', e => {
+      this.saveCurrentRange();
       this.handleEmpty();
       e.stopPropagation();
       this.dispatchEvent(new CustomEvent("input"));
@@ -273,7 +274,9 @@ class EditArea extends LitElement {
   exec(command, arg){
     this.restoreSelection();
     if (this._currentRange) {
+      console.log(this._currentRange);
       new RangeHandler(this._currentRange).execCommand(command, arg);
+      console.log(this._currentRange);
     }
   }
 
@@ -282,7 +285,7 @@ class EditArea extends LitElement {
     if (selection.rangeCount < 1) {
       return;
     }
-    const content = this;
+    const content = this.area();
     for (let i = 0; i < selection.rangeCount; i++) {
       const range = selection.getRangeAt(0);
       let start = range.startContainer;

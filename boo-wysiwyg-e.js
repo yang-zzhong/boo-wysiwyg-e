@@ -27,7 +27,7 @@ class BooWysiwygE extends LitElement {
         outline: none;
         background-color: white;
       }
-      div {
+      .toolbar {
         position: sticky;
         top: 0px;
         z-index: 1;
@@ -42,7 +42,7 @@ class BooWysiwygE extends LitElement {
 
   render () {
     return html`
-      <div>
+      <div class="toolbar">
         <boo-wysiwyg-text editarea="editarea"></boo-wysiwyg-text>
         <boo-wysiwyg-remove-format editarea="editarea"></boo-wysiwyg-remove-format>
         <boo-wysiwyg-dent editarea="editarea"></boo-wysiwyg-dent>
