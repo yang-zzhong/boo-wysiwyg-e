@@ -6,6 +6,7 @@ class EditArea extends LitElement {
   static get styles() {
     return css`
       :host {
+        position: relative;
         display: block;
       }
       ::slotted([contenteditable]) {
@@ -18,10 +19,16 @@ class EditArea extends LitElement {
       ::slotted([contenteditable]:focus) {
         outline: none;
       }
-      ::slotted([contenteditable][empty]:before) {
-        content: attr(placeholder);
+      span {
+        top: 0px;
+        left: 0px;
+        position: absolute;
+        display: none;
+        color: rgba(0, 0, 0, .6);
+        z-index: 1;
+      }
+      :host([empty]) span {
         display: block;
-        opacity: .6;
       }
       ::slotted(pre) {
         display: block;
@@ -34,7 +41,10 @@ class EditArea extends LitElement {
   }
 
   render() {
-    return html`<slot></slot>`;
+    return html`
+      <slot></slot>
+      <span>${this.placeholder}</span>
+    `;
   }
 
   static get properties() {
@@ -54,6 +64,7 @@ class EditArea extends LitElement {
     this._selectionObservers = [];
     this._keyDownHandlers = [];
     this._inputObservers = [];
+    this.placeholder = "请输入内容";
   }
 
   attributeChangedCallback(name, old, val) {
@@ -106,6 +117,16 @@ class EditArea extends LitElement {
     window.addEventListener('touchend', this.touchHandler, false)
     ea.addEventListener('input', e => {
       this.handleEmpty();
+      e.stopPropagation();
+      this.dispatchEvent(new CustomEvent("input"));
+    });
+    ea.addEventListener('focusin', e => {
+      e.stopPropagation();
+      this.dispatchEvent(new CustomEvent('focusin'));
+    });
+    ea.addEventListener('focusout', e => {
+      e.stopPropagation();
+      this.dispatchEvent(new CustomEvent('focusout'));
     });
     ea.addEventListener('keydown', this._handleKeyDown.bind(this));
     this.onKeyDown('Tab', e => {
@@ -301,14 +322,15 @@ class EditArea extends LitElement {
 
   handleEmpty() {
     if (this.empty()) {
-      this.area().setAttribute('empty', true);
+      this.setAttribute('empty', true);
     } else {
-      this.area().removeAttribute('empty');
+      this.removeAttribute('empty');
     }
   }
 
   empty() {
-    return this.innerHTML.trim().replace('<br>', '').length == 0;
+    let content = this.area().innerHTML.replace('<br>', '').trim();
+    return content.length == 0;
   }
 
   content() {
