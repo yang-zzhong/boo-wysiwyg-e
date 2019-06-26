@@ -5,7 +5,7 @@ import {BooWysiwygeTool} from '../tool';
 import {dialogStyles} from 'boo-dialog';
 import {html, css} from 'lit-element';
 import {sharedStyles} from '../shared-styles';
-import {formatAlignCenterIcon, formatAlignLeftIcon, formatAlignRightIcon, deleteIcon, linkIcon} from '../icons';
+import {formatAlignCenterIcon, formatAlignLeftIcon, formatAlignRightIcon, deleteIcon, formatAlignJustifyIcon} from '../icons';
 
 export const tableStyles = css`
   .table {
@@ -13,6 +13,7 @@ export const tableStyles = css`
     border-top: 1px solid #e0e0e0;
     border-left: 1px solid #e0e0e0;
     table-layout: fixed;
+    box-sizing: border-box;
     width: 100%;
   }
   .table-row {
@@ -42,7 +43,7 @@ class BooWysiwygeTable extends BooWysiwygeTool {
   render() {
     return html`
       <div class="icon-btn" title="插入表格" @click=${this._openInput}>
-        ${linkIcon}
+        ${formatAlignJustifyIcon}
         <paper-ripple></paper-ripple>
       </div>
       <boo-dialog>
