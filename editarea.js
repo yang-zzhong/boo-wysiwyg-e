@@ -1,10 +1,12 @@
 import { LitElement, html, css } from 'lit-element';
 import RangeHandler from './range/handler'
+import {redoIcon} from './icons';
+import {sharedStyles} from './shared-styles';
 
 class EditArea extends LitElement {
 
   static get styles() {
-    return css`
+    const style = css`
       :host {
         position: relative;
         display: block;
@@ -37,13 +39,50 @@ class EditArea extends LitElement {
         border-radius: 2px;
         padding: 5px;
       }
+      .menu {
+        position: absolute;
+        border: 1px solid #f0f0f0;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, .4);
+        top: 0px;
+        left: 0px;
+        display: none;
+        padding: 5px;
+        z-index: 10;
+      }
+      :host([has-menu]) .menu {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+      }
     `;
+
+    return [sharedStyles, style];
   }
 
   render() {
     return html`
       <slot></slot>
       <span>${this.placeholder}</span>
+      <div class="menu">
+        <div class="icon-btn" title="hello world">
+          ${redoIcon}
+          <paper-ripple></paper-ripple>
+        </div>
+        <div class="icon-btn" title="hello world">
+          ${redoIcon}
+          <paper-ripple></paper-ripple>
+        </div>
+        <div class="icon-btn" title="hello world">
+          ${redoIcon}
+          <paper-ripple></paper-ripple>
+        </div>
+        <div class="icon-btn" title="hello world">
+          ${redoIcon}
+          <paper-ripple></paper-ripple>
+        </div>
+      </div>
     `;
   }
 
@@ -52,6 +91,7 @@ class EditArea extends LitElement {
       placeholder: { type: String },
       readonly: { type: Boolean },
       name: {type: String, reflect: true},
+      hasMenu: {type: Boolean, reflect: true, attribute: 'has-menu'},
       _selectionObservers: { type: Array },
       _keyDownHandlers: { type: Object },
       _currentRange: Object,
@@ -65,6 +105,7 @@ class EditArea extends LitElement {
     this._keyDownHandlers = [];
     this._inputObservers = [];
     this.placeholder = "请输入内容";
+    this.menuNodes = [];
   }
 
   attributeChangedCallback(name, old, val) {
@@ -118,6 +159,7 @@ class EditArea extends LitElement {
     ea.addEventListener('input', e => {
       this.saveCurrentRange();
       this.handleEmpty();
+      this.maybeShowMenu();
       e.stopPropagation();
       this.dispatchEvent(new CustomEvent("input"));
     });
@@ -134,9 +176,48 @@ class EditArea extends LitElement {
       this.exec("inserttext", "\t");
       e.preventDefault();
     });
+    ea.addEventListener('click', () => {
+      this.maybeShowMenu();
+    });
     document.addEventListener('selectionchange', () => {
       this.selectionChanged();
     });
+  }
+
+  maybeShowMenu() {
+    this.hasMenu = false;
+    let node = this.currentNode();
+    if (node) {
+      for(let i = 0; i < this.menuNodes.length; ++i) {
+        let tool = this.menuNodes[i];
+        if (tool.is(node)) {
+          this.showMenu(tool, node);
+        }
+      }
+    }
+  }
+
+  showMenu(tool, node) {
+    let items = tool.menuItems();
+    let menu = this.shadowRoot.querySelector('.menu');
+    menu.innerHTML = "";
+    for (let i = 0; i < items.length; ++i) {
+      let btn = document.createElement('div');
+      btn.classList.add('icon-btn');
+      btn.setAttribute('title', items[i].title);
+      btn.innerHTML = items[i].icon.strings[0];
+      let ripple = document.createElement('paper-ripple');
+      btn.appendChild(ripple);
+      menu.appendChild(btn);
+      let onclick = items[i].click;
+      btn.addEventListener('click', e => {
+        onclick(node);
+      });
+    }
+    let pos = this.nodePos(node);
+    menu.style.left = pos.x + 'px';
+    menu.style.top = pos.y + node.getBoundingClientRect().height + 'px';
+    this.hasMenu = true;
   }
 
   onKeyDown(key, callback) {
@@ -174,6 +255,13 @@ class EditArea extends LitElement {
     return this.offsetSelectedStart();
   }
 
+  selectNode(node) {
+    let range = document.createRange();
+    range.selectNode(node);
+    console.log(range);
+    this.select(range);
+  }
+
   selectCurrent() {
     return this.select(this.selected());
   }
@@ -203,6 +291,34 @@ class EditArea extends LitElement {
 
   focus() {
     this.area().focus();
+  }
+
+  currentNode() {
+    let range = this.selected();
+    if (!range) {
+      return;
+    }
+    let node = this._validPreNode(range.startContainer);
+    if (!node) {
+      node = range.startContainer.parentNode;
+    }
+    if (node == this.area() || !node.getBoundingClientRect) {
+      return;
+    }
+    return node;
+  }
+
+  _validPreNode(node) {
+    // 最多找前三个节点
+    let i = 0;
+    while (node && !node.getBoundingClientRect) {
+      if (i++ > 3) {
+        return;
+      }
+      node = node.previousSibling;
+    }
+
+    return node;
   }
 
   countBefore(node) {
@@ -274,9 +390,7 @@ class EditArea extends LitElement {
   exec(command, arg){
     this.restoreSelection();
     if (this._currentRange) {
-      console.log(this._currentRange);
       new RangeHandler(this._currentRange).execCommand(command, arg);
-      console.log(this._currentRange);
     }
   }
 
@@ -396,6 +510,19 @@ class EditArea extends LitElement {
 
     return key.join("+");
   }
+
+　nodePos(node){
+    let x = node.offsetLeft;
+    let y = node.offsetTop;
+　　let current = node.offsetParent;
+　　while (current != this) {
+　　　x += current.offsetLeft;
+　　　y += current.offsetTop;
+　　　current = current.offsetParent;
+　　}
+    return {x: x, y: y};
+　}
+
 }
 
 window.customElements.define('boo-wysiwyg-editarea', EditArea);

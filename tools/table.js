@@ -5,7 +5,7 @@ import {BooWysiwygeTool} from '../tool';
 import {dialogStyles} from 'boo-dialog';
 import {html, css} from 'lit-element';
 import {sharedStyles} from '../shared-styles';
-import {linkIcon} from '../icons';
+import {formatAlignCenterIcon, formatAlignLeftIcon, formatAlignRightIcon, deleteIcon, linkIcon} from '../icons';
 
 export const tableStyles = css`
   .table {
@@ -65,6 +65,44 @@ class BooWysiwygeTable extends BooWysiwygeTool {
         this._createLink();
       }
     });
+    setTimeout(() => {
+      this.area().menuNodes.push(this);
+    }, 100);
+  }
+
+  is(node) {
+    return node.classList.contains("table-cell");
+  }
+
+  menuItems() {
+    return [{
+      title: "删除表格",
+      icon: deleteIcon,
+      click: function(node) {
+        this.area().focus();
+        let n = node.parentNode.parentNode;
+        n.parentNode.removeChild(n);
+        this.area().maybeShowMenu();
+      }.bind(this)
+    }, {
+      title: "左对齐",
+      icon: formatAlignLeftIcon,
+      click: function(node) {
+        node.style.textAlign = 'left';
+      },
+    }, {
+      title: "居中对齐",
+      icon: formatAlignCenterIcon,
+      click: function(node) {
+        node.style.textAlign = 'center';
+      },
+    }, {
+      title: "右对齐",
+      icon: formatAlignRightIcon,
+      click: function(node) {
+        node.style.textAlign = 'right';
+      },
+    }]
   }
 
   _openInput() {
@@ -76,7 +114,7 @@ class BooWysiwygeTable extends BooWysiwygeTool {
   _createTable() {
     let row = this.shadowRoot.querySelector('[name=row]').value.trim();
     let col = this.shadowRoot.querySelector('[name=col]').value.trim();
-    let table = '<div class="table">';
+    let table = '<br/><div class="table">';
     for (let i = 0; i < row; ++i) {
       table+= '<div class="table-row">';
       for(let j = 0; j < col; ++j) {
@@ -84,7 +122,7 @@ class BooWysiwygeTable extends BooWysiwygeTool {
       }
       table += '</div>';
     }
-    table += "</div>";
+    table += "</div><br/>";
     this.area().focus();
     this.area().exec('insertHTML', table);
     this.shadowRoot.querySelector('boo-dialog').close().then(() => {
