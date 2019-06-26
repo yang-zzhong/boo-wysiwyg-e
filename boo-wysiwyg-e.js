@@ -1,11 +1,14 @@
 import { LitElement, html, css } from 'lit-element';
 import './editarea.js';
 import './tools/align.js';
+import './tools/link.js';
+import './tools/table.js';
 import './tools/block.js';
 import './tools/dent.js';
 import './tools/list.js';
 import './tools/other.js';
 import './tools/text.js';
+import { tableStyles } from './tools/table.js';
 
 /**
  * `boo-wysiwyg-e`
@@ -16,7 +19,7 @@ import './tools/text.js';
  */
 class BooWysiwygE extends LitElement {
   static get styles() {
-    return css`
+    const style = css`
       :host {
         display: block;
       }
@@ -38,6 +41,8 @@ class BooWysiwygE extends LitElement {
         padding: 10px;
       }
     `;
+
+    return [tableStyles, style];
   };
 
   render () {
@@ -50,7 +55,9 @@ class BooWysiwygE extends LitElement {
         <boo-wysiwyg-list editarea="editarea"></boo-wysiwyg-list>
         <boo-wysiwyg-block editarea="editarea"></boo-wysiwyg-block>
 
+        <boo-wysiwyg-link editarea="editarea"></boo-wysiwyg-link>
         <boo-wysiwyg-unlink editarea="editarea"></boo-wysiwyg-unlink>
+        <boo-wysiwyg-table editarea="editarea"></boo-wysiwyg-table>
         <boo-wysiwyg-superscript editarea="editarea"></boo-wysiwyg-superscript>
         <boo-wysiwyg-subscript editarea="editarea"></boo-wysiwyg-subscript>
         <boo-wysiwyg-undo editarea="editarea"></boo-wysiwyg-undo>
