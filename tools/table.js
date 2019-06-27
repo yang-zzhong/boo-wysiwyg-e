@@ -5,7 +5,11 @@ import {BooWysiwygeTool} from '../tool';
 import {dialogStyles} from 'boo-dialog';
 import {html, css} from 'lit-element';
 import {sharedStyles} from '../shared-styles';
-import {formatAlignCenterIcon, formatAlignLeftIcon, formatAlignRightIcon, deleteIcon, formatAlignJustifyIcon} from '../icons';
+import {
+  formatAlignCenterIcon, formatAlignLeftIcon, formatAlignRightIcon,
+  deleteIcon, tableIcon, insertRowAfterIcon, delRowIcon, insertRowBeforeIcon,
+  insertColAfterIcon, delColIcon, insertColBeforeIcon
+} from '../icons';
 
 export const tableStyles = css`
   .table {
@@ -43,7 +47,7 @@ class BooWysiwygeTable extends BooWysiwygeTool {
   render() {
     return html`
       <div class="icon-btn" title="插入表格" @click=${this._openInput}>
-        ${formatAlignJustifyIcon}
+        ${tableIcon}
         <paper-ripple></paper-ripple>
       </div>
       <boo-dialog>
@@ -72,7 +76,7 @@ class BooWysiwygeTable extends BooWysiwygeTool {
   }
 
   is(node) {
-    return node.classList.contains("table-cell");
+    return node && node.classList.contains("table-cell");
   }
 
   menuItems() {
@@ -103,7 +107,120 @@ class BooWysiwygeTable extends BooWysiwygeTool {
       click: function(node) {
         node.style.textAlign = 'right';
       },
+    }, {
+      title: "行前插入",
+      icon: insertRowBeforeIcon,
+      click: this._insertRowBefore.bind(this),
+    }, {
+      title: "行后插入",
+      icon: insertRowAfterIcon,
+      click: this._insertRowAfter.bind(this),
+    }, {
+      title: "列前插入",
+      icon: insertColBeforeIcon,
+      click: this._insertColBefore.bind(this),
+    }, {
+      title: "列后插入",
+      icon: insertColAfterIcon,
+      click: this._insertColAfter.bind(this),
+    }, {
+      title: "删除列",
+      icon: delColIcon,
+      click: this._delCol.bind(this),
+    }, {
+      title: "删除行",
+      icon: delRowIcon,
+      click: this._delRow.bind(this),
     }]
+  }
+
+  _insertRowBefore(node) {
+    let cur = node.parentNode;
+    let row = this._newRow(node);
+    cur.parentNode.insertBefore(row, cur);
+  }
+
+  _insertRowAfter(node) {
+    let cur = node.parentNode;
+    let row = this._newRow(node);
+    if (cur.nextSibling) {
+      cur.parentNode.insertBefore(row, cur.nextSibling);
+    } else {
+      cur.parentNode.appendChild(row);
+    }
+  }
+
+  _insertColBefore(node) {
+    this._insertCol(node, this._nodeCols(node) - 1);
+  }
+
+  _insertColAfter(node) {
+    this._insertCol(node, this._nodeCols(node));
+  }
+
+  _insertCol(node, idx) {
+    this._eachCol(node, (i, cell) => {
+      if (i == idx + 1) {
+        let col = document.createElement('div');
+        col.classList.add('table-cell');
+        cell.parentNode.insertBefore(col, cell);
+        return true;
+      }
+      return false;
+    });
+  }
+
+  _delCol(node) {
+    let idx = this._nodeCols(node);
+    this._eachCol(node, (i, cell) => {
+      if (i == idx) {
+        cell.parentNode.removeChild(cell);
+        return true;
+      }
+      return false;
+    });
+  }
+
+  _delRow(node) {
+    let row = node.parentNode;
+    row.parentNode.removeChild(row);
+  }
+
+  _nodeCols(node) {
+    let i = 0;
+    let cells = node.parentNode.querySelectorAll('.table-cell');
+    for (let i = 0; i < cells.length; ++i) {
+      if (cells[i] == node) {
+        return i;
+      }
+    }
+  }
+
+  _eachCol(node, callback) {
+    let table = node.parentNode.parentNode;
+    let rows = table.querySelectorAll('.table-row');
+    for(let i = 0; i < rows.length; ++i) {
+      let row = rows[i];
+      let cols = row.querySelectorAll('.table-cell');
+      for (let j = 0; j < cols.length; ++j) {
+        if (callback(j, cols[j])) {
+          break;
+        }
+      }
+    }
+  }
+
+  _newRow(node) {
+    let cur = node.parentNode;
+    let row = document.createElement('div');
+    row.classList.add('table-row');
+    let num = cur.querySelectorAll('.table-cell').length;
+    for (let i = 0; i < num; ++i) {
+      let col = document.createElement('div');
+      col.classList.add('table-cell');
+      row.appendChild(col);
+    }
+    return row;
   }
 
   _openInput() {
@@ -115,7 +232,11 @@ class BooWysiwygeTable extends BooWysiwygeTool {
   _createTable() {
     let row = this.shadowRoot.querySelector('[name=row]').value.trim();
     let col = this.shadowRoot.querySelector('[name=col]').value.trim();
-    let table = '<br/><div class="table">';
+    let table = '';
+    if (!this.is(this.area().currentNode())) {
+      table += '<br/>';
+    }
+    table += '<div class="table">';
     for (let i = 0; i < row; ++i) {
       table+= '<div class="table-row">';
       for(let j = 0; j < col; ++j) {
@@ -123,7 +244,10 @@ class BooWysiwygeTable extends BooWysiwygeTool {
       }
       table += '</div>';
     }
-    table += "</div><br/>";
+    table += "</div>";
+    if (!this.is(this.area().currentNode())) {
+      table += '<br/>';
+    }
     this.area().focus();
     this.area().exec('insertHTML', table);
     this.shadowRoot.querySelector('boo-dialog').close().then(() => {

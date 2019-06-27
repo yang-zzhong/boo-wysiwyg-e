@@ -55,6 +55,8 @@ class EditArea extends LitElement {
         display: flex;
         align-items: center;
         justify-content: flex-start;
+        max-width: 160px;
+        flex-wrap: wrap;
       }
     `;
 
@@ -312,8 +314,8 @@ class EditArea extends LitElement {
     // 最多找前三个节点
     let i = 0;
     while (node && !node.getBoundingClientRect) {
-      if (i++ > 3) {
-        return;
+      if (i++ > 0) {
+        return node;
       }
       node = node.previousSibling;
     }
