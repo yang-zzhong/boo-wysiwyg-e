@@ -235,6 +235,8 @@ class BooWysiwygeTable extends BooWysiwygeTool {
     let table = '';
     if (!this.is(this.area().currentNode())) {
       table += '<br/>';
+    } else {
+      table += '<div style="display: block; height: 100%;">'
     }
     table += '<div class="table">';
     for (let i = 0; i < row; ++i) {
@@ -247,6 +249,8 @@ class BooWysiwygeTable extends BooWysiwygeTool {
     table += "</div>";
     if (!this.is(this.area().currentNode())) {
       table += '<br/>';
+    } else {
+      table += '</div>'
     }
     this.area().focus();
     this.area().exec('insertHTML', table);
