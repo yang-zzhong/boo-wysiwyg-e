@@ -260,7 +260,6 @@ class EditArea extends LitElement {
   selectNode(node) {
     let range = document.createRange();
     range.selectNode(node);
-    console.log(range);
     this.select(range);
   }
 
