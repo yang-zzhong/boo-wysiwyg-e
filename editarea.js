@@ -433,18 +433,6 @@ class EditArea extends LitElement {
     this._currentRange = range;
   }
 
-  // pushHistory() {
-  //   let range = this.selected();
-  //   if (range) {
-  //     let old = range.cloneRange();
-  //     this.focus();
-  //     range.collapse();
-  //     this.select(range);
-  //     this.exec('delete');
-  //     this.select(old);
-  //   }
-  // }
-
   setContent(content) {
     let ea = this.area();
     ea.innerHTML = content;
@@ -465,6 +453,9 @@ class EditArea extends LitElement {
   }
 
   content() {
+    this.area().querySelectorAll('script').forEach(s => {
+      s.parentNode.removeChild(s);
+    });
     return this.area().innerHTML;
   }
 
