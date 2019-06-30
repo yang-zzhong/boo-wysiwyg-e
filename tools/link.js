@@ -50,7 +50,16 @@ class BooWysiwygeLink extends BooWysiwygeTool {
   }
 
   is(node) {
-    return node.tagName == "A";
+    let p = node;
+    let idx = 0;
+    while(p && p != this.area().area()) {
+      if (p.nodeType == 1 && p.tagName == 'A') {
+        return {tool: this, prior: idx, node: p}
+      }
+      p = p.parentNode;
+      idx++;
+    }
+    return false;
   }
 
   menuItems() {

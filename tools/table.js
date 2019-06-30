@@ -6,7 +6,6 @@ import {dialogStyles} from 'boo-dialog';
 import {html, css} from 'lit-element';
 import {sharedStyles} from '../shared-styles';
 import {
-  formatAlignCenterIcon, formatAlignLeftIcon, formatAlignRightIcon,
   deleteIcon, tableIcon, insertRowAfterIcon, delRowIcon, insertRowBeforeIcon,
   insertColAfterIcon, delColIcon, insertColBeforeIcon
 } from '../icons';
@@ -79,12 +78,16 @@ class BooWysiwygeTable extends BooWysiwygeTool {
   }
 
   is(node) {
-    let is = node && node.classList.contains("table-cell");
-    if (is && node.innerHTML.trim() == '&nbsp;') {
-      this.area().focus();
-      this.area().selectNode(node);
+    let idx = 0;
+    let p = node;
+    while(p && p != this.area().area()) {
+      if (p.nodeType == 1 && p.classList.contains('table-cell')) {
+        return {tool: this, prior: idx, node: p};
+      }
+      p = p.parentNode;
+      idx++;
     }
-    return is;
+    return false;
   }
 
   menuItems() {
@@ -97,30 +100,6 @@ class BooWysiwygeTable extends BooWysiwygeTool {
         n.parentNode.removeChild(n);
         this.area().maybeShowMenu();
       }.bind(this)
-    }, {
-      title: "左对齐",
-      icon: formatAlignLeftIcon,
-      click: function(node) {
-        node.style.textAlign = 'left';
-        this.area().focus();
-        this.area().selectNode(node);
-      }.bind(this),
-    }, {
-      title: "居中对齐",
-      icon: formatAlignCenterIcon,
-      click: function(node) {
-        node.style.textAlign = 'center';
-        this.area().focus();
-        this.area().selectNode(node);
-      }.bind(this),
-    }, {
-      title: "右对齐",
-      icon: formatAlignRightIcon,
-      click: function(node) {
-        node.style.textAlign = 'right';
-        this.area().focus();
-        this.area().selectNode(node);
-      }.bind(this),
     }, {
       title: "行前插入",
       icon: insertRowBeforeIcon,

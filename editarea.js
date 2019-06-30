@@ -195,11 +195,22 @@ class EditArea extends LitElement {
     this.hasMenu = false;
     let node = this.currentNode();
     if (node) {
+      let tools = [];
       for(let i = 0; i < this.menuNodes.length; ++i) {
         let tool = this.menuNodes[i];
-        if (tool.is(node)) {
-          this.showMenu(tool, node);
+        let is = tool.is(node);
+        if (is) {
+          tools.push(is);
         }
+      }
+      let cur = {tool: null, prior: 1000, node: null};
+      for(let i = 0; i < tools.length; ++i) {
+        if (tools[i].prior < cur.prior) {
+          cur = tools[i];
+        }
+      }
+      if (cur.node) {
+        this.showMenu(cur.tool, cur.node);
       }
     }
   }
@@ -304,14 +315,15 @@ class EditArea extends LitElement {
     if (!range) {
       return;
     }
-    let node = this._validPreNode(range.startContainer);
-    if (!node) {
-      node = range.startContainer.parentNode;
-    }
-    if (node == this.area() || !node.getBoundingClientRect) {
-      return;
-    }
-    return node;
+    return range.startContainer;
+    // let node = this._validPreNode(range.startContainer);
+    // if (!node) {
+    //   node = range.startContainer.parentNode;
+    // }
+    // if (node == this.area() || !node.getBoundingClientRect) {
+    //   return;
+    // }
+    // return node;
   }
 
   _validPreNode(node) {
