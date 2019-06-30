@@ -265,7 +265,6 @@ class EditArea extends LitElement {
   selectNode(node) {
     let range = document.createRange();
     range.selectNode(node);
-    console.log(range);
     this.select(range);
   }
 
@@ -458,6 +457,9 @@ class EditArea extends LitElement {
   }
 
   content() {
+    this.area().querySelectorAll('script').forEach(s => {
+      s.parentNode.removeChild(s);
+    });
     return this.area().innerHTML;
   }
 

@@ -30,6 +30,9 @@ export const tableStyles = css`
     border-right: 1px solid #e0e0e0;
     width: 1;
   }
+  .table-cell .table {
+    height: 100%;
+  }
 `;
 
 class BooWysiwygeTable extends BooWysiwygeTool {
@@ -76,7 +79,12 @@ class BooWysiwygeTable extends BooWysiwygeTool {
   }
 
   is(node) {
-    return node && node.classList.contains("table-cell");
+    let is = node && node.classList.contains("table-cell");
+    if (is && node.innerHTML.trim() == '&nbsp;') {
+      this.area().focus();
+      this.area().selectNode(node);
+    }
+    return is;
   }
 
   menuItems() {
@@ -94,19 +102,25 @@ class BooWysiwygeTable extends BooWysiwygeTool {
       icon: formatAlignLeftIcon,
       click: function(node) {
         node.style.textAlign = 'left';
-      },
+        this.area().focus();
+        this.area().selectNode(node);
+      }.bind(this),
     }, {
       title: "居中对齐",
       icon: formatAlignCenterIcon,
       click: function(node) {
         node.style.textAlign = 'center';
-      },
+        this.area().focus();
+        this.area().selectNode(node);
+      }.bind(this),
     }, {
       title: "右对齐",
       icon: formatAlignRightIcon,
       click: function(node) {
         node.style.textAlign = 'right';
-      },
+        this.area().focus();
+        this.area().selectNode(node);
+      }.bind(this),
     }, {
       title: "行前插入",
       icon: insertRowBeforeIcon,
@@ -235,8 +249,6 @@ class BooWysiwygeTable extends BooWysiwygeTool {
     let table = '';
     if (!this.is(this.area().currentNode())) {
       table += '<br/>';
-    } else {
-      table += '<div style="display: block; height: 100%;">'
     }
     table += '<div class="table">';
     for (let i = 0; i < row; ++i) {
@@ -249,8 +261,6 @@ class BooWysiwygeTable extends BooWysiwygeTool {
     table += "</div>";
     if (!this.is(this.area().currentNode())) {
       table += '<br/>';
-    } else {
-      table += '</div>'
     }
     this.area().focus();
     this.area().exec('insertHTML', table);
