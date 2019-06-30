@@ -67,7 +67,7 @@ class BooWysiwygeTable extends BooWysiwygeTool {
     super();
     this.addEventListener('keyup', e => {
       if (e.code == "Enter") {
-        this._createLink();
+        this._createTable();
       }
     });
     setTimeout(() => {

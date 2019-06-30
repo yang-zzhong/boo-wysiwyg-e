@@ -167,6 +167,11 @@ class EditArea extends LitElement {
     });
     ea.addEventListener('focusin', e => {
       e.stopPropagation();
+      let node = this.currentNode();
+      if (!node) {
+        this.focus();
+        this.exec('formatBlock', 'div');
+      }
       this.dispatchEvent(new CustomEvent('focusin'));
     });
     ea.addEventListener('focusout', e => {
