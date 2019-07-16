@@ -1,7 +1,7 @@
 {
   "name": "boo-wysiwyg-e",
   "description": "a great wysiwyg editor",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
@@ -16,7 +16,7 @@
   "main": "boo-wysiwyg-e.js",
   "dependencies": {
     "lit-element": "^2.0.1",
-    "boo-dialog": "0.0.2",
+    "boo-dialog": "0.0.3",
     "@polymer/paper-input": "^3.0.1",
     "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-ripple": "^3.0.1",
