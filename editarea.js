@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit-element';
 import RangeHandler from './range/handler'
 import {redoIcon} from './icons';
 import {sharedStyles} from './shared-styles';
+import {Selection} from './selection';
 
 class EditArea extends LitElement {
 
@@ -23,7 +24,7 @@ class EditArea extends LitElement {
       }
       span {
         top: 0px;
-        left: 0px;
+        left:r 0px;
         position: absolute;
         display: none;
         color: rgba(0, 0, 0, .6);
@@ -57,6 +58,12 @@ class EditArea extends LitElement {
         justify-content: flex-start;
         max-width: 160px;
         flex-wrap: wrap;
+      }
+      .menu .sep {
+        width: 1px;
+        background-color: gray;
+        margin: 0px 15px;
+        height: 20px;
       }
     `;
 
@@ -141,27 +148,8 @@ class EditArea extends LitElement {
 
   initEvent() {
     let ea = this.area();
-    ea.addEventListener('mouseup', () => {
-      this.saveCurrentRange();
-    }, false);
-    ea.addEventListener('keyup', () => {
-      this.saveCurrentRange();
-    }, false)
-    ea.addEventListener('mouseout', (e) => {
-      if (e.target === ea) {
-        this.saveCurrentRange();
-      }
-    }, false);
-    this.touchHandler = (e) => {
-      if (ea.contains(e.target)) {
-        this.saveCurrentRange();
-      }
-    }
-    window.addEventListener('touchend', this.touchHandler, false)
     ea.addEventListener('input', e => {
-      this.saveCurrentRange();
       this.handleEmpty();
-      this.maybeShowMenu();
       e.stopPropagation();
       this.dispatchEvent(new CustomEvent("input"));
     });
@@ -183,11 +171,9 @@ class EditArea extends LitElement {
       this.exec("inserttext", "\t");
       e.preventDefault();
     });
-    ea.addEventListener('click', () => {
-      this.maybeShowMenu();
-    });
-    document.addEventListener('selectionchange', () => {
-      this.selectionChanged();
+    ea.addEventListener('click', () => { this.maybeShowMenu(); });
+    this._selection = new Selection(this.area(), () => {
+      return this.selectionChanged();
     });
   }
 
@@ -210,27 +196,36 @@ class EditArea extends LitElement {
         }
       }
       if (cur.node) {
-        this.showMenu(cur.tool, cur.node);
+        this.showMenu(tools, cur.node);
       }
     }
   }
 
-  showMenu(tool, node) {
-    let items = tool.menuItems();
+  showMenu(tools, node) {
     let menu = this.shadowRoot.querySelector('.menu');
     menu.innerHTML = "";
-    for (let i = 0; i < items.length; ++i) {
-      let btn = document.createElement('div');
-      btn.classList.add('icon-btn');
-      btn.setAttribute('title', items[i].title);
-      btn.innerHTML = items[i].icon.strings[0];
-      let ripple = document.createElement('paper-ripple');
-      btn.appendChild(ripple);
-      menu.appendChild(btn);
-      let onclick = items[i].click;
-      btn.addEventListener('click', e => {
-        onclick(node);
-      });
+    for (let j = 0; j < tools.length; ++j) {
+      let items = tools[j].tool.menuItems();
+      for (let i = 0; i < items.length; ++i) {
+        let btn = document.createElement('div');
+        btn.classList.add('icon-btn');
+        btn.setAttribute('title', items[i].title);
+        btn.innerHTML = items[i].icon.strings[0];
+        let ripple = document.createElement('paper-ripple');
+        btn.appendChild(ripple);
+        menu.appendChild(btn);
+        let onclick = items[i].click;
+        (function(btn, node) {
+          btn.addEventListener('click', e => {
+            onclick(node);
+          });
+        })(btn, tools[j].node);
+      }
+      if (j < tools.length - 1) {
+        let sep = document.createElement('div');
+        sep.classList.add('sep');
+        menu.appendChild(sep);
+      }
     }
     let pos = this.nodePos(node);
     menu.style.left = pos.x + 'px';
@@ -250,37 +245,33 @@ class EditArea extends LitElement {
   }
 
   selection() {
-    let getShadowNode = () => {
-      let node = this;
-      for (; node; node = node.parentNode) {
-        if (node.toString() === "[object ShadowRoot]") {
-          return node;
-        }
-      }
-      return null;
-    }
-    let node = getShadowNode();
+    let node = this.shadowNode();
     if (node && node.getSelection) {
       return node.getSelection();
     } else if (window.getSelection) {
       return window.getSelection();
-    } else {
+    } else if (document.getSelection) {
       return document.getSelection();
     }
   }
 
+  shadowRootSelectionSupported() {
+    let node = this.shadowNode();
+    return node && node.getSelection;
+  }
+
+  shadowNode() {
+    let node = this;
+    for (; node; node = node.parentNode) {
+      if (node.toString() === "[object ShadowRoot]") {
+        return node;
+      }
+    }
+    return null;
+  }
+
   offset() {
     return this.offsetSelectedStart();
-  }
-
-  selectNode(node) {
-    let range = document.createRange();
-    range.selectNode(node);
-    this.select(range);
-  }
-
-  selectCurrent() {
-    return this.select(this.selected());
   }
 
   offsetSelectedStart() {
@@ -303,40 +294,33 @@ class EditArea extends LitElement {
   }
 
   selectionChanged() {
-    this._selectionObservers.forEach(o => o.handleSelectionChanged());
+    let ps = [];
+    this._selectionObservers.forEach(o => {
+      let p = o.handleSelectionChanged();
+      if (p) {
+        ps.push(p);
+      }
+    });
+    if (ps.length > 0) {
+      return Promise.all(p);
+    }
   }
 
   focus() {
     this.area().focus();
+    this._selection.restore();
+  }
+
+  selected() {
+    return this._selection.selected();
   }
 
   currentNode() {
-    let range = this.selected();
+    let range = this._selection.selected();
     if (!range) {
       return;
     }
     return range.startContainer;
-    // let node = this._validPreNode(range.startContainer);
-    // if (!node) {
-    //   node = range.startContainer.parentNode;
-    // }
-    // if (node == this.area() || !node.getBoundingClientRect) {
-    //   return;
-    // }
-    // return node;
-  }
-
-  _validPreNode(node) {
-    // 最多找前三个节点
-    let i = 0;
-    while (node && !node.getBoundingClientRect) {
-      if (i++ > 0) {
-        return node;
-      }
-      node = node.previousSibling;
-    }
-
-    return node;
   }
 
   countBefore(node) {
@@ -359,94 +343,18 @@ class EditArea extends LitElement {
 
   text(e) {
     let t = "";
-    let cn = e.childNodes;
-    for(let j = 0; j < cn.length; j++) {
-      t += cn[j].nodeType != 1 ? cn[j].nodeValue : this.text(cn[j]);
-    }
-
+    this._selection.onTextNode(e, tn => {
+      t += tn.nodeValue; 
+      return false;
+    });
     return t;
   }
 
-  seek(offset, node) {
-    node = node || this;
-    let cn = node.childNodes;
-    for(let i = 0; i < cn.length; i++) {
-      if (cn[i].nodeType == 1) {
-        offset = this.seek(offset, cn[i]);
-        if (offset <= 0) {
-          return offset;
-        }
-        continue;
-      }
-      if (offset <= cn[i].nodeValue.length) {
-        let range = new Range();
-        range.setStart(cn[i], offset);
-        range.setEnd(cn[i], offset);
-        this.select(range);
-        return offset;
-      }
-      offset -= cn[i].nodeValue.length;
-    }
-
-    return offset;
-  }
-
-  select(range) {
-    this.selection().removeAllRanges();
-    this.selection().addRange(range);
-    return this;
-  }
-
-  selected() {
-    if (this._currentRange) {
-      return this._currentRange;
-    }
-    this.saveCurrentRange();
-    return this._currentRange;
-  }
-
   exec(command, arg){
-    this.restoreSelection();
-    if (this._currentRange) {
-      new RangeHandler(this._currentRange).execCommand(command, arg);
+    let range = this._selection.selected();
+    if (range) {
+      new RangeHandler(range).execCommand(command, arg);
     }
-  }
-
-  saveCurrentRange(){
-    const selection = this.selection();
-    if (selection.rangeCount < 1) {
-      return;
-    }
-    const content = this.area();
-    for (let i = 0; i < selection.rangeCount; i++) {
-      const range = selection.getRangeAt(0);
-      let start = range.startContainer;
-      let end = range.endContainer;
-      // for IE11 : node.contains(textNode) always return false
-      start = start.nodeType === Node.TEXT_NODE ? start.parentNode : start;
-      end = end.nodeType === Node.TEXT_NODE ? end.parentNode : end;
-      if (content.contains(start) && content.contains(end)) {
-        this._currentRange = range;
-        break;
-      }
-    }
-  }
-
-  restoreSelection(){
-    const selection = this.selection();
-    selection.removeAllRanges();
-    if (this._currentRange) {
-      selection.addRange(this._currentRange);
-      return;
-    }
-    const content = this;
-    const div = document.createElement('div');
-    const range = document.createRange();
-    content.appendChild(div);
-    range.setStart(div, 0);
-    range.setEnd(div, 0);
-    selection.addRange(range);
-    this._currentRange = range;
   }
 
   setContent(content) {

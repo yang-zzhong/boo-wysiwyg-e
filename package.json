@@ -17,6 +17,7 @@
   "dependencies": {
     "lit-element": "^2.0.1",
     "boo-dialog": "0.0.2",
+    "shadow-selection-polyfill": "^1.0.0",
     "@polymer/paper-input": "^3.0.1",
     "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-ripple": "^3.0.1",
