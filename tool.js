@@ -1,5 +1,4 @@
 import { LitElement, html, css } from 'lit-element';
-import '@polymer/paper-ripple/paper-ripple.js';
 
 export class BooWysiwygeTool extends LitElement {
 

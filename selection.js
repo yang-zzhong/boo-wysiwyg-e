@@ -131,7 +131,7 @@ export class Selection
     return node && node.getSelection;
   }
 
-  selectNode() {
+  selectNode(node) {
     let range = document.createRange();
     range.selectNode(node);
     this.select(range);

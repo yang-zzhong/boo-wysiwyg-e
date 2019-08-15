@@ -1,6 +1,6 @@
-import '@polymer/paper-ripple/paper-ripple';
-import '@polymer/paper-input/paper-input';
-import '@polymer/paper-button/paper-button';
+import '@authentic/mwc-button';
+import '@authentic/mwc-ripple';
+import '@authentic/mwc-textfield';
 import {BooWysiwygeTool} from '../tool';
 import {dialogStyles} from 'boo-dialog';
 import {html, css} from 'lit-element';
@@ -23,14 +23,15 @@ class BooWysiwygeLink extends BooWysiwygeTool {
     return html`
       <div class="icon-btn" title="链接" @click=${this._openInput}>
         ${linkIcon}
-        <paper-ripple></paper-ripple>
+        <mwc-ripple></mwc-ripple>
       </div>
       <boo-dialog>
         <main wrapper>
-          <paper-input label="输入链接地址" type=text></paper-input>
+          <h1>插入链接</h1>
+          <mwc-textfield label="输入链接地址" type=text></mwc-textfield>
           <div class="r2l">
-            <paper-button @click=${this._cancel}>取消</paper-button>
-            <paper-button @click=${this._createLink}>确定</paper-button>
+            <mwc-button @click=${this._cancel}>取消</mwc-button>
+            <mwc-button @click=${this._createLink}>确定</mwc-button>
           </div>
         </main>
       </boo-dialog>
@@ -69,7 +70,7 @@ class BooWysiwygeLink extends BooWysiwygeTool {
       click: function(node) {
         this.area().focus();
         this.area().selectNode(node);
-        this.shadowRoot.querySelector('paper-input').value = node.getAttribute('href');
+        this.shadowRoot.querySelector('mwc-textfield').value = node.getAttribute('href');
         this._openInput();
         this.node = node;
       }.bind(this)
@@ -87,12 +88,12 @@ class BooWysiwygeLink extends BooWysiwygeTool {
   _openInput() {
     this.node =  null;
     this.shadowRoot.querySelector('boo-dialog').open().then(() => {
-      this.shadowRoot.querySelector('paper-input').focus();
+      this.shadowRoot.querySelector('mwc-textfield').focus();
     });
   }
 
   _createLink() {
-    let link = this.shadowRoot.querySelector('paper-input').value.trim();
+    let link = this.shadowRoot.querySelector('mwc-textfield').value.trim();
     if (this.node) {
       this.node.setAttribute('href', link);
     } else {
@@ -100,13 +101,13 @@ class BooWysiwygeLink extends BooWysiwygeTool {
       this.area().exec("createLink", link);
     }
     this.shadowRoot.querySelector('boo-dialog').close().then(() => {
-      this.shadowRoot.querySelector('paper-input').value = "";
+      this.shadowRoot.querySelector('mwc-textfield').value = "";
     });
   }
 
   _cancel() {
     this.shadowRoot.querySelector('boo-dialog').close().then(() => {
-      this.shadowRoot.querySelector('paper-input').value = "";
+      this.shadowRoot.querySelector('mwc-textfield').value = "";
     });
   }
 }

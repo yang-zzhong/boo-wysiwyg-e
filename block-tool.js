@@ -1,3 +1,4 @@
+import '@authentic/mwc-ripple';
 import { BooWysiwygeTool } from './tool.js';
 import {html} from 'lit-element';
 import {sharedStyles} from './shared-styles.js';
@@ -18,7 +19,7 @@ export class BooWysiwygeBlockTool extends BooWysiwygeTool {
     return html`
       <div class="icon-btn" title="${this.title()}" @click=${this.formatBlock}>
         ${this.icon()}
-        <paper-ripple></paper-ripple>
+        <mwc-ripple></mwc-ripple>
       </div>
     `;
   }

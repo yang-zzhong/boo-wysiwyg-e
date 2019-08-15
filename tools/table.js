@@ -1,6 +1,6 @@
-import '@polymer/paper-ripple/paper-ripple';
-import '@polymer/paper-input/paper-input';
-import '@polymer/paper-button/paper-button';
+import '@authentic/mwc-button';
+import '@authentic/mwc-ripple';
+import '@authentic/mwc-textfield';
 import {BooWysiwygeTool} from '../tool';
 import {dialogStyles} from 'boo-dialog';
 import {html, css} from 'lit-element';
@@ -50,15 +50,16 @@ class BooWysiwygeTable extends BooWysiwygeTool {
     return html`
       <div class="icon-btn" title="插入表格" @click=${this._openInput}>
         ${tableIcon}
-        <paper-ripple></paper-ripple>
+        <mwc-ripple></mwc-ripple>
       </div>
       <boo-dialog>
         <main wrapper>
-          <paper-input label="行" name="row" type=number></paper-input>
-          <paper-input label="列" name="col" type=number></paper-input>
+          <h1>插入表格</h1>
+          <mwc-textfield label="行" name="row" type=number></mwc-textfield>
+          <mwc-textfield label="列" name="col" type=number></mwc-textfield>
           <div class="r2l">
-            <paper-button @click=${this._cancel}>取消</paper-button>
-            <paper-button @click=${this._createTable}>确定</paper-button>
+            <mwc-button @click=${this._cancel}>取消</mwc-button>
+            <mwc-button @click=${this._createTable}>确定</mwc-button>
           </div>
         </main>
       </boo-dialog>
@@ -218,7 +219,7 @@ class BooWysiwygeTable extends BooWysiwygeTool {
 
   _openInput() {
     this.shadowRoot.querySelector('boo-dialog').open().then(() => {
-      this.shadowRoot.querySelector('paper-input').focus();
+      this.shadowRoot.querySelector('mwc-textfield').focus();
     });
   }
 
@@ -244,13 +245,13 @@ class BooWysiwygeTable extends BooWysiwygeTool {
     this.area().focus();
     this.area().exec('insertHTML', table);
     this.shadowRoot.querySelector('boo-dialog').close().then(() => {
-      this.shadowRoot.querySelector('paper-input').value = "";
+      this.shadowRoot.querySelector('mwc-textfield').value = "";
     });
   }
 
   _cancel() {
     this.shadowRoot.querySelector('boo-dialog').close().then(() => {
-      this.shadowRoot.querySelector('paper-input').value = "";
+      this.shadowRoot.querySelector('mwc-textfield').value = "";
     });
   }
 }

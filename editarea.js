@@ -3,6 +3,7 @@ import RangeHandler from './range/handler'
 import {redoIcon} from './icons';
 import {sharedStyles} from './shared-styles';
 import {Selection} from './selection';
+import '@authentic/mwc-ripple';
 
 class EditArea extends LitElement {
 
@@ -77,19 +78,19 @@ class EditArea extends LitElement {
       <div class="menu">
         <div class="icon-btn" title="hello world">
           ${redoIcon}
-          <paper-ripple></paper-ripple>
+          <mwc-ripple></mwc-ripple>
         </div>
         <div class="icon-btn" title="hello world">
           ${redoIcon}
-          <paper-ripple></paper-ripple>
+          <mwc-ripple></mwc-ripple>
         </div>
         <div class="icon-btn" title="hello world">
           ${redoIcon}
-          <paper-ripple></paper-ripple>
+          <mwc-ripple></mwc-ripple>
         </div>
         <div class="icon-btn" title="hello world">
           ${redoIcon}
-          <paper-ripple></paper-ripple>
+          <mwc-ripple></mwc-ripple>
         </div>
       </div>
     `;
@@ -211,7 +212,7 @@ class EditArea extends LitElement {
         btn.classList.add('icon-btn');
         btn.setAttribute('title', items[i].title);
         btn.innerHTML = items[i].icon.strings[0];
-        let ripple = document.createElement('paper-ripple');
+        let ripple = document.createElement('mwc-ripple');
         btn.appendChild(ripple);
         menu.appendChild(btn);
         let onclick = items[i].click;
@@ -242,32 +243,6 @@ class EditArea extends LitElement {
     if (node.handleSelectionChanged) {
       this._selectionObservers.push(node);
     }
-  }
-
-  selection() {
-    let node = this.shadowNode();
-    if (node && node.getSelection) {
-      return node.getSelection();
-    } else if (window.getSelection) {
-      return window.getSelection();
-    } else if (document.getSelection) {
-      return document.getSelection();
-    }
-  }
-
-  shadowRootSelectionSupported() {
-    let node = this.shadowNode();
-    return node && node.getSelection;
-  }
-
-  shadowNode() {
-    let node = this;
-    for (; node; node = node.parentNode) {
-      if (node.toString() === "[object ShadowRoot]") {
-        return node;
-      }
-    }
-    return null;
   }
 
   offset() {
@@ -321,6 +296,10 @@ class EditArea extends LitElement {
       return;
     }
     return range.startContainer;
+  }
+
+  selectNode(n) {
+    this._selection.selectNode(n);
   }
 
   countBefore(node) {
