@@ -23,8 +23,7 @@
     "@authentic/mwc-ripple": "~0.7.0",
     "@authentic/mwc-select": "~0.7.0",
     "@authentic/mwc-list": "~0.7.0",
-    "@authentic/mwc-menu": "~0.7.0",
-    "lit-monaco-element": "~0.2.1"
+    "@authentic/mwc-menu": "~0.7.0"
   },
   "devDependencies": {
     "@polymer/iron-demo-helpers": "^3.0.2",
