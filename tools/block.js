@@ -2,12 +2,7 @@ import { BooWysiwygeBlockTool } from '../block-tool.js';
 import {blockQuoteIcon, h1Icon, h2Icon, h3Icon, h4Icon, pIcon, formatCodeIcon} from '../icons.js';
 import {LitElement, html} from 'lit-element';
 import {containerStyles} from '../shared-styles';
-
-class Code extends BooWysiwygeBlockTool {
-  icon() { return formatCodeIcon; }
-  title() { return '代码块'; }
-  block() { return 'pre'; }
-}
+import './code';
 
 class H1 extends BooWysiwygeBlockTool {
   icon() { return h1Icon; }
@@ -51,7 +46,6 @@ window.customElements.define('boo-wysiwyg-h2', H2);
 window.customElements.define('boo-wysiwyg-h3', H3);
 window.customElements.define('boo-wysiwyg-h4', H4);
 window.customElements.define('boo-wysiwyg-p', P);
-window.customElements.define('boo-wysiwyg-code', Code);
 window.customElements.define('boo-wysiwyg-blockquote', BlockQuote);
 
 class Block extends LitElement {

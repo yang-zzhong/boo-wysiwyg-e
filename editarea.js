@@ -1,6 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
 import RangeHandler from './range/handler'
-import {redoIcon} from './icons';
 import {sharedStyles} from './shared-styles';
 import {Selection} from './selection';
 import '@authentic/mwc-ripple';
@@ -74,31 +73,12 @@ class EditArea extends LitElement {
   render() {
     return html`
       <slot></slot>
-      <span>${this.placeholder}</span>
-      <div class="menu">
-        <div class="icon-btn" title="hello world">
-          ${redoIcon}
-          <mwc-ripple></mwc-ripple>
-        </div>
-        <div class="icon-btn" title="hello world">
-          ${redoIcon}
-          <mwc-ripple></mwc-ripple>
-        </div>
-        <div class="icon-btn" title="hello world">
-          ${redoIcon}
-          <mwc-ripple></mwc-ripple>
-        </div>
-        <div class="icon-btn" title="hello world">
-          ${redoIcon}
-          <mwc-ripple></mwc-ripple>
-        </div>
-      </div>
+      <div class="menu"></div>
     `;
   }
 
   static get properties() {
     return {
-      placeholder: { type: String },
       readonly: { type: Boolean },
       name: {type: String, reflect: true},
       hasMenu: {type: Boolean, reflect: true, attribute: 'has-menu'},
@@ -114,7 +94,6 @@ class EditArea extends LitElement {
     this._selectionObservers = [];
     this._keyDownHandlers = [];
     this._inputObservers = [];
-    this.placeholder = "请输入内容";
     this.menuNodes = [];
   }
 
@@ -130,8 +109,6 @@ class EditArea extends LitElement {
       this._feature('styleWithCSS');
     } else if (name == 'readonly') {
       this._readonlyChanged(val);
-    } else if (name == 'placeholder') {
-      this._placeholderChanged(val);
     } else if (name ="name" && val) {
       window.boo_wysiwyge_editarea = window.boo_wysiwyge_editarea || {};
       window.boo_wysiwyge_editarea[val] = this;
@@ -150,6 +127,7 @@ class EditArea extends LitElement {
   initEvent() {
     let ea = this.area();
     ea.addEventListener('input', e => {
+      this.hasMenu = false;
       this.handleEmpty();
       e.stopPropagation();
       this.dispatchEvent(new CustomEvent("input"));
@@ -172,14 +150,13 @@ class EditArea extends LitElement {
       this.exec("inserttext", "\t");
       e.preventDefault();
     });
-    ea.addEventListener('click', () => { this.maybeShowMenu(); });
+    ea.addEventListener('click', e => { this.maybeShowMenu(e); });
     this._selection = new Selection(this.area(), () => {
       return this.selectionChanged();
     });
   }
 
-  maybeShowMenu() {
-    this.hasMenu = false;
+  maybeShowMenu(e) {
     let node = this.currentNode();
     if (node) {
       let tools = [];
@@ -197,12 +174,13 @@ class EditArea extends LitElement {
         }
       }
       if (cur.node) {
-        this.showMenu(tools, cur.node);
+        return this.showMenu(tools, e);
       }
+      this.hasMenu = false;
     }
   }
 
-  showMenu(tools, node) {
+  showMenu(tools, e) {
     let menu = this.shadowRoot.querySelector('.menu');
     menu.innerHTML = "";
     for (let j = 0; j < tools.length; ++j) {
@@ -228,11 +206,21 @@ class EditArea extends LitElement {
         menu.appendChild(sep);
       }
     }
-    let pos = this.nodePos(node);
-    menu.style.left = pos.x + 'px';
-    menu.style.top = pos.y + node.getBoundingClientRect().height + 'px';
+    let pos = this.nodePos(this, document);
+    let epos = this.getMousePos(e);
+    menu.style.left = (epos.x - pos.x) + 'px';
+    menu.style.top = (epos.y - pos.y) + 'px';
     this.hasMenu = true;
   }
+
+  getMousePos(event) {
+    var e = event || window.event;
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+    var x = e.pageX || e.clientX + scrollX;
+    var y = e.pageY || e.clientY + scrollY;
+    return { x: x, y: y };
+}
 
   onKeyDown(key, callback) {
     this._keyDownHandlers[key] = callback;
@@ -362,12 +350,6 @@ class EditArea extends LitElement {
     return this.area().innerHTML;
   }
 
-  _placeholderChanged(placeholder) {
-    setTimeout(() => {
-      this.setAttribute('placeholder', placeholder);
-    }, 200);
-  }
-
   _enableAbsolutePositionEditorChanged() {
     this._feature('');
   }
@@ -419,11 +401,11 @@ class EditArea extends LitElement {
     return key.join("+");
   }
 
-　nodePos(node){
+　nodePos(node, end) {
     let x = node.offsetLeft;
     let y = node.offsetTop;
 　　let current = node.offsetParent;
-　　while (current != this) {
+　　while (current != null && current != end) {
 　　　x += current.offsetLeft;
 　　　y += current.offsetTop;
 　　　current = current.offsetParent;

@@ -18,9 +18,13 @@
     "lit-element": "^2.0.1",
     "shadow-selection-polyfill": "^1.0.0",
     "boo-dialog": "0.0.6",
+    "@authentic/mwc-textfield": "~0.7.0",
     "@authentic/mwc-button": "~0.7.0",
     "@authentic/mwc-ripple": "~0.7.0",
-    "@authentic/mwc-textfield": "~0.7.0"
+    "@authentic/mwc-select": "~0.7.0",
+    "@authentic/mwc-list": "~0.7.0",
+    "@authentic/mwc-menu": "~0.7.0",
+    "lit-monaco-element": "~0.2.1"
   },
   "devDependencies": {
     "@polymer/iron-demo-helpers": "^3.0.2",
