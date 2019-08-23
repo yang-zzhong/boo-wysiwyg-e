@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit-element';
 import './editarea.js';
 import './tools/align.js';
 import './tools/link.js';
+import './tools/formula.js';
 import './tools/table.js';
 import './tools/block.js';
 import './tools/dent.js';
@@ -57,6 +58,7 @@ class BooWysiwygE extends LitElement {
 
         <boo-wysiwyg-link editarea="editarea"></boo-wysiwyg-link>
         <boo-wysiwyg-unlink editarea="editarea"></boo-wysiwyg-unlink>
+        <boo-wysiwyg-formula editarea="editarea"></boo-wysiwyg-formula>
         <boo-wysiwyg-table editarea="editarea"></boo-wysiwyg-table>
         <boo-wysiwyg-superscript editarea="editarea"></boo-wysiwyg-superscript>
         <boo-wysiwyg-subscript editarea="editarea"></boo-wysiwyg-subscript>

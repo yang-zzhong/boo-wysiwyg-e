@@ -15,6 +15,9 @@ export const h3Icon = html`<svg height="24" viewBox="0 0 24 24" width="24">
 export const h4Icon = html`<svg height="24" viewBox="0 0 24 24" width="24">
   <text stroke="null" transform="matrix(0.8515537760680693,0,0,0.8723946191317608,1.315661125618135,1.9826230118345634) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_1" y="18.61898" x="-0.807076">h4</text>
 </svg>`;
+export const formulaIcon = html`<svg height="24" viewBox="0 0 24 24" width="24">
+  <text stroke="null" transform="matrix(0.8515537760680693,0,0,0.8723946191317608,1.315661125618135,1.9826230118345634) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_1" y="18.61898" x="-0.307076">fa</text>h
+</svg>`;
 export const textFormatIcon = html`<svg height="24" viewBox="0 0 24 24" width="24">
   <path d="M5 17v2h14v-2H5zm4.5-4.2h5l.9 2.2h2.1L12.75 4h-1.5L6.5 15h2.1l.9-2.2zM12 5.98L13.87 11h-3.74L12 5.98z"></path>
 </svg>`;
