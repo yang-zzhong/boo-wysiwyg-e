@@ -1,7 +1,7 @@
-import {BooWysiwygeTool} from './tool.js';
+import {BooWysiwygeTool} from './tool';
 import {html} from 'lit-element';
-import '@authentic/mwc-ripple';
-import {sharedStyles} from './shared-styles.js';
+import '@material/mwc-ripple';
+import {sharedStyles} from './shared-styles';
 
 export class BooWysiwygeDirectTool extends BooWysiwygeTool {
 

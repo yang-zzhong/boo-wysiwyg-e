@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit-element';
 import RangeHandler from './range/handler'
 import {sharedStyles} from './shared-styles';
 import {Selection} from './selection';
-import '@authentic/mwc-ripple';
+import '@material/mwc-ripple';
 
 class EditArea extends LitElement {
 

@@ -1,6 +1,6 @@
-import '@authentic/mwc-button';
-import '@authentic/mwc-ripple';
-import '@authentic/mwc-textfield';
+import '@material/mwc-button';
+import '@material/mwc-ripple';
+import '@material/mwc-textfield';
 import {BooWysiwygeTool} from '../tool';
 import {dialogStyles} from 'boo-dialog';
 import {html, css} from 'lit-element';

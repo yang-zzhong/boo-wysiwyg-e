@@ -1,7 +1,7 @@
 
-import '@authentic/mwc-button';
-import '@authentic/mwc-ripple';
-import '@authentic/mwc-textfield';
+import '@material/mwc-button';
+import '@material/mwc-ripple';
+import '@material/mwc-textfield';
 import katex from 'katex/dist/katex.mjs';
 import {BooWysiwygeTool} from '../tool';
 import {dialogStyles} from 'boo-dialog';
@@ -94,7 +94,8 @@ class BooWysiwygeFormula extends BooWysiwygeTool {
       this.area().exec('delete');
     }
     var html = '<span class="formula" data-formula="' + formula + '">' + katex.renderToString(formula, {
-        throwOnError: false
+        throwOnError: false,
+        output: 'html'
     }) + '</span>';
     this.area().focus();
     this.area().exec('insertHTML', html);
