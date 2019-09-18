@@ -20,7 +20,7 @@ export class BooWysiwygeBlockTool extends BooWysiwygeTool {
       return html`<mwc-icon-button icon=${this.iconName()} @click=${this.formatBlock}></mwc-icon-button>`;
     }
     return html`
-      <mwc-icon-button title="${this.title()}" @click=${this.toggle}>
+      <mwc-icon-button title="${this.title()}" @click=${this.formatBlock}>
         ${this.icon()}
       </div>
     `;

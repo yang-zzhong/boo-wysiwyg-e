@@ -14,7 +14,7 @@ export class BooWysiwygeDirectTool extends BooWysiwygeTool {
       return html`<mwc-icon-button icon=${this.iconName()} @click=${this._exec}></mwc-icon-button>`;
     }
     return html`
-      <mwc-icon-button title="${this.title()}" @click=${this.toggle}>
+      <mwc-icon-button title="${this.title()}" @click=${this._exec}>
         ${this.icon()}
       </div>
     `;
