@@ -1,11 +1,10 @@
 import '@material/mwc-button';
-import '@material/mwc-ripple';
+import '@material/mwc-icon-button';
 import '@material/mwc-textfield';
 import {BooWysiwygeTool} from '../tool';
 import {dialogStyles} from 'boo-dialog';
 import {html, css} from 'lit-element';
 import {sharedStyles} from '../shared-styles';
-import {unlinkIcon, createIcon, linkIcon} from '../icons';
 
 class BooWysiwygeLink extends BooWysiwygeTool {
   static get styles() {
@@ -21,10 +20,7 @@ class BooWysiwygeLink extends BooWysiwygeTool {
 
   render() {
     return html`
-      <div class="icon-btn" title="链接" @click=${this._openInput}>
-        ${linkIcon}
-        <mwc-ripple></mwc-ripple>
-      </div>
+      <mwc-icon-button icon="link" title="链接" @click=${this._openInput}></mwc-icon-button>
       <boo-dialog>
         <main wrapper>
           <h1>插入链接</h1>
@@ -66,7 +62,7 @@ class BooWysiwygeLink extends BooWysiwygeTool {
   menuItems() {
     return [{
       title: "修改链接地址",
-      icon: createIcon,
+      iconName: 'create',
       click: function(node) {
         this.area().focus();
         this.area().selectNode(node);
@@ -76,7 +72,7 @@ class BooWysiwygeLink extends BooWysiwygeTool {
       }.bind(this)
     }, {
       title: "取消链接",
-      icon: unlinkIcon,
+      iconName: 'link_off',
       click: function(node) {
         this.area().focus();
         this.area().selectNode(node);

@@ -1,26 +1,26 @@
 import { BooWysiwygeDirectTool } from '../direct-tool.js';
-import {redoIcon, undoIcon, unlinkIcon, clearIcon, formatSubscriptIcon, formatSuperscriptIcon} from '../icons.js';
+import {formatSubscriptIcon, formatSuperscriptIcon} from '../icons.js';
 
 class Redo extends BooWysiwygeDirectTool {
-  icon() { return redoIcon; }
+  iconName() { return 'redo' }
   title() { return '重做'; }
   command() { return 'redo'; }
 }
 
 class Undo extends BooWysiwygeDirectTool {
-  icon() { return undoIcon; }
+  iconName() { return 'undo' }
   title() { return '撤销'; }
   command() { return 'undo'; }
 }
 
 class Unlink extends BooWysiwygeDirectTool {
-  icon() { return unlinkIcon; }
+  iconName() { return 'link_off' }
   title() { return '取消链接'; }
   command() { return 'unlink'; }
 }
 
 class RemoveFormat extends BooWysiwygeDirectTool {
-  icon() { return clearIcon; }
+  iconName() { return 'format_clear'; }
   title() { return '取消格式'; }
   command() { return 'removeformat'; }
 }

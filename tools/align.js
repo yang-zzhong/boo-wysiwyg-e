@@ -1,28 +1,27 @@
 import { BooWysiwygeToggleTool } from '../toggle-tool.js';
-import {formatAlignCenterIcon, formatAlignJustifyIcon, formatAlignLeftIcon, formatAlignRightIcon} from '../icons.js';
 import {LitElement, html} from 'lit-element';
 import {containerStyles} from '../shared-styles';
 
 class AlignCenter extends BooWysiwygeToggleTool {
-  icon() { return formatAlignCenterIcon; }
+  iconName() { return 'format_align_center' }
   title() { return '居中对齐'; }
   command() { return 'justifyCenter'; }
 }
 
 class AlignLeft extends BooWysiwygeToggleTool {
-  icon() { return formatAlignLeftIcon; }
+  iconName() { return 'format_align_left' }
   title() { return '左对齐'; }
   command() { return 'justifyLeft'; }
 }
 
 class AlignRight extends BooWysiwygeToggleTool {
-  icon() { return formatAlignRightIcon; }
+  iconName() { return 'format_align_right' }
   title() { return '右对齐'; }
   command() { return 'justifyRight'; }
 }
 
 class AlignFull extends BooWysiwygeToggleTool {
-  icon() { return formatAlignJustifyIcon; }
+  iconName() { return 'format_align_justify' }
   title() { return '两端对齐'; }
   command() { return 'justifyFull'; }
 }

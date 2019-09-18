@@ -1,14 +1,10 @@
 import '@material/mwc-button';
-import '@material/mwc-ripple';
+import '@material/mwc-icon-button';
 import '@material/mwc-textfield';
 import {BooWysiwygeTool} from '../tool';
 import {dialogStyles} from 'boo-dialog';
 import {html, css} from 'lit-element';
 import {sharedStyles} from '../shared-styles';
-import {
-  deleteIcon, tableIcon, insertRowAfterIcon, delRowIcon, insertRowBeforeIcon,
-  insertColAfterIcon, delColIcon, insertColBeforeIcon
-} from '../icons';
 
 export const tableStyles = css`
   .table {
@@ -48,10 +44,7 @@ class BooWysiwygeTable extends BooWysiwygeTool {
 
   render() {
     return html`
-      <div class="icon-btn" title="插入表格" @click=${this._openInput}>
-        ${tableIcon}
-        <mwc-ripple></mwc-ripple>
-      </div>
+      <mwc-icon-button icon="border_all" @click=${this._openInput} title="插入表格"></mwc-icon-button>
       <boo-dialog>
         <main wrapper>
           <h1>插入表格</h1>
@@ -94,7 +87,7 @@ class BooWysiwygeTable extends BooWysiwygeTool {
   menuItems() {
     return [{
       title: "删除表格",
-      icon: deleteIcon,
+      iconName: "delete",
       click: function(node) {
         this.area().focus();
         let n = node.parentNode.parentNode;
@@ -103,27 +96,27 @@ class BooWysiwygeTable extends BooWysiwygeTool {
       }.bind(this)
     }, {
       title: "行前插入",
-      icon: insertRowBeforeIcon,
+      iconName: 'border_top',
       click: this._insertRowBefore.bind(this),
     }, {
       title: "行后插入",
-      icon: insertRowAfterIcon,
+      iconName: 'border_bottom',
       click: this._insertRowAfter.bind(this),
     }, {
       title: "列前插入",
-      icon: insertColBeforeIcon,
+      iconName: 'border_left',
       click: this._insertColBefore.bind(this),
     }, {
       title: "列后插入",
-      icon: insertColAfterIcon,
+      iconName: 'border_right',
       click: this._insertColAfter.bind(this),
     }, {
       title: "删除列",
-      icon: delColIcon,
+      iconName: 'border_horizontal',
       click: this._delCol.bind(this),
     }, {
       title: "删除行",
-      icon: delRowIcon,
+      iconName: 'border_vertical',
       click: this._delRow.bind(this),
     }]
   }

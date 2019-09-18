@@ -2,7 +2,6 @@ import { LitElement, html, css } from 'lit-element';
 import RangeHandler from './range/handler'
 import {sharedStyles} from './shared-styles';
 import {Selection} from './selection';
-import '@material/mwc-ripple';
 
 class EditArea extends LitElement {
 
@@ -56,7 +55,7 @@ class EditArea extends LitElement {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        max-width: 160px;
+        max-width: 248px;
         flex-wrap: wrap;
       }
       .menu .sep {
@@ -186,12 +185,13 @@ class EditArea extends LitElement {
     for (let j = 0; j < tools.length; ++j) {
       let items = tools[j].tool.menuItems();
       for (let i = 0; i < items.length; ++i) {
-        let btn = document.createElement('div');
-        btn.classList.add('icon-btn');
+        let btn = document.createElement('mwc-icon-button');
         btn.setAttribute('title', items[i].title);
-        btn.innerHTML = items[i].icon.strings[0];
-        let ripple = document.createElement('mwc-ripple');
-        btn.appendChild(ripple);
+        if (items[i].iconName) {
+          btn.setAttribute('icon', items[i].iconName);
+        } else if (items[i].icon) {
+          btn.innerHTML = items[i].icon.strings[0];
+        }
         menu.appendChild(btn);
         let onclick = items[i].click;
         (function(btn, node) {

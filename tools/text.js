@@ -1,28 +1,27 @@
-import { BooWysiwygeToggleTool } from '../toggle-tool.js';
-import {formatBoldIcon, formatItalicIcon, formatUnderlinedIcon, formatStrikethroughIcon} from '../icons.js';
+import { BooWysiwygeToggleTool } from '../toggle-tool';
 import {LitElement, html} from 'lit-element';
 import {containerStyles} from '../shared-styles';
 
 class Bold extends BooWysiwygeToggleTool {
-  icon() { return formatBoldIcon; }
+  iconName() { return 'format_bold' }
   title() { return '粗体'; }
   command() { return 'bold'; }
 }
 
 class Italic extends BooWysiwygeToggleTool {
-  icon() { return formatItalicIcon; }
+  iconName() { return 'format_italic' }
   title() { return '斜体'; }
   command() { return 'italic'; }
 }
 
 class Underline extends BooWysiwygeToggleTool {
-  icon() { return formatUnderlinedIcon; }
+  iconName() { return 'format_underline' }
   title() { return '下划线'; }
   command() { return 'underline'; }
 }
 
 class Strike extends BooWysiwygeToggleTool {
-  icon() { return formatStrikethroughIcon; }
+  iconName() { return 'format_strikethrough' }
   title() { return '删除线'; }
   command() { return 'strikeThrough'; }
 }

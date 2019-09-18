@@ -1,16 +1,15 @@
 import { BooWysiwygeDirectTool } from '../direct-tool.js';
-import {formatIndentIncreaseIcon, formatIndentDecreaseIcon} from '../icons.js';
 import {LitElement, html} from 'lit-element';
 import {containerStyles} from '../shared-styles';
 
 class Indent extends BooWysiwygeDirectTool {
-  icon() { return formatIndentIncreaseIcon; }
+  iconName() { return 'format_indent_increase' }
   title() { return '增加缩进' }
   command() { return 'indent' }
 }
 
 class Outdent extends BooWysiwygeDirectTool {
-  icon() { return formatIndentDecreaseIcon; }
+  iconName() { return 'format_indent_decrease' }
   title() { return '减少缩进' }
   command() { return 'outdent' }
 }

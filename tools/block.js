@@ -1,10 +1,10 @@
-import { BooWysiwygeBlockTool } from '../block-tool.js';
-import {blockQuoteIcon, h1Icon, h2Icon, h3Icon, h4Icon, pIcon, formatCodeIcon} from '../icons.js';
+import { BooWysiwygeBlockTool } from '../block-tool';
+import {h1Icon, h2Icon, h3Icon, h4Icon, pIcon} from '../icons';
 import {LitElement, html} from 'lit-element';
 import {containerStyles} from '../shared-styles';
 
 class Code extends BooWysiwygeBlockTool {
-  icon() { return formatCodeIcon; }
+  iconName() { return 'code' }
   title() { return '代码块'; }
   block() { return 'pre'; }
 }
@@ -40,7 +40,7 @@ class P extends BooWysiwygeBlockTool {
 }
 
 class BlockQuote extends BooWysiwygeBlockTool {
-  icon() { return blockQuoteIcon; }
+  iconName() { return 'format_quote'; }
   title() { return '引用'; }
   block() { return 'blockquote'; }
 }

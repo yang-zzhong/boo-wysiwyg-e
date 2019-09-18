@@ -1,7 +1,8 @@
-import {BooWysiwygeTool} from './tool.js';
+import {BooWysiwygeTool} from './tool';
+import '@material/mwc-icon-button';
 import {html} from 'lit-element';
-import {sharedStyles} from './shared-styles.js';
-import './icons.js';
+import {sharedStyles} from './shared-styles';
+import './icons';
 
 export class BooWysiwygeToggleTool extends BooWysiwygeTool {
 
@@ -16,10 +17,12 @@ export class BooWysiwygeToggleTool extends BooWysiwygeTool {
   }
 
   render() {
+    if (this.iconName) {
+      return html`<mwc-icon-button icon=${this.iconName()} @click=${this.toggle}></mwc-icon-button>`;
+    }
     return html`
-      <div class="icon-btn" title="${this.title()}" @click=${this.toggle}>
+      <mwc-icon-button title="${this.title()}" @click=${this.toggle}>
         ${this.icon()}
-        <paper-ripple></paper-ripple>
       </div>
     `;
   }

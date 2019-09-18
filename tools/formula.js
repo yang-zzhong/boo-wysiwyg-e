@@ -1,13 +1,13 @@
 
 import '@material/mwc-button';
-import '@material/mwc-ripple';
+import '@material/mwc-icon-button';
 import '@material/mwc-textfield';
 import katex from 'katex/dist/katex.mjs';
 import {BooWysiwygeTool} from '../tool';
 import {dialogStyles} from 'boo-dialog';
 import {html, css} from 'lit-element';
 import {sharedStyles} from '../shared-styles';
-import {formulaIcon, createIcon, closeIcon} from '../icons';
+import {formulaIcon} from '../icons';
 
 class BooWysiwygeFormula extends BooWysiwygeTool {
   static get styles() {
@@ -23,10 +23,7 @@ class BooWysiwygeFormula extends BooWysiwygeTool {
 
   render() {
     return html`
-      <div class="icon-btn" @click=${this._openInput}>
-        ${formulaIcon}
-        <mwc-ripple></mwc-ripple>
-      </div>
+      <mwc-icon-button>${formulaIcon}</mwc-icon-button>
       <boo-dialog>
         <main wrapper>
           <h1>公式</h1>
@@ -68,7 +65,7 @@ class BooWysiwygeFormula extends BooWysiwygeTool {
   menuItems() {
     return [{
       title: "修改",
-      icon: createIcon,
+      iconName: 'create',
       click: function(node) {
         this.area().focus();
         this.area().selectNode(node);

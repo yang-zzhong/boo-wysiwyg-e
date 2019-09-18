@@ -1,6 +1,6 @@
 import {BooWysiwygeTool} from './tool';
 import {html} from 'lit-element';
-import '@material/mwc-ripple';
+import '@material/mwc-icon-button';
 import {sharedStyles} from './shared-styles';
 
 export class BooWysiwygeDirectTool extends BooWysiwygeTool {
@@ -10,10 +10,12 @@ export class BooWysiwygeDirectTool extends BooWysiwygeTool {
   }
 
   render() {
+    if (this.iconName) {
+      return html`<mwc-icon-button icon=${this.iconName()} @click=${this.toggle}></mwc-icon-button>`;
+    }
     return html`
-      <div class="icon-btn" title="${this.title()}" @click=${this._exec}>
+      <mwc-icon-button title="${this.title()}" @click=${this.toggle}>
         ${this.icon()}
-        <mwc-ripple></mwc-ripple>
       </div>
     `;
   }

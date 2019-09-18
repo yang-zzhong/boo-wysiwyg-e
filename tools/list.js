@@ -1,17 +1,16 @@
 
 import { BooWysiwygeToggleTool } from '../toggle-tool.js';
-import {formatListNumberedIcon, formatListBulletedIcon} from '../icons.js';
 import {LitElement, html} from 'lit-element';
 import {containerStyles} from '../shared-styles';
 
 class OrderedList extends BooWysiwygeToggleTool {
-  icon() { return formatListNumberedIcon; }
+  iconName() { return 'format_list_numbered' }
   title() { return '有序列表'; }
   command() { return 'insertOrderedList'; }
 }
 
 class UnorderedList extends BooWysiwygeToggleTool {
-  icon() { return formatListBulletedIcon; }
+  iconName() { return 'format_list_bulleted' }
   title() { return '无序列表'; }
   command() { return 'insertUnorderedList'; }
 }
