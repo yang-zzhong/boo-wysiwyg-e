@@ -18,7 +18,7 @@
     "lit-element": "^2.2.0",
     "shadow-selection-polyfill": "^1.0.0",
     "boo-dialog": "0.0.8",
-    "katex": "^0.11.0",
+    "katex": "^0.16.10",
     "@material/mwc-icon-button": "^0.8.0",
     "@material/mwc-textfield": "^0.8.0",
     "@material/mwc-button": "^0.8.0",
